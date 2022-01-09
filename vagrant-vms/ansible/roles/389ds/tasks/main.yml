@@ -1,0 +1,40 @@
+- name: dnf install 389 Directory Server
+  become: yes
+  dnf:
+    state: present
+    name: '@389-directory-server:stable/default'
+
+- name: copy 389 DS setup files
+  become: yes
+  copy:
+    src: ../files/
+    dest: /var/tmp/389ds-setup/
+
+- name: check dirsrv@localhost
+  systemd:
+    name: dirsrv@localhost.service
+  register: systemd_dirsrv
+
+- name: dscreate
+  become: yes
+  command:
+    cmd: dscreate from-file /var/tmp/389ds-setup/389ds.inf
+  when: systemd_dirsrv.status.ActiveState == 'inactive'
+
+- name: ldapadd
+  become: yes
+  command:
+    cmd: ldapadd -x -h localhost -p 389 -D "cn=admin,dc=example,dc=jp" -w admin_password -f /var/tmp/389ds-setup/user_group.ldif
+  when: systemd_dirsrv.status.ActiveState == 'inactive'
+
+# - name: ldap add
+#   ldap_entry:
+#     server_uri: 'ldap://localhost'
+#     bind_dn: 'cn=admin,dc=example,dc=jp'
+#     bind_pw: 'admin_password'
+#     state: present
+#     dn: ...
+#     objectClass:
+#       - ...
+#     attributes:
+#       ...: ...

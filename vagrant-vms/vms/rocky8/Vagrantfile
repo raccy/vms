@@ -1,0 +1,51 @@
+require 'digest/md5'
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'generic/rocky8'
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  ssh_port = 10_000 + (Digest::MD5.digest(hostname).unpack1('L') % 20_000)
+
+  config.vm.hostname = hostname
+
+  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+
+  config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: 'ansible'
+  config.vm.synced_folder '../../ansible', '/vagrant/ansible', type: 'rsync'
+
+  config.vm.provider 'virtualbox' do |vb|
+    vb.cpus = 2
+    vb.memory = 4096
+  end
+
+  config.vm.provider 'hyperv' do |hv|
+    hv.cpus = 2
+    hv.maxmemory = 4096
+  end
+
+  # BUG... selinux enforced
+  # if Vagrant.has_plugin?('vagrant-timezone')
+  #   config.timezone.value = 'Asia/Tokyo'
+  # end
+
+  if (ENV['http_proxy'] || ENV['https_proxy'] || ENV['ftp_proxy']) &&
+     Vagrant.has_plugin?('vagrant-proxyconf')
+    config.proxy.http     = ENV['http_proxy']  if ENV['http_proxy']
+    config.proxy.https    = ENV['https_proxy'] if ENV['https_proxy']
+    config.proxy.ftp      = ENV['ftp_proxy']   if ENV['https_proxy']
+    config.proxy.no_proxy = ENV['no_proxy']    if ENV['no_proxy']
+  end
+
+  config.vm.provision 'shell', inline: <<~SHELL
+    grep timeout /etc/dnf/dnf.conf || sh -c 'echo timeout=600 >> /etc/dnf/dnf.conf'
+    dnf install -y centos-release-ansible-29
+    dnf check-update
+    dnf install -y ansible
+  SHELL
+
+  config.vm.provision 'ansible', type: 'shell', privileged: false, inline: <<~ANSIBLE
+    cd /vagrant/ansible
+    ansible-playbook setup.yml
+  ANSIBLE
+end

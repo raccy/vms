@@ -1,0 +1,68 @@
+- name: lineinfile timeout=600
+  become: yes
+  lineinfile:
+    path: "{{ item }}"
+    regexp: '^timeout=.*$'
+    line: 'timeout=600'
+  loop:
+    - /etc/yum.conf
+    - /etc/dnf/dnf.conf
+
+- name: lineinfile proxy
+  become: yes
+  lineinfile:
+    path: "{{ item }}"
+    regexp: '^proxy=.*$'
+    line: "proxy={{ ansible_env.http_proxy }}"
+  loop:
+    - /etc/yum.conf
+    - /etc/dnf/dnf.conf
+  when: ansible_env.http_proxy is defined
+
+- name: dnf update
+  become: yes
+  dnf:
+    name: "*"
+    state: latest
+
+- name: dnf install packages
+  become: yes
+  dnf:
+    state: present
+    name:
+      - vim
+      - rsync
+      - langpacks-ja
+
+- name: set locale ja_JP.UTF-8
+  become: yes
+  command: localectl set-locale LANG=ja_JP.UTF-8
+
+- name: permissive mode SE Linux
+  become: yes
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: set timezone
+  become: yes
+  timezone:
+    name: Asia/Tokyo
+
+- name: erforcing mode SE Linux
+  become: yes
+  selinux:
+    policy: targeted
+    state: enforcing
+
+- name: set fs.inotify.max_user_watches 524288 in sysctl
+  become: yes
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'
+
+- name: dnf install Development Tools
+  become: yes
+  dnf:
+    state: present
+    name: '@Development Tools'
