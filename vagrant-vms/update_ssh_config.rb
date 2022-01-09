@@ -41,7 +41,7 @@ def print_ssh_config(out, data)
 end
 
 if $0 == __FILE__
-  name = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  name = File.basename(Dir.pwd).gsub('_', '-')
 
   ssh_config = File.expand_path('./.ssh/config', ENV['HOME'])
 
