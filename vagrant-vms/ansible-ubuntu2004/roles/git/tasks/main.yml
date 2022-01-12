@@ -1,0 +1,23 @@
+- name: apt install git
+  become: yes
+  apt:
+    state: present
+    name: git
+
+- name: git config user.name
+  git_config:
+    scope: global
+    name: user.name
+    value: 'IGARASHI Makoto'
+
+- name: git config user.email
+  git_config:
+    scope: global
+    name: user.email
+    value: 'igarashi@kyokyo-u.ac.jp'
+
+- name: git config pull.rebase
+  git_config:
+    scope: global
+    name: pull.rebase
+    value: 'false'

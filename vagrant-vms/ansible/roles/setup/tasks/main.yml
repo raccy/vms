@@ -13,11 +13,11 @@
   lineinfile:
     path: "{{ item }}"
     regexp: '^proxy=.*$'
-    line: "proxy={{ ansible_env.http_proxy }}"
+    line: "proxy={{ ansible_env.HTTP_PROXY }}"
   loop:
     - /etc/yum.conf
     - /etc/dnf/dnf.conf
-  when: ansible_env.http_proxy is defined
+  when: ansible_env.HTTP_PROXY is defined
 
 - name: dnf update
   become: yes

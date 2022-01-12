@@ -1,0 +1,52 @@
+- name: apt update
+  become: yes
+  apt:
+    name: "*"
+    state: latest
+
+- name: apt install packages
+  become: yes
+  apt:
+    state: present
+    name:
+      - vim
+      - rsync
+      - language-pack-ja
+
+- name: set locale ja_JP.UTF-8
+  become: yes
+  command: update-locale LANG=ja_JP.UTF-8 LANGUAGE=ja_JP
+
+- name: set fs.inotify.max_user_watches 524288 in sysctl
+  become: yes
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'
+
+# - name: mkdir snapd.service.d
+#   became: yes
+#   file:
+#     path: /etc/systemd/system/snapd.service.d
+#     state: directory
+#   when: ansible_env.HTTP_PROXY is defined
+
+# - name: set snap proxy
+#   became: yes
+#   template:
+#     src: ../files/snap_proxy.conf.j2
+#     dest: /etc/systemd/system/snapd.service.d/snap_proxy.conf
+#   when: ansible_env.HTTP_PROXY is defined
+
+# - name: reload snapd.service
+#   became: yes
+#   systemd:
+#     name: snapd.service
+#     state: reloaded
+#     daemon_reload: true
+#   when: ansible_env.HTTP_PROXY is defined
+
+- name: apt install build-essential
+  become: yes
+  apt:
+    state: present
+    name: build-essential
