@@ -11,8 +11,8 @@ Vagrant.configure('2') do |config|
 
   config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
 
-  config.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: 'ansible'
-  config.vm.synced_folder '../../ansible', '/vagrant/ansible', type: 'rsync'
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
 
   config.vm.provider 'virtualbox' do |vb|
     vb.cpus = 2
@@ -37,20 +37,11 @@ Vagrant.configure('2') do |config|
     config.proxy.no_proxy = ENV['no_proxy']    if ENV['no_proxy']
   end
 
-  config.vm.provision 'shell', inline: <<~SHELL
-    grep timeout /etc/dnf/dnf.conf || sh -c 'echo timeout=600 >> /etc/dnf/dnf.conf'
-    dnf install -y centos-release-ansible-29
-    dnf check-update
-    dnf install -y ansible
-  SHELL
+  config.vm.provision 'ansible' do |ansible|
+    ansible.playbook = '../../ansible/setup.yml'
+  end
 
-  config.vm.provision 'ansible', type: 'shell', privileged: false, inline: <<~ANSIBLE
-    cd /vagrant/ansible
-    ansible-playbook setup.yml
-  ANSIBLE
-
-  config.vm.provision 'ikamail', type: 'shell', privileged: false, inline: <<~IKAMAIL
-    cd /vagrant
-    ansible-playbook ikamail.yml
-  IKAMAIL
+  config.vm.provision 'ikamail', type: 'ansible' do |ansible|
+    ansible.playbook = 'ikamail.yml'
+  end
 end
