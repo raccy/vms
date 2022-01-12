@@ -1,0 +1,31 @@
+- hosts: all
+  tasks:
+  - name: dnf install redis
+    become: yes
+    dnf:
+      state: present
+      name: redis
+  - name: start redis 
+    become: yes
+    systemd:
+      name: redis.service
+      enabled: yes
+      state: started
+  - name: dnf install sqlite-devel
+    become: yes
+    dnf:
+      state: present
+      name: sqlite-devel
+  - name: git clone yuzakan
+    git:
+      repo: "https://github.com/kue-ipc/yuzakan.git"
+      dest: /home/vagrant/yuzakan
+      version: dev
+  - name: bundle install
+    command:
+      cmd: bundle install
+      chdir: /home/vagrant/yuzakan
+  - name: npm install
+    command:
+      cmd: npm install
+      chdir: /home/vagrant/yuzakan
