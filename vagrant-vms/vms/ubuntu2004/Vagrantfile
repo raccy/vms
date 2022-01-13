@@ -51,7 +51,7 @@ Vagrant.configure('2') do |config|
     SHELL
   end
 
-  # config.vm.provision 'ansible' do |ansible|
-  #   ansible.playbook = '../../ansible-ubuntu2004/setup.yml'
-  # end
+  config.vm.provision 'ansible' do |ansible|
+    ansible.playbook = '../../ansible/ubuntu2004/setup.yml'
+  end
 end

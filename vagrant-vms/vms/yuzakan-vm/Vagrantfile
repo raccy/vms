@@ -38,7 +38,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.provision 'ansible' do |ansible|
-    ansible.playbook = '../../ansible/setup.yml'
+    ansible.playbook = '../../ansible/rocky8/setup.yml'
   end
 
   config.vm.provision 'yuzakan', type: 'ansible' do |ansible|
