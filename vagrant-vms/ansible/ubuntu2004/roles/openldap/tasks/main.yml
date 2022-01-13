@@ -24,7 +24,7 @@
   become: yes
   debconf:
     name: slapd
-    question: "{{ item }}"
+    question: '{{ item }}'
     value: admin_password
     vtype: password
   loop:
@@ -34,21 +34,20 @@
 - name: apt install slapd
   become: yes
   apt:
-    state: present
     name: slapd
+    state: present
 
-- name: start slapd 
+- name: start slapd
   become: yes
   systemd:
     name: slapd.service
     enabled: yes
     state: started
 
-- name: apt install ldap-utils python3-ldap
+- name: apt install pkgs for ldap
   become: yes
   apt:
-    state: present
-    name:
+    pkg:
       - ldap-utils
       - python3-ldap
 
@@ -60,8 +59,8 @@
     state: present
     dn: 'ou=people,dc=example,dc=jp'
     objectClass:
-    - organizationalUnit
-    - top
+      - organizationalUnit
+      - top
 
 - name: ldap entry groups ou
   ldap_entry:
@@ -71,8 +70,8 @@
     state: present
     dn: 'ou=groups,dc=example,dc=jp'
     objectClass:
-    - organizationalUnit
-    - top
+      - organizationalUnit
+      - top
 
 - name: check slapcat
   become: yes
@@ -83,5 +82,17 @@
 - name: ldapadd
   become: yes
   command:
-    cmd: 'ldapadd -x -h localhost -p 389 -D "cn=admin,dc=example,dc=jp" -w admin_password -f /var/tmp/openldap-setup/user_group.ldif'
+    argv:
+      - ldapadd
+      - -x
+      - -h
+      - localhost
+      - -p
+      - '389'
+      - -D
+      - 'cn=admin,dc=example,dc=jp'
+      - -w
+      - admin_password
+      - -f
+      - /var/tmp/openldap-setup/user_group.ldif'
   when: 'not "dn: uid=admin,ou=people,dc=example,dc=jp" in slapcat_result.stdout_lines'

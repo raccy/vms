@@ -1,21 +1,21 @@
 - name: apt install git
   become: yes
   apt:
-    state: present
     name: git
+    state: present
 
 - name: git config user.name
   git_config:
     scope: global
     name: user.name
-    value: "{{ git_config_user_name }}"
+    value: '{{ git_config_user_name }}'
   when: git_config_user_name is defined
 
 - name: git config user.email
   git_config:
     scope: global
     name: user.email
-    value: "{{ git_config_user_email }}"
+    value: '{{ git_config_user_email }}'
   when: git_config_user_email is defined
 
 - name: git config pull.rebase

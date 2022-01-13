@@ -1,16 +1,17 @@
 - name: apt install mariadb
   become: yes
   apt:
-    state: present
     name: mariadb-server
+    state: present
 
-- name: apt install libmariadbclient-dev
+- name: apt install pkg for mariadb
   become: yes
   apt:
-    state: present
-    name: libmariadbclient-dev
+    pkg:
+      - libmariadbclient-dev
+      - python3-pymysql
 
-- name: stop mariadb 
+- name: stop mariadb
   become: yes
   systemd:
     name: mariadb.service
@@ -41,18 +42,12 @@
     regexp: '^collation-server\s.*$'
     line: 'collation-server = utf8mb4_general_ci'
 
-- name: start mariadb 
+- name: start mariadb
   become: yes
   systemd:
     name: mariadb.service
     enabled: yes
     state: started
-
-- name: apt install python mysql
-  become: yes
-  apt:
-    state: present
-    name: python3-pymysql
 
 - name: create admin user
   become: yes

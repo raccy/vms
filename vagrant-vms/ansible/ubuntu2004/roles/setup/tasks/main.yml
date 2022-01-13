@@ -1,15 +1,14 @@
 - name: apt update
   become: yes
   apt:
-    name: "*"
+    name: '*'
     state: latest
     update_cache: yes
 
 - name: apt install packages
   become: yes
   apt:
-    state: present
-    name:
+    pkg:
       - vim
       - rsync
       - language-pack-ja
