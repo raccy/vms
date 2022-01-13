@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: '@nodejs:14'
+    name: "@nodejs{{ ':' ~ nodejs_version if nodejs_version is defined else '' }}"
 
 - name: set PATH for npm in .bashrc
   blockinfile:

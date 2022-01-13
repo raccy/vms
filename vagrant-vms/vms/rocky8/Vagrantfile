@@ -24,6 +24,9 @@ Vagrant.configure('2') do |config|
     hv.maxmemory = 4096
   end
 
+  # do manual 'vagrant vbguest --do install'
+  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+
   # BUG... selinux enforced
   # config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
 
@@ -51,7 +54,7 @@ Vagrant.configure('2') do |config|
     ansible.playbook = '../../ansible/rocky8/setup.yml'
     vars = {
       ruby_version: '2.7',
-      node_version: '14',
+      nodejs_version: '14',
       mariadb_version: '10.5',
     }
 
