@@ -4,24 +4,20 @@
     state: present
     classic: yes
     name: node
+    channel: "{{ nodejs_version ~ '/' if nodejs_version is defined else '' }}stable"
 
-# - name: set PATH for npm in .bashrc
-#   blockinfile:
-#     path: /home/vagrant/.bashrc
-#     marker: "# {mark} ANSIBLE MANAGED BLOCK nodejs"
-#     block: |
-#       if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
-#       then
-#           PATH="$HOME/.npm/bin:$PATH"
-#       fi
-#       export PATH
+- name: set PATH for npm in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK nodejs"
+    block: |
+      if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
+      then
+          PATH="$HOME/.npm/bin:$PATH"
+      fi
+      export PATH
 
-# - name: copy .npmrc
-#   copy:
-#     src: ../files/.npmrc
-#     dest: /home/vagrant/.npmrc
-
-# - name: install yarn
-#   npm:
-#     name: yarn
-#     global: yes
+- name: copy .npmrc
+  copy:
+    src: ../files/.npmrc
+    dest: /home/vagrant/.npmrc
