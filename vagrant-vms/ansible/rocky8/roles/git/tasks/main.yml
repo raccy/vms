@@ -8,17 +8,18 @@
   git_config:
     scope: global
     name: user.name
-    value: 'IGARASHI Makoto'
+    value: "{{ git_config_user_name }}"
+  when: git_config_user_name is defined
 
 - name: git config user.email
   git_config:
     scope: global
     name: user.email
-    value: 'igarashi@kyokyo-u.ac.jp'
+    value: "{{ git_config_user_email }}"
+  when: git_config_user_email is defined
 
 - name: git config pull.rebase
   git_config:
     scope: global
     name: pull.rebase
     value: 'false'
-

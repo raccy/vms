@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: '@mariadb:10.5/server'
+    name: "@mariadb{{ ':' ~ mariadb_version if mariadb_version is defined else '' }}/server"
 
 - name: dnf install mariadb-devel
   become: yes

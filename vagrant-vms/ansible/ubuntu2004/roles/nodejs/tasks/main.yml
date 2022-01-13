@@ -1,4 +1,5 @@
 - name: snap install node
+  become: yes
   snap:
     state: present
     classic: yes

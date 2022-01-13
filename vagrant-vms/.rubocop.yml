@@ -16,5 +16,11 @@ AllCops:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
 Style/Documentation:
   Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma

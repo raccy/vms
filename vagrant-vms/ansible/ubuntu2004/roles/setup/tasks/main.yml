@@ -23,28 +23,6 @@
     name: fs.inotify.max_user_watches
     value: '524288'
 
-# - name: mkdir snapd.service.d
-#   became: yes
-#   file:
-#     path: /etc/systemd/system/snapd.service.d
-#     state: directory
-#   when: ansible_env.HTTP_PROXY is defined
-
-# - name: set snap proxy
-#   became: yes
-#   template:
-#     src: ../files/snap_proxy.conf.j2
-#     dest: /etc/systemd/system/snapd.service.d/snap_proxy.conf
-#   when: ansible_env.HTTP_PROXY is defined
-
-# - name: reload snapd.service
-#   became: yes
-#   systemd:
-#     name: snapd.service
-#     state: reloaded
-#     daemon_reload: true
-#   when: ansible_env.HTTP_PROXY is defined
-
 - name: apt install build-essential
   become: yes
   apt:

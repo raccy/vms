@@ -10,6 +10,37 @@
     state: present
     name: libmariadbclient-dev
 
+- name: stop mariadb 
+  become: yes
+  systemd:
+    name: mariadb.service
+    enabled: yes
+    state: stopped
+
+- name: lineinfile 50-client.cnf default-character-set
+  become: yes
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-client.cnf
+    insertafter: '\[client\]'
+    regexp: '^default-character-set\s.*$'
+    line: 'default-character-set = utf8mb4'
+
+- name: lineinfile 50-server.cnf character-set-server
+  become: yes
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    insertafter: '\[server\]'
+    regexp: '^character-set-server\s.*$'
+    line: 'character-set-server = utf8mb4'
+
+- name: lineinfile 50-server.cnf cllation-server
+  become: yes
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    insertafter: '\[server\]'
+    regexp: '^collation-server\s.*$'
+    line: 'collation-server = utf8mb4_general_ci'
+
 - name: start mariadb 
   become: yes
   systemd:
