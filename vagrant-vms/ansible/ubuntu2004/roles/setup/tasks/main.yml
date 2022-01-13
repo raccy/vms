@@ -3,6 +3,7 @@
   apt:
     name: "*"
     state: latest
+    update_cache: yes
 
 - name: apt install packages
   become: yes
