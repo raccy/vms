@@ -53,46 +53,44 @@
 
 - name: ldap entry people ou
   ldap_entry:
-    server_uri: 'ldap://localhost'
-    bind_dn: 'cn=admin,dc=example,dc=jp'
-    bind_pw: 'admin_password'
     state: present
     dn: 'ou=people,dc=example,dc=jp'
     objectClass:
       - organizationalUnit
       - top
+  args: '{{ ldap_auth }}'
 
 - name: ldap entry groups ou
   ldap_entry:
-    server_uri: 'ldap://localhost'
-    bind_dn: 'cn=admin,dc=example,dc=jp'
-    bind_pw: 'admin_password'
     state: present
     dn: 'ou=groups,dc=example,dc=jp'
     objectClass:
       - organizationalUnit
       - top
+  args: '{{ ldap_auth }}'
 
-- name: check slapcat
-  become: yes
-  command:
-    cmd: slapcat
-  register: slapcat_result
+- import_tasks: user_group.yml
 
-- name: ldapadd
-  become: yes
-  command:
-    argv:
-      - ldapadd
-      - -x
-      - -h
-      - localhost
-      - -p
-      - '389'
-      - -D
-      - 'cn=admin,dc=example,dc=jp'
-      - -w
-      - admin_password
-      - -f
-      - /var/tmp/openldap-setup/user_group.ldif'
-  when: 'not "dn: uid=admin,ou=people,dc=example,dc=jp" in slapcat_result.stdout_lines'
+# - name: check slapcat
+#   become: yes
+#   command:
+#     cmd: slapcat
+#   register: slapcat_result
+
+# - name: ldapadd
+#   become: yes
+#   command:
+#     argv:
+#       - ldapadd
+#       - -x
+#       - -h
+#       - localhost
+#       - -p
+#       - '389'
+#       - -D
+#       - 'cn=admin,dc=example,dc=jp'
+#       - -w
+#       - admin_password
+#       - -f
+#       - /var/tmp/openldap-setup/user_group.ldif'
+#   when: 'not "dn: uid=admin,ou=people,dc=example,dc=jp" in slapcat_result.stdout_lines'

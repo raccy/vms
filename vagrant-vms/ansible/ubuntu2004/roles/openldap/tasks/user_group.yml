@@ -1,0 +1,205 @@
+- name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=admin,ou=groups,dc=example,dc=jp
+    objectClass:
+      - posixGroup
+      - top
+    attributes:
+      gidNumber: 1
+      description: administrator
+      description;lang-ja: 管理者
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry cn=staff,ou=groups,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=staff,ou=groups,dc=example,dc=jp
+    objectClass:
+      - posixGroup
+      - top
+    attributes:
+      gidNumber: 10
+      description: staff
+      description;lang-ja: スタッフ
+      memberUid: user01
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry cn=user,ou=groups,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=user,ou=groups,dc=example,dc=jp
+    objectClass:
+      - posixGroup
+      - top
+    attributes:
+      gidNumber: 100
+      description: general user
+      description;lang-ja: 一般ユーザー
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry uid=admin,ou=people,dc=example,dc=jp
+  ldap_entry:
+    dn: uid=admin,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: admin
+      mail: admin@example.jp
+      userPassword: pass+admin42
+      uidNumber: 1
+      gidNumber: 1
+      homeDirectory: /home/admin
+      displayName: Kanri Ichiro
+      displayName;lang-ja: 管理　一郎
+      sn: Kanri
+      sn;lang-ja: 管理
+      givenName: Ichiro
+      givenName;lang-ja: 一郎
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry uid=user01,ou=people,dc=example,dc=jp
+  ldap_entry:
+    dn: uid=user01,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user01
+      mail: user01@example.jp
+      userPassword: pass0001
+      uidNumber: 1001
+      gidNumber: 100
+      homeDirectory: /home/user01
+      displayName: Yuza Taro
+      displayName;lang-ja: 湯座　太郎
+      sn: Yuza
+      sn;lang-ja: 湯座
+      givenName: Taro
+      givenName;lang-ja: 太郎
+
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry uid=user02,ou=people,dc=example,dc=jp
+  ldap_entry:
+    dn: uid=user02,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user02
+      mail: user02@example.jp
+      userPassword: pass0002
+      uidNumber: 1002
+      gidNumber: 10
+      homeDirectory: /home/user02
+      displayName: Yuza Jiro
+      displayName;lang-ja: 湯座　次郎
+      sn: Yuza
+      sn;lang-ja: 湯座
+      givenName: Jiro
+      givenName;lang-ja: 次郎
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry uid=user03,ou=people,dc=example,dc=jp
+  ldap_entry:
+    dn: uid=user03,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user03
+      mail: user03@example.jp
+      userPassword: pass0003
+      uidNumber: 1003
+      gidNumber: 100
+      homeDirectory: /home/user03
+      displayName: Yuza Hanako
+      displayName;lang-ja: 湯座　花子
+      sn: Yuza
+      sn;lang-ja: 湯座
+      givenName: Hanako
+      givenName;lang-ja: 花子
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry uid=user04,ou=people,dc=example,dc=jp
+  ldap_entry:
+    dn: uid=user04,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user04
+      mail: user04@example.jp
+      userPassword: pass0004
+      uidNumber: 1004
+      gidNumber: 100
+      homeDirectory: /home/user04
+      displayName: Nanashi Gonbee
+      displayName;lang-ja: 名無し　権兵衛
+      sn: Nanashi
+      sn;lang-ja: 名無し
+      givenName: Gonbee
+      givenName;lang-ja: 権兵衛
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry
+  ldap_entry:
+    dn: uid=user05,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user05
+      mail: user05@example.jp
+      userPassword: pass0005
+      uidNumber: 1005
+      gidNumber: 100
+      homeDirectory: /home/user05
+      displayName: Suzuki Tsuyoshi
+      displayName;lang-ja: 鈴木　剛
+      sn: Suzuki
+      sn;lang-ja: 鈴木
+      givenName: Tsuyoshi
+      givenName;lang-ja: 剛
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry
+  ldap_entry:
+    dn: uid=user06,ou=people,dc=example,dc=jp
+    objectClass:
+      - posixAccount
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+    attributes:
+      cn: user06
+      mail: user06@example.jp
+      userPassword: pass0006
+      uidNumber: 1006
+      gidNumber: 100
+      homeDirectory: /home/user06
+      displayName: Suzuki Yoko
+      displayName;lang-ja: 鈴木　陽子
+      sn: Szuki
+      sn;lang-ja: 鈴木
+      givenName: Yoko
+      givenName;lang-ja: 陽子
+  args: '{{ ldap_auth }}'
