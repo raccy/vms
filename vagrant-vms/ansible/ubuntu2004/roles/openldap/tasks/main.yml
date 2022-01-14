@@ -1,9 +1,3 @@
-- name: copy OpenLDAP setup files
-  become: yes
-  copy:
-    src: ../files/
-    dest: /var/tmp/openldap-setup/
-
 - name: debconf shared/organization
   become: yes
   debconf:

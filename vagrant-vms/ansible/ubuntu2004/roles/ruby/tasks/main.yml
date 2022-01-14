@@ -18,9 +18,11 @@
     path: /home/vagrant/.bashrc
     marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
     block: |
-      if ! [[ "$PATH" =~ "$HOME/.gem/bin:" ]]
+      GEM_HOME="$HOME/.gem"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
       then
-          PATH="$HOME/.gem/bin:$PATH"
+          PATH="$GEM_HOME/bin:$PATH"
       fi
       export PATH
 
@@ -33,6 +35,7 @@
   gem:
     name: '{{ item }}'
     state: present
+    user_install: no
   loop:
     - rubocop
     - yard
