@@ -1,8 +1,8 @@
 - hosts: all
   roles:
-    # - setup
-    # - git
+    - setup
+    - git
     - ruby
-    # - nodejs
-    # - mariadb
-    # - openldap
+    - nodejs
+    - mariadb
+    - openldap

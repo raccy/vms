@@ -1,0 +1,8 @@
+- name: install freeradius
+  become: yes
+  apt:
+    pkg:
+      - kea-admin
+      - kea-dhcp4-server
+      - kea-dhcp6-server
+      - kea-ctrl-agent

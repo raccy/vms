@@ -1,0 +1,20 @@
+- name: git clone nodokan
+  git:
+    repo: "https://github.com/kue-ipc/nodokan.git"
+    dest: /home/vagrant/nodokan
+    version: dev
+
+- name: bundle install
+  command:
+    cmd: bundle install
+    chdir: /home/vagrant/nodokan
+
+- name: rails yarn:install
+  command:
+    cmd: bin/rails yarn:install
+    chdir: /home/vagrant/nodokan
+
+- name: rails db:setup
+  command:
+    cmd: bin/rails db:setup
+    chdir: /home/vagrant/nodokan

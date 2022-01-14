@@ -1,0 +1,7 @@
+- name: install freeradius
+  become: yes
+  apt:
+    pkg:
+      - freeradius
+      - freeradius-mysql
+      - freeradius-ldap
