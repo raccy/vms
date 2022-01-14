@@ -29,3 +29,20 @@
     command:
       cmd: npm install
       chdir: /home/vagrant/yuzakan
+
+  - name: bundle exec rake build
+    command:
+      cmd: bundle exec rake build
+      chdir: /home/vagrant/yuzakan
+
+  - name: bundle exec hanami db prepare
+    command:
+      cmd: bundle exec hanami db prepare
+      chdir: /home/vagrant/yuzakan
+
+  - name: bundle exec hanami db prepare
+    command:
+      cmd: bundle exec hanami db prepare
+      chdir: /home/vagrant/yuzakan
+    enironment:
+      HANAMI_ENV: test
