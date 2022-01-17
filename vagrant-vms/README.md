@@ -3,6 +3,10 @@ vagrantのvm集
 
 WSL上のvagrantを使うことを前提に、Win側と連携するように工夫する予定。
 
+## Issues
+
+- [ ] snapのrubyでは問題が起きるので、Ubuntuはrbenvにするしかないと思われる。
+
 ## vagrant plugin
 
 プラグインは必要であれば。
