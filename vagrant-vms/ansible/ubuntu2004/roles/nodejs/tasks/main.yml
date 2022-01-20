@@ -1,30 +1,10 @@
-- name: apt remove node
-  become: yes
-  apt:
-    name: ruby
-    state: absent
-    autoremove: yes
+- import_tasks: nodejs_apt.yml
+  when: nodejs_type is not defined or nodejs_type == 'apt'
 
-- name: snap install node
-  become: yes
-  snap:
-    name: node
-    channel: "{{ nodejs_version ~ '/' if nodejs_version is defined else '' }}stable"
-    state: present
-    classic: yes
+- import_tasks: nodejs_nodesource.yml
+  when: nodejs_type is defined and nodejs_type == 'nodesource'
 
-- name: set PATH for npm in .bashrc
-  blockinfile:
-    path: /home/vagrant/.bashrc
-    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
-    block: |
-      if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
-      then
-          PATH="$HOME/.npm/bin:$PATH"
-      fi
-      export PATH
+- import_tasks: nodejs_snap.yml
+  when: nodejs_type is defined and nodejs_type == 'snap'
 
-- name: copy .npmrc
-  copy:
-    src: ../files/.npmrc
-    dest: /home/vagrant/.npmrc
+- import_tasks: npm.yml
