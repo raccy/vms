@@ -6,15 +6,15 @@
 
 - name: bundle install
   command:
-    cmd: bundle install
+    cmd: bash -lic "bundle install"
     chdir: /home/vagrant/nodokan
 
 - name: rails yarn:install
   command:
-    cmd: bin/rails yarn:install
+    cmd: bash -lic "rails yarn:install"
     chdir: /home/vagrant/nodokan
 
 - name: rails db:setup
   command:
-    cmd: bin/rails db:setup
+    cmd: bash -lic "rails db:setup"
     chdir: /home/vagrant/nodokan
