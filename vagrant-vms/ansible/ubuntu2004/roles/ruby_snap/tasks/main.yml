@@ -1,28 +1,26 @@
-- name: apt install ruby
+- name: apt remove ruby
   become: yes
   apt:
     name: ruby
-    state: present
+    state: absent
+    autoremove: yes
 
-- name: apt install ruby packages
+- name: snap install ruby
   become: yes
-  apt:
-    pkg:
-      - ruby-dev
-      - ruby-bundler
+  snap:
+    name: ruby
+    channel: "{{ ruby_version ~ '/' if ruby_version is defined else '' }}stable"
+    state: present
+    classic: yes
 
-# apt ruby gem information
+# snap ruby gem information
 # RubyGems Environment:
-#   - INSTALLATION DIRECTORY: /var/lib/gems/2.7.0
-#   - USER INSTALLATION DIRECTORY: /home/vagrant/.gem/ruby/2.7.0
-#   - EXECUTABLE DIRECTORY: /usr/local/bin
+#   - INSTALLATION DIRECTORY: /home/vagrant/.gem
+#   - USER INSTALLATION DIRECTORY: /home/vagrant/.gem/ruby/#{x.y.0}
+#   - EXECUTABLE DIRECTORY: /home/vagrant/.gem/bin
 #   - GEM PATHS:
-#      - /var/lib/gems/2.7.0
-#      - /home/vagrant/.gem/ruby/2.7.0
-#      - /usr/lib/ruby/gems/2.7.0
-#      - /usr/share/rubygems-integration/2.7.0
-#      - /usr/share/rubygems-integration/all
-#      - /usr/lib/x86_64-linux-gnu/rubygems-integration/2.7.0
+#      - /home/vagrant/.gem
+#      - /snap/ruby/#{n}/lib/ruby/gems/#{x.y.0}
 
 - name: set PATH in .bashrc
   blockinfile:
