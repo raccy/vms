@@ -1,5 +1,5 @@
 - import_tasks: ruby_apt.yml
-  when: ruby_type is defined and ruby_type == 'apt'
+  when: ruby_type is not defined or ruby_type == 'apt'
 
 - import_tasks: ruby_rbenv.yml
   when: ruby_type is defined and ruby_type == 'rbenv'
@@ -8,4 +8,3 @@
   when: ruby_type is defined and ruby_type == 'snap'
 
 - import_tasks: gem.yml
-  when: ruby_type is defined

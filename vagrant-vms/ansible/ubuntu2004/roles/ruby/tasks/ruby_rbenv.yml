@@ -33,3 +33,11 @@
     cmd: 'rbenv global {{ ruby_version }}'
     executable: /bin/bash
   when: ruby_version is defined
+
+- name: apt install ruby packages for system ruby
+  become: yes
+  apt:
+    pkg:
+      - ruby-dev
+      - ruby-bundler
+  when: ruby_version is not defined

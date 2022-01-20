@@ -13,24 +13,15 @@
     state: present
     classic: yes
 
-# snap ruby gem information
-# RubyGems Environment:
-#   - INSTALLATION DIRECTORY: /home/vagrant/.gem
-#   - USER INSTALLATION DIRECTORY: /home/vagrant/.gem/ruby/#{x.y.0}
-#   - EXECUTABLE DIRECTORY: /home/vagrant/.gem/bin
-#   - GEM PATHS:
-#      - /home/vagrant/.gem
-#      - /snap/ruby/#{n}/lib/ruby/gems/#{x.y.0}
-
-# - name: set PATH in .bashrc
-#   blockinfile:
-#     path: /home/vagrant/.bashrc
-#     marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
-#     block: |
-#       GEM_HOME="$HOME/.gem"
-#       export GEM_HOME
-#       if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
-#       then
-#           PATH="$GEM_HOME/bin:$PATH"
-#       fi
-#       export PATH
+- name: set PATH in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
+    block: |
+      GEM_HOME="$HOME/.gem"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
+      then
+          PATH="$GEM_HOME/bin:$PATH"
+      fi
+      export PATH

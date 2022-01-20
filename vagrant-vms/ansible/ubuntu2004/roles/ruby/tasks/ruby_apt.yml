@@ -11,28 +11,15 @@
       - ruby-dev
       - ruby-bundler
 
-# apt ruby gem information
-# RubyGems Environment:
-#   - INSTALLATION DIRECTORY: /var/lib/gems/2.7.0
-#   - USER INSTALLATION DIRECTORY: /home/vagrant/.gem/ruby/2.7.0
-#   - EXECUTABLE DIRECTORY: /usr/local/bin
-#   - GEM PATHS:
-#      - /var/lib/gems/2.7.0
-#      - /home/vagrant/.gem/ruby/2.7.0
-#      - /usr/lib/ruby/gems/2.7.0
-#      - /usr/share/rubygems-integration/2.7.0
-#      - /usr/share/rubygems-integration/all
-#      - /usr/lib/x86_64-linux-gnu/rubygems-integration/2.7.0
-
-# - name: set PATH in .bashrc
-#   blockinfile:
-#     path: /home/vagrant/.bashrc
-#     marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
-#     block: |
-#       GEM_HOME="$HOME/.gem"
-#       export GEM_HOME
-#       if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
-#       then
-#           PATH="$GEM_HOME/bin:$PATH"
-#       fi
-#       export PATH
+- name: set PATH in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
+    block: |
+      GEM_HOME="$HOME/.gem"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
+      then
+          PATH="$GEM_HOME/bin:$PATH"
+      fi
+      export PATH

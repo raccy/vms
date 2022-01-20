@@ -2,7 +2,7 @@
   roles:
     - setup
     - git
-    - ruby
     - nodejs
     - mariadb
     - openldap
+    - ruby
