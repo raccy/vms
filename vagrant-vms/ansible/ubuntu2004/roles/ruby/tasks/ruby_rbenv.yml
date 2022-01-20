@@ -33,19 +33,3 @@
     cmd: 'rbenv global {{ ruby_version }}'
     executable: /bin/bash
   when: ruby_version is defined
-
-- name: copy .gemrc
-  copy:
-    src: ../files/.gemrc
-    dest: /home/vagrant/.gemrc
-
-- name: gem install packages
-  gem:
-    name: '{{ item }}'
-    state: present
-    user_install: no
-  loop:
-    - rubocop
-    - yard
-    - solargraph
-  when: ruby_version is defined

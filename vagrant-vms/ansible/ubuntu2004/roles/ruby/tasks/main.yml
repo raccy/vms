@@ -1,53 +1,11 @@
-- name: apt install ruby
-  become: yes
-  apt:
-    name: ruby
-    state: present
+- import_tasks: ruby_apt.yml
+  when: ruby_type is defined and ruby_type == 'apt'
 
-- name: apt install ruby packages
-  become: yes
-  apt:
-    pkg:
-      - ruby-dev
-      - ruby-bundler
+- import_tasks: ruby_rbenv.yml
+  when: ruby_type is defined and ruby_type == 'rbenv'
 
-# apt ruby gem information
-# RubyGems Environment:
-#   - INSTALLATION DIRECTORY: /var/lib/gems/2.7.0
-#   - USER INSTALLATION DIRECTORY: /home/vagrant/.gem/ruby/2.7.0
-#   - EXECUTABLE DIRECTORY: /usr/local/bin
-#   - GEM PATHS:
-#      - /var/lib/gems/2.7.0
-#      - /home/vagrant/.gem/ruby/2.7.0
-#      - /usr/lib/ruby/gems/2.7.0
-#      - /usr/share/rubygems-integration/2.7.0
-#      - /usr/share/rubygems-integration/all
-#      - /usr/lib/x86_64-linux-gnu/rubygems-integration/2.7.0
+- import_tasks: ruby_snap.yml
+  when: ruby_type is defined and ruby_type == 'snap'
 
-- name: set PATH in .bashrc
-  blockinfile:
-    path: /home/vagrant/.bashrc
-    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
-    block: |
-      GEM_HOME="$HOME/.gem"
-      export GEM_HOME
-      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
-      then
-          PATH="$GEM_HOME/bin:$PATH"
-      fi
-      export PATH
-
-- name: copy .gemrc
-  copy:
-    src: ../files/.gemrc
-    dest: /home/vagrant/.gemrc
-
-- name: gem install packages
-  gem:
-    name: '{{ item }}'
-    state: present
-    user_install: no
-  loop:
-    - rubocop
-    - yard
-    - solargraph
+- import_tasks: gem.yml
+  when: ruby_type is defined

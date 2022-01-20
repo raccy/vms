@@ -1,0 +1,25 @@
+- name: copy .gemrc
+  copy:
+    src: ../files/.gemrc
+    dest: /home/vagrant/.gemrc
+
+- name: gem install packages
+  gem:
+    name: '{{ item }}'
+    state: present
+  loop:
+    - rubocop
+    - yard
+    - solargraph
+  when: ruby_type != 'rbenv'
+
+- name: gem install packages
+  gem:
+    name: '{{ item }}'
+    state: present
+    executable: /home/vagrant/.rbenv/shims/gem
+  loop:
+    - rubocop
+    - yard
+    - solargraph
+  when: ruby_type == 'rbenv'

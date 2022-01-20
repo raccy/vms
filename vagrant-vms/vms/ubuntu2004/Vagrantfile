@@ -65,7 +65,8 @@ Vagrant.configure('2') do |config|
     ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
     ansible.playbook = '../../ansible/ubuntu2004/setup.yml'
     vars = {
-      ruby_version: '2.7',
+      ruby_version: '2.7.5',
+      ruby_type: 'rbenv',
       nodejs_version: '14',
     }
 
