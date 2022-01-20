@@ -156,7 +156,7 @@
       givenName;lang-ja: 権兵衛
   args: '{{ ldap_auth }}'
 
-- name: ldap entry
+- name: ldap entry uid=user05,ou=people,dc=example,dc=jp
   ldap_entry:
     dn: uid=user05,ou=people,dc=example,dc=jp
     objectClass:
@@ -180,7 +180,7 @@
       givenName;lang-ja: 剛
   args: '{{ ldap_auth }}'
 
-- name: ldap entry
+- name: ldap entry uid=user06,ou=people,dc=example,dc=jp
   ldap_entry:
     dn: uid=user06,ou=people,dc=example,dc=jp
     objectClass:
