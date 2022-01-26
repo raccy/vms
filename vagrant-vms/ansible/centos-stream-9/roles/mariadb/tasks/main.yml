@@ -1,14 +1,14 @@
+- name: dnf install mariadb-server
+  become: yes
+  dnf:
+    state: present
+    name: mariadb-server
+
 - name: dnf install mariadb
   become: yes
   dnf:
     state: present
-    name: "@mariadb{{ ':' ~ mariadb_version if mariadb_version is defined else '' }}/server"
-
-- name: dnf install mariadb-devel
-  become: yes
-  dnf:
-    state: present
-    name: mariadb-devel
+    name: mariadb
 
 - name: stop mariadb
   become: yes

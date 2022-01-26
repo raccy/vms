@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: "@nodejs{{ ':' ~ nodejs_version if nodejs_version is defined else '' }}"
+    name: nodejs
 
 - name: set PATH for npm in .bashrc
   blockinfile:
@@ -19,8 +19,3 @@
   copy:
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
-
-- name: install yarn
-  npm:
-    name: yarn
-    global: yes

@@ -33,6 +33,7 @@
       - vim
       - rsync
       - langpacks-ja
+      - glibc-langpack-ja
 
 - name: set locale ja_JP.UTF-8
   become: yes

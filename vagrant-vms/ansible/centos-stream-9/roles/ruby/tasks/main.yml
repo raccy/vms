@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: "@ruby{{ ':' ~ ruby_version if ruby_version is defined else '' }}"
+    name: ruby
 
 - name: dnf install ruby packages
   become: yes
