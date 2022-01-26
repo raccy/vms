@@ -19,8 +19,3 @@
   copy:
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
-
-- name: install yarn
-  npm:
-    name: yarn
-    global: yes
