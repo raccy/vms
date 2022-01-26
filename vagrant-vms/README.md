@@ -45,3 +45,7 @@ vagrant plugin install virtualbox_WSL2
 ```
 
 ファイアウォールはパブリックについても許可しておくこと。
+
+## その他のメモ
+
+generic/rocky8のVirtualBoxについて`PIT: mode=2 ...`から`PIT: mode=0 ...`に切り替わるのに数分かかる場合がある。原因は不明。
