@@ -1,8 +1,13 @@
+- name: dnf module enable 389 Directory Server
+  become: yes
+  command:
+    cmd: dnf module enable -y 389-ds
+
 - name: dnf install 389 Directory Server
   become: yes
   dnf:
     state: present
-    name: '@389-directory-server:stable/default'
+    name: 389-ds-base
 
 - name: copy 389 DS setup files
   become: yes

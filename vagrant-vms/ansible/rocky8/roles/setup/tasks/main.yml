@@ -19,6 +19,20 @@
     - /etc/dnf/dnf.conf
   when: http_proxy is defined
 
+- name: def remove haveged
+  become: yes
+  dnf:
+    name: haveged
+    state: absent
+    autoremove: yes
+
+- name: def remove epel-relese
+  become: yes
+  dnf:
+    name: epel-release
+    state: absent
+    autoremove: yes
+
 - name: dnf update
   become: yes
   dnf:
