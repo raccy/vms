@@ -1,0 +1,24 @@
+- name: dnf module enable 389 Directory Server
+  become: yes
+  command:
+    cmd: dnf module enable -y 389-ds
+
+- name: dnf install 389 Directory Server
+  become: yes
+  dnf:
+    state: present
+    name: 389-ds-base
+
+- name: copy 389 DS setup files
+  become: yes
+  copy:
+    src: ../files/
+    dest: /var/tmp/389ds-setup/
+
+- name: dscreate
+  become: yes
+  command:
+    cmd: dscreate from-file /var/tmp/389ds-setup/389ds.inf
+    creates: /etc/dirsrv/slapd-localhost
+
+- import_tasks: user_group.yml
