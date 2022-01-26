@@ -1,9 +1,3 @@
-- name: dnf install sqlite-devel
-  become: yes
-  dnf:
-    state: present
-    name: sqlite-devel
-
 - name: git clone yuzakan
   git:
     repo: "https://github.com/kue-ipc/yuzakan.git"
