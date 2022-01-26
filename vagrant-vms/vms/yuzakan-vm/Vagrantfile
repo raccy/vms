@@ -53,10 +53,12 @@ Vagrant.configure('2') do |config|
   config.vm.provision 'ansible' do |ansible|
     ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
     ansible.playbook = '../../ansible/rocky8/setup.yml'
+    # https://access.redhat.com/support/policy/updates/rhel8-app-streams-life-cycle
     vars = {
-      ruby_version: '2.7',
-      nodejs_version: '14',
-      mariadb_version: '10.5',
+      ruby_version: '2.7',     # 2023-05
+      nodejs_version: '16',    # 2024-04
+      mariadb_version: '10.5', # 2026-05
+      redis_version: '6',      # 2024-05
     }
 
     proxy_protocols.each_value { |env| vars[env[:name]] = env[:value] } if proxy_enable

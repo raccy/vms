@@ -1,0 +1,11 @@
+- name: dnf install centos-release-ansible-29
+  become: yes
+  dnf:
+    state: present
+    name: centos-release-ansible-29
+
+- name: dnf install ansible
+  become: yes
+  dnf:
+    state: present
+    name: ansible

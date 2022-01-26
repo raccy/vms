@@ -1,0 +1,38 @@
+- name: dnf install sqlite-devel
+  become: yes
+  dnf:
+    state: present
+    name: sqlite-devel
+
+- name: git clone yuzakan
+  git:
+    repo: "https://github.com/kue-ipc/yuzakan.git"
+    dest: /home/vagrant/yuzakan
+    version: dev
+
+- name: bundle install
+  command:
+    cmd: bundle install
+    chdir: /home/vagrant/yuzakan
+
+- name: npm install
+  command:
+    cmd: npm install
+    chdir: /home/vagrant/yuzakan
+
+- name: bundle exec rake build
+  command:
+    cmd: bundle exec rake build
+    chdir: /home/vagrant/yuzakan
+
+- name: bundle exec hanami db prepare
+  command:
+    cmd: bundle exec hanami db prepare
+    chdir: /home/vagrant/yuzakan
+
+- name: bundle exec hanami db prepare for test
+  command:
+    cmd: bundle exec hanami db prepare
+    chdir: /home/vagrant/yuzakan
+  environment:
+    HANAMI_ENV: test
