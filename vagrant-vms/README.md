@@ -49,3 +49,19 @@ vagrant plugin install virtualbox_WSL2
 ## その他のメモ
 
 generic/rocky8のVirtualBoxについて`PIT: mode=2 ...`から`PIT: mode=0 ...`に切り替わるのに数分かかる場合がある。原因は不明。
+
+boxの違い
+
+- generic: vboxでは遅いときがある。hyper-vあり。SE Linuxは`enforecing`。
+- eurolinux-vagrant: SE Linuxは`permissive`。
+- boxomatic: SE Linuxが`disabled`。
+
+下は書きかけ
+
+|accont   |R8 |R9 |U20|U22|CS9|SEL|
+|---------|---|---|---|---|---|---|
+|generic  |〇 |✕ |〇 |✕ |✕ |e  |
+|eurolinux|
+|boxomatic|
+|centos   |
+|ubuntu   |
