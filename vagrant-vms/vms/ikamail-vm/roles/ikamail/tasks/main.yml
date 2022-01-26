@@ -1,0 +1,20 @@
+- name: git clone ikamail
+  git:
+    repo: "https://github.com/kue-ipc/ikamail.git"
+    dest: /home/vagrant/ikamail
+    version: dev
+
+- name: bundle install
+  command:
+    cmd: bundle install
+    chdir: /home/vagrant/ikamail
+
+- name: rails yarn:install
+  command:
+    cmd: bin/rails yarn:install
+    chdir: /home/vagrant/ikamail
+
+- name: rails db:setup
+  command:
+    cmd: bin/rails db:setup
+    chdir: /home/vagrant/ikamail
