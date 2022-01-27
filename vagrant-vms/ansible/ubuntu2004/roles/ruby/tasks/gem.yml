@@ -12,6 +12,7 @@
     - rubocop
     - yard
     - solargraph
+    - slim_lint
   environment:
     GEM_HOME: /home/vagrant/.gem
   when: ruby_type is not defined or ruby_type != 'rbenv'
@@ -26,4 +27,5 @@
     - rubocop
     - yard
     - solargraph
+    - slim_lint
   when: ruby_type is defined and ruby_type == 'rbenv'

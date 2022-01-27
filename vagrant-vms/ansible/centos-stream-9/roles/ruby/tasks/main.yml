@@ -38,3 +38,4 @@
     - rubocop
     - yard
     - solargraph
+    - slim_lint
