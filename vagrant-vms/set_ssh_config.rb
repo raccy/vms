@@ -1,13 +1,13 @@
 #!/bin/env ruby
 
-# version 1.1.20220114
+# version 1.2.20220210
 
 if $0 == __FILE__
   Dir.chdir(ARGV[0]) if ARGV[0]
   name = File.basename(Dir.pwd).gsub('_', '-')
   ssh_config_file = File.join(ENV['HOME'], '.ssh', 'hosts', name)
   vagrant_ssh_config = `vagrant ssh-config --host #{name}`
-  IO.write(ssh_config_file, vagrant_ssh_config)
+  File.write(ssh_config_file, vagrant_ssh_config)
 
   # WSL only
   if RUBY_PLATFORM =~ /linux/i && `uname -r` =~ /microsoft/i
@@ -21,7 +21,7 @@ if $0 == __FILE__
     win_vagrant_ssh_config = vagrant_ssh_config.gsub(%r{(?<=\s)/mnt/[a-z]/.*}) do |path|
       `wslpath -m '#{path}'`.chomp
     end
-    IO.write(win_ssh_config_file, win_vagrant_ssh_config)
+    File.write(win_ssh_config_file, win_vagrant_ssh_config)
 
     if win_vagrant_ssh_config =~ /^\s+IdentityFile\s+(\S+)\s*$/
       identity_file = $1

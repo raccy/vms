@@ -24,3 +24,12 @@ Style/Documentation:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
