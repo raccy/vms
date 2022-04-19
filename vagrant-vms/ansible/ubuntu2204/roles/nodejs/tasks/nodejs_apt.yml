@@ -1,0 +1,12 @@
+- name: apt install nodejs
+  become: yes
+  apt:
+    name: nodejs
+    state: present
+
+- name: apt install nodejs packages
+  become: yes
+  apt:
+    pkg:
+      - npm
+      - yarnpkg

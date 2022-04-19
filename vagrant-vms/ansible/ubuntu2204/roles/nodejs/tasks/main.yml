@@ -1,0 +1,10 @@
+- import_tasks: nodejs_apt.yml
+  when: nodejs_type is not defined or nodejs_type == 'apt'
+
+- import_tasks: nodejs_nodesource.yml
+  when: nodejs_type is defined and nodejs_type == 'nodesource'
+
+- import_tasks: nodejs_snap.yml
+  when: nodejs_type is defined and nodejs_type == 'snap'
+
+- import_tasks: npm.yml
