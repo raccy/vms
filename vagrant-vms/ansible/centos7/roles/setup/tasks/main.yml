@@ -1,0 +1,65 @@
+- name: lineinfile timeout=600
+  become: yes
+  lineinfile:
+    path: "{{ item }}"
+    regexp: '^timeout=.*$'
+    line: 'timeout=600'
+  loop:
+    - /etc/yum.conf
+
+- name: lineinfile proxy
+  become: yes
+  lineinfile:
+    path: "{{ item }}"
+    regexp: '^proxy=.*$'
+    line: "proxy={{ http_proxy }}"
+  loop:
+    - /etc/yum.conf
+  when: http_proxy is defined
+
+- name: yum remove haveged
+  become: yes
+  yum:
+    state: absent
+    autoremove: yes
+    name:
+      - haveged
+      - jwhois
+      - libidn2
+
+- name: yum remove epel-relese
+  become: yes
+  yum:
+    name: epel-release
+    state: absent
+    autoremove: yes
+
+- name: yum update
+  become: yes
+  yum:
+    name: "*"
+    state: latest
+
+- name: yum install packages
+  become: yes
+  yum:
+    state: present
+    name:
+      - vim
+      - rsync
+
+- name: set locale ja_JP.UTF-8
+  become: yes
+  command: localectl set-locale LANG=ja_JP.UTF-8
+
+- name: set fs.inotify.max_user_watches 524288 in sysctl
+  become: yes
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'
+
+- name: yum install Development Tools
+  become: yes
+  yum:
+    state: present
+    name: '@Development Tools'

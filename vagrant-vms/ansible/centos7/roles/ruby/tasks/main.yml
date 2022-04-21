@@ -1,0 +1,41 @@
+- name: yum install ruby
+  become: yes
+  yum:
+    state: present
+    name: ruby
+
+- name: yum install ruby packages
+  become: yes
+  yum:
+    state: present
+    name:
+      - ruby-devel
+      - rubygem-bundler
+
+- name: set PATH and GEM_HOME in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ruby"
+    block: |
+      GEM_HOME="$HOME/.gem/ruby"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
+      then
+          PATH="$GEM_HOME/bin:$PATH"
+      fi
+      export PATH
+
+- name: copy .gemrc
+  copy:
+    src: ../files/.gemrc
+    dest: /home/vagrant/.gemrc
+
+- name: gem install packages
+  gem:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - rubocop
+    - yard
+    - solargraph
+    - slim_lint
