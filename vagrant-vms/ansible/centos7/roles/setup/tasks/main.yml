@@ -17,28 +17,34 @@
     - /etc/yum.conf
   when: http_proxy is defined
 
-- name: yum remove haveged
-  become: yes
-  yum:
-    state: absent
-    autoremove: yes
-    name:
-      - haveged
-      - jwhois
-      - libidn2
+# - name: yum remove haveged
+#   become: yes
+#   yum:
+#     state: absent
+#     autoremove: yes
+#     name:
+#       - haveged
+#       - jwhois
+#       - libidn2
 
-- name: yum remove epel-relese
-  become: yes
-  yum:
-    name: epel-release
-    state: absent
-    autoremove: yes
+# - name: yum remove epel-relese
+#   become: yes
+#   yum:
+#     name: epel-release
+#     state: absent
+#     autoremove: yes
 
 - name: yum update
   become: yes
   yum:
     name: "*"
     state: latest
+
+- name: yum install epel-release
+  become: yes
+  yum:
+    state: present
+    name: epel-release
 
 - name: yum install packages
   become: yes
