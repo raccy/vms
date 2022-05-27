@@ -14,42 +14,6 @@
       - top
   args: '{{ ldap_auth }}'
 
-- name: ldap entry cn=admin,ou=Group,dc=example,dc=jp
-  ldap_entry:
-    dn: cn=admin,ou=Group,dc=example,dc=jp
-    objectClass:
-      - groupOfNames
-      - nsMemberOf
-      - top
-    attributes:
-      description: administrator
-      description;lang-ja: 管理者
-  args: '{{ ldap_auth }}'
-
-- name: ldap entry cn=staff,ou=Group,dc=example,dc=jp
-  ldap_entry:
-    dn: cn=staff,ou=Group,dc=example,dc=jp
-    objectClass:
-      - groupOfNames
-      - nsMemberOf
-      - top
-    attributes:
-      description: staff
-      description;lang-ja: スタッフ
-  args: '{{ ldap_auth }}'
-
-- name: ldap entry cn=user,ou=Group,dc=example,dc=jp
-  ldap_entry:
-    dn: cn=user,ou=Group,dc=example,dc=jp
-    objectClass:
-      - groupOfNames
-      - nsMemberOf
-      - top
-    attributes:
-      description: general user
-      description;lang-ja: 一般ユーザー
-  args: '{{ ldap_auth }}'
-
 - name: ldap entry cn=admin,ou=User,dc=example,dc=jp
   ldap_entry:
     dn: cn=admin,ou=User,dc=example,dc=jp
@@ -63,8 +27,6 @@
       cn: admin
       mail: admin@example.jp
       userPassword: pass+admin42
-      memberOf:
-        - cn=admin,ou=Group,dc=example,dc=jp
       displayName: Kanri Ichiro
       displayName;lang-ja: 管理　一郎
       sn: Kanri
@@ -86,9 +48,6 @@
       cn: user01
       mail: user01@example.jp
       userPassword: pass0001
-      memberOf:
-        - cn=staff,ou=Group,dc=example,dc=jp
-        - cn=user,ou=Group,dc=example,dc=jp
       displayName: Yuza Taro
       displayName;lang-ja: 湯座　太郎
       sn: Yuza
@@ -110,8 +69,6 @@
       cn: user02
       mail: user02@example.jp
       userPassword: pass0002
-      memberOf:
-        - cn=staff,ou=Group,dc=example,dc=jp
       displayName: Yuza Jiro
       displayName;lang-ja: 湯座　次郎
       sn: Yuza
@@ -133,8 +90,6 @@
       cn: user03
       mail: user03@example.jp
       userPassword: pass0003
-      memberOf:
-        - cn=user,ou=Group,dc=example,dc=jp
       displayName: Yuza Hanako
       displayName;lang-ja: 湯座　花子
       sn: Yuza
@@ -156,8 +111,6 @@
       cn: user04
       mail: user04@example.jp
       userPassword: pass0004
-      memberOf:
-        - cn=user,ou=Group,dc=example,dc=jp
       displayName: Nanashi Gonbee
       displayName;lang-ja: 名無し　権兵衛
       sn: Nanashi
@@ -179,8 +132,6 @@
       cn: user05
       mail: user05@example.jp
       userPassword: pass0005
-      memberOf:
-        - cn=user,ou=Group,dc=example,dc=jp
       displayName: Suzuki Tsuyoshi
       displayName;lang-ja: 鈴木　剛
       sn: Suzuki
@@ -202,12 +153,57 @@
       cn: user06
       mail: user06@example.jp
       userPassword: pass0006
-      memberOf:
-        - cn=user,ou=Group,dc=example,dc=jp
       displayName: Suzuki Yoko
       displayName;lang-ja: 鈴木　陽子
       sn: Szuki
       sn;lang-ja: 鈴木
       givenName: Yoko
       givenName;lang-ja: 陽子
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry cn=admin,ou=Group,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=admin,ou=Group,dc=example,dc=jp
+    objectClass:
+      - groupOfNames
+      - nsMemberOf
+      - top
+    attributes:
+      member:
+        - cn=admin,ou=User,dc=example,dc=jp
+      description: administrator
+      description;lang-ja: 管理者
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry cn=staff,ou=Group,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=staff,ou=Group,dc=example,dc=jp
+    objectClass:
+      - groupOfNames
+      - nsMemberOf
+      - top
+    attributes:
+      member:
+        - cn=user01,ou=User,dc=example,dc=jp
+        - cn=user02,ou=User,dc=example,dc=jp
+      description: staff
+      description;lang-ja: スタッフ
+  args: '{{ ldap_auth }}'
+
+- name: ldap entry cn=user,ou=Group,dc=example,dc=jp
+  ldap_entry:
+    dn: cn=user,ou=Group,dc=example,dc=jp
+    objectClass:
+      - groupOfNames
+      - nsMemberOf
+      - top
+    attributes:
+      member:
+        - cn=user01,ou=User,dc=example,dc=jp
+        - cn=user03,ou=User,dc=example,dc=jp
+        - cn=user04,ou=User,dc=example,dc=jp
+        - cn=user05,ou=User,dc=example,dc=jp
+        - cn=user06,ou=User,dc=example,dc=jp
+      description: general user
+      description;lang-ja: 一般ユーザー
   args: '{{ ldap_auth }}'
