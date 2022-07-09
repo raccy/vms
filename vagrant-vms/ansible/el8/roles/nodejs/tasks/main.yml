@@ -20,11 +20,10 @@
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
 
-
-- name: npm install packages
-  npm:
-    name: '{{ item }}'
-    state: present
-    global: yes
-  loop:
-    - npm-check-updates
+# - name: npm install packages
+#   npm:
+#     name: '{{ item }}'
+#     state: present
+#     global: yes
+#   loop:
+#     - npm-check-updates
