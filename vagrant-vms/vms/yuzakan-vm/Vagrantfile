@@ -2,8 +2,6 @@ require 'digest/md5'
 
 Vagrant.configure('2') do |config|
   config.vm.box = 'generic/rocky8'
-  # config.vm.box = 'boxomatic/rocky-8'
-  # config.vm.box = 'eurolinux-vagrant/rocky-8'
 
   config.vm.box_check_update = true
 
@@ -56,7 +54,7 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision 'ansible' do |ansible|
     ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/rocky8/setup.yml'
+    ansible.playbook = '../../ansible/el8/setup.yml'
     # https://access.redhat.com/support/policy/updates/rhel8-app-streams-life-cycle
     vars = {
       ruby_version: '2.7',     # 2023-05
