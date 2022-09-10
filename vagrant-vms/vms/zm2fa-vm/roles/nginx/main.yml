@@ -1,0 +1,5 @@
+- name: dnf install nginx
+  become: yes
+  dnf:
+    state: present
+    name: "@nginx{{ ':' ~ nginx_version if nginx_version is defined else '' }}"
