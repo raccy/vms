@@ -30,12 +30,12 @@
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
 
-- name: gem install packages
-  gem:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - rubocop
-    - yard
-    - solargraph
-    - slim_lint
+# - name: gem install packages
+#   gem:
+#     name: "{{ item }}"
+#     state: present
+#   loop:
+#     - rubocop
+#     - yard
+#     - solargraph
+#     - slim_lint
