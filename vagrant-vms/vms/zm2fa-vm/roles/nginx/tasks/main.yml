@@ -3,3 +3,10 @@
   dnf:
     state: present
     name: "@nginx{{ ':' ~ nginx_version if nginx_version is defined else '' }}"
+
+- name: start nginx
+  become: yes
+  systemd:
+    name: nginx.service
+    enabled: yes
+    state: started
