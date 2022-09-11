@@ -61,9 +61,3 @@
   sysctl:
     name: fs.inotify.max_user_watches
     value: '524288'
-
-- name: dnf install Development Tools
-  become: yes
-  dnf:
-    state: present
-    name: '@Development Tools'

@@ -2,7 +2,8 @@
   roles:
     - setup
     - git
-    - ruby
-    - nodejs
-    - mariadb
-    - 389ds
+    # - dev
+    # - ruby
+    # - nodejs
+    # - mariadb
+    # - 389ds
