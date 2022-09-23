@@ -19,17 +19,26 @@ Layout/EndOfLine:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
+Metrics/BlockLength:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: consistent_comma
+Style/FetchEnvVar:
+  Enabled: false
 
 Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/PerlBackrefs:
   Enabled: false
 
 Style/SpecialGlobalVars:
   Enabled: false
 
-Style/PerlBackrefs:
-  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma

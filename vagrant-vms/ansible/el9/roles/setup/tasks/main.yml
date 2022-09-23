@@ -13,11 +13,11 @@
   lineinfile:
     path: "{{ item }}"
     regexp: '^proxy=.*$'
-    line: "proxy={{ http_proxy }}"
+    line: "proxy={{ proxy.http }}"
   loop:
     - /etc/yum.conf
     - /etc/dnf/dnf.conf
-  when: http_proxy is defined
+  when: proxy.http is defined
 
 - name: dnf update
   become: yes
@@ -25,13 +25,11 @@
     name: "*"
     state: latest
 
-- name: dnf install packages
+- name: dnf install japanese packages
   become: yes
   dnf:
     state: present
     name:
-      - vim
-      - rsync
       - langpacks-ja
       - glibc-langpack-ja
 
@@ -61,3 +59,11 @@
   sysctl:
     name: fs.inotify.max_user_watches
     value: '524288'
+
+- name: dnf install other packages
+  become: yes
+  dnf:
+    state: present
+    name: "{{ item }}"
+  loop: "{{ setup.pkgs | default([]) }}"
+  when: setup.pkgs is defined

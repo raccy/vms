@@ -1,9 +1,17 @@
 - hosts: all
   roles:
     - setup
-    - git
-    # - dev
-    # - ruby
-    # - nodejs
-    # - mariadb
-    # - 389ds
+    - role: ds
+      when: ds is defined
+    - role: git
+      when: git is defined
+    - role: mariadb
+      when: mariadb is defined
+    - role: nginx
+      when: nginx is defined
+    - role: nodejs
+      when: nodejs is defined
+    - role: redis
+      when: redis is defined
+    - role: ruby
+      when: ruby is defined

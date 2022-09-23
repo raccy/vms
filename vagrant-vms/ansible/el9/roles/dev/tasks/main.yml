@@ -1,5 +1,0 @@
-- name: dnf install Development Tools
-  become: yes
-  dnf:
-    state: present
-    name: '@Development Tools'
