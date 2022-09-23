@@ -19,3 +19,11 @@
   copy:
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
+
+- name: install npm packages
+  npm:
+    state: present
+    global: yes
+    name: "{{ item }}"
+  loop: "{{ nodejs.npms | default([]) }}"
+  when: nodejs.npms is defined

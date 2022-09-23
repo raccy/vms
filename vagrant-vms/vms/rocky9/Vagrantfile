@@ -58,8 +58,10 @@ Vagrant.configure('2') do |config|
       ds: {},
       git: {},
       mariadb: {},
-      ngixn: {},
-      nodejs: {},
+      nginx: {},
+      nodejs: {
+        npms: %w[coffeescript],
+      },
       reids: {},
       ruby: {
         dev: true,
