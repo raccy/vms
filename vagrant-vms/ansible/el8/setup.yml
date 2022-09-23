@@ -3,6 +3,6 @@
     - setup
     - git
     - ruby
-    # - nodejs
-    # - mariadb
-    # - 389ds
+    - nodejs
+    - mariadb
+    - 389ds
