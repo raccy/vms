@@ -1,15 +1,15 @@
-- name: apt install mariadb
+- name: apt install mariadb server
   become: yes
   apt:
-    name: mariadb-server
     state: present
+    name: mariadb-server
 
-- name: apt install pkg for mariadb
+- name: apt install mariadb devel
   become: yes
   apt:
-    pkg:
-      - libmariadbclient-dev
-      - python3-pymysql
+    state: present
+    name: libmariadbclient-dev
+  when: mariadb.dev | default(False)
 
 - name: stop mariadb
   become: yes
@@ -48,6 +48,12 @@
     name: mariadb.service
     enabled: yes
     state: started
+
+- name: apt install python mysql for ansible
+  become: yes
+  apt:
+    state: present
+    name: python3-pymysql
 
 - name: create admin user
   become: yes

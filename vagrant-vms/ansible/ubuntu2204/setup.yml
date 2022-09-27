@@ -1,8 +1,17 @@
 - hosts: all
   roles:
     - setup
-    - git
-    # - ruby
-    # - nodejs
-    # - mariadb
-    # - openldap
+    - role: git
+      when: git is defined
+    - role: mariadb
+      when: mariadb is defined
+    # - role: nginx
+    #   when: nginx is defined
+    - role: nodejs
+      when: nodejs is defined
+    - role: openldap
+      when: openldap is defined
+    # - role: redis
+    #   when: redis is defined
+    - role: ruby
+      when: ruby is defined

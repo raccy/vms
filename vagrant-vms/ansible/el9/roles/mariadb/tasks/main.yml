@@ -1,8 +1,15 @@
-- name: dnf install mariadb-server
+- name: dnf install mariadb server
   become: yes
   dnf:
     state: present
     name: mariadb-server
+
+- name: dnf install mariadb devel
+  become: yes
+  dnf:
+    state: present
+    name: mariadb-connector-c-devel
+  when: mariadb.dev | default(False)
 
 - name: dnf install mariadb
   become: yes
@@ -47,7 +54,7 @@
     enabled: yes
     state: started
 
-- name: dnf install python mysql
+- name: dnf install python mysql for ansible
   become: yes
   dnf:
     state: present
