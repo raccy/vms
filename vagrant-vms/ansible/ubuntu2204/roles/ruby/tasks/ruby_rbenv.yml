@@ -23,21 +23,13 @@
 
 - name: rbenv install
   shell:
-    cmd: 'rbenv install -s {{ ruby_version }}'
+    cmd: 'rbenv install -s {{ ruby.version }}'
     executable: /bin/bash
-    creates: '/home/vagrant/.rbenv/versions/{{ ruby_version }}'
-  when: ruby_version is defined
+    creates: '/home/vagrant/.rbenv/versions/{{ ruby.version }}'
+  when: ruby.version is defined
 
 - name: rbenv global
   shell:
-    cmd: 'rbenv global {{ ruby_version }}'
+    cmd: 'rbenv global {{ ruby.version }}'
     executable: /bin/bash
-  when: ruby_version is defined
-
-- name: apt install ruby packages for system ruby
-  become: yes
-  apt:
-    pkg:
-      - ruby-dev
-      - ruby-bundler
-  when: ruby_version is not defined
+  when: ruby.version is defined

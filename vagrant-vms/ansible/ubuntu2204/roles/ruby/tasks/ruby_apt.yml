@@ -1,15 +1,25 @@
 - name: apt install ruby
   become: yes
   apt:
-    name: ruby
     state: present
+    name: ruby
 
 - name: apt install ruby packages
   become: yes
   apt:
-    pkg:
-      - ruby-dev
+    state: present
+    name: ruby-dev
+  when: ruby.dev | default(False)
+
       - ruby-bundler
+
+- name: apt install ruby modules (gems)
+  become: yes
+  apt:
+    name: "ruby-{{ item }}"
+    state: present
+  loop: "{{ ruby.mods | default([]) }}"
+  when: ruby.mods is defined
 
 - name: set PATH in .bashrc
   blockinfile:
