@@ -8,14 +8,10 @@
     name: '{{ item }}'
     state: present
     user_install: no
-  loop:
-    - rubocop
-    - yard
-    - solargraph
-    - slim_lint
+  loop: "{{ ruby.gems | default([]) }}"
   environment:
     GEM_HOME: /home/vagrant/.gem
-  when: ruby_type is not defined or ruby_type != 'rbenv'
+  when: ruby.type is not defined or ruby.type != 'rbenv'
 
 - name: gem install packages
   gem:
@@ -23,9 +19,5 @@
     state: present
     user_install: no
     executable: /home/vagrant/.rbenv/shims/gem
-  loop:
-    - rubocop
-    - yard
-    - solargraph
-    - slim_lint
-  when: ruby_type is defined and ruby_type == 'rbenv'
+  loop: "{{ ruby.gems | default([]) }}"
+  when: ruby.type is defined and ruby.type == 'rbenv'
