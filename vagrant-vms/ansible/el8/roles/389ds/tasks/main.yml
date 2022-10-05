@@ -33,6 +33,8 @@
 
 - import_tasks: samba.yml
 
-- import_tasks: user_group.yml
+# - import_tasks: user_group.yml
 
-- import_tasks: person_user_group.yml
+# - import_tasks: person_user_group.yml
+
+- import_tasks: user_group_complex.yml
