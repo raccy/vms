@@ -8,7 +8,7 @@
   become: yes
   apt:
     state: present
-    name: libmariadbclient-dev
+    name: libmariadb-dev
   when: mariadb.dev | default(False)
 
 - name: stop mariadb
