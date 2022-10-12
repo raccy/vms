@@ -1,0 +1,72 @@
+require 'digest/md5'
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'generic/rocky8'
+
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  ssh_port = 10_000 + (Digest::MD5.digest(hostname).unpack1('L') % 20_000)
+
+  config.vm.hostname = hostname
+
+  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+
+  config.vm.provider 'virtualbox' do |vb|
+    vb.cpus = 2
+    vb.memory = 4096
+  end
+
+  config.vm.provider 'hyperv' do |hv|
+    hv.cpus = 2
+    hv.maxmemory = 4096
+  end
+
+  # do manual 'vagrant vbguest --do install'
+  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+
+  # BUG... selinux enforced
+  # config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
+
+  proxy_protocols = %w[http https ftp].to_h do |name|
+    env_name = "#{name}_proxy"
+    env_value = ENV[env_name]
+    if env_value
+      [name, {name: env_name, value: env_value}]
+    else
+      [name, nil]
+    end
+  end.compact
+
+  proxy_enable = !proxy_protocols.empty?
+
+  if proxy_enable && Vagrant.has_plugin?('vagrant-proxyconf')
+    proxy_protocols.each do |name, env|
+      config.proxy.__send__("#{name}=", env[:value])
+    end
+
+    config.proxy.no_proxy = ENV['no_proxy'] if ENV.has_key?('no_proxy')
+  end
+
+  config.vm.provision 'ansible' do |ansible|
+    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
+    ansible.playbook = '../../ansible/el8/setup.yml'
+    vars = {
+      ruby_version: '2.7',
+      nodejs_version: '14',
+      mariadb_version: '10.5',
+    }
+
+    proxy_protocols.each_value { |env| vars[env[:name]] = env[:value] } if proxy_enable
+
+    %w[name email].each do |name|
+      value = `git config --get user.#{name}`.chomp
+      vars["git_config_user_#{name}"] = value if value&.length&.positive?
+    end
+
+    ansible.extra_vars = vars
+  end
+end

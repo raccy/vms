@@ -1,8 +1,8 @@
 - hosts: all
   roles:
     - setup
-    - git
-    - ruby
-    - nodejs
-    - mariadb
-    - 389ds
+    # - git
+    # - ruby
+    # - nodejs
+    # - mariadb
+    # - 389ds
