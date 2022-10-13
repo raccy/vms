@@ -12,6 +12,9 @@ Vagrant.configure('2') do |config|
 
   config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
 
+  config.vm.network 'forwarded_port', guest: 389, host: 1389, host_ip: '0.0.0.0'
+  config.vm.network 'forwarded_port', guest: 636, host: 1636, host_ip: '0.0.0.0'
+
   config.vm.synced_folder '.', '/vagrant', disabled: true
   # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
 
