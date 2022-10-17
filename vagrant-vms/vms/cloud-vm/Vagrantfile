@@ -1,0 +1,86 @@
+require 'digest/md5'
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'generic/rocky9'
+
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  ssh_port = 10_000 + (Digest::MD5.digest(hostname).unpack1('L') % 20_000)
+
+  config.vm.hostname = hostname
+
+  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+
+  config.vm.provider 'virtualbox' do |vb|
+    vb.cpus = 2
+    vb.memory = 4096
+  end
+
+  config.vm.provider 'hyperv' do |hv|
+    hv.cpus = 2
+    hv.maxmemory = 4096
+  end
+
+  # do manual 'vagrant vbguest --do install'
+  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+
+  # BUG... selinux enforced
+  # config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
+
+  proxy_env = %i[http https ftp].to_h do |name|
+    envs = ["VAGRANT_#{name.upcase}_PROXY", "#{name.upcase}_PROXY", "#{name}_proxy"]
+    [name, envs.map { |n| ENV[n] }.find(&:itself)]
+  end
+  proxy_env[:no_proxy] = %w[VAGRANT_NO_PROXY NO_PROXY no_proxy].map { |n| ENV[n] }.find(&:itself)
+  proxy_env.compact!
+
+  if Vagrant.has_plugin?('vagrant-proxyconf')
+    proxy_env.each do |name, value|
+      config.proxy.__send__("#{name}=", value)
+    end
+  end
+
+  config.vm.provision 'ansible' do |ansible|
+    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
+    ansible.playbook = '../../ansible/el9/setup.yml'
+    vars = {
+      setup: {
+        pkgs: [
+          'vim',
+          'rsync',
+          # '@Development Tools',
+        ],
+      },
+      # ds: {},
+      # git: {},
+      # mariadb: {},
+      # nginx: {},
+      # nodejs: {
+      #   npms: %w[coffeescript],
+      # },
+      # reids: {},
+      # ruby: {
+      #   dev: true,
+      #   mods: %w[bundler],
+      #   gems: %w[rubocop],
+      # },
+    }
+
+    vars[:proxy] = proxy_env
+
+    if vars[:git]
+      vars[:git][:config] ||= {}
+      vars[:git][:config][:user] ||= {}
+      %i[name email].each do |name|
+        value = `git config --get user.#{name}`.chomp
+        vars[:git][:config][:user][name] = value if value && !value.empty?
+      end
+    end
+
+    ansible.extra_vars = vars
+  end
+end
