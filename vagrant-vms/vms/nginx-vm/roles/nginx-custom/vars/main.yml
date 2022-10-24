@@ -1,0 +1,8 @@
+nginx:
+  version: '1.22.1'
+modsecurity:
+  version: '3.0.8'
+modsecurity_nginx:
+  version: '1.0.3'
+ngx_mruby:
+  version: '2.2.5'

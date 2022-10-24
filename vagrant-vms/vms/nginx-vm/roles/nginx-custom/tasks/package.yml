@@ -1,0 +1,63 @@
+# 依存関係があるパッケージ
+
+# Git
+- name: dnf install git
+  dnf:
+    state: present
+    name: git
+
+# 開発環境
+- name: dnf install Development Tools
+  dnf:
+    state: present
+    name: '@Development Tools'
+
+- name: dnf install devels for modsecurity
+  dnf:
+    state: present
+    name:
+      - curl-devel 
+      - libxml2-devel
+      - ssdeep-devel
+      - compat-lua-devel
+      - pcre2-devel
+
+- name: dnf install devels for modsecurity in CRB
+  dnf:
+    enablerepo: crb
+    state: present
+    name:
+      - libmaxminddb-devel
+      - yajl-devel
+      - lmdb-devel
+
+- name: dnf install devels for nginx
+  dnf:
+    state: present
+    name:
+      - openssl-devel
+      - zlib-devel
+      - gd-devel
+
+# - name: dnf install devels for nginx perl
+#   dnf:
+#     state: presnt
+#     name:
+#       - perl-devel
+#       - perl-generators
+#       - perl-ExtUtils-Embed
+#       # for module
+#       - perl
+#       - perl-constant
+
+# - name: dnf install devels for nginx XSLT
+#   dnf:
+#     state: presnt
+#     name:
+#       - libxslt-devel
+
+- name: dnf install devels for nginx mruby
+  dnf:
+    state: present
+    name:
+      - rubygem-rake

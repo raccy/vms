@@ -1,0 +1,32 @@
+# modsecurity
+# https://github.com/SpiderLabs/ModSecurity
+
+- name: modsecurity git clone
+  git:
+    repo: https://github.com/SpiderLabs/ModSecurity.git
+    dest: /usr/local/src/modsecurity
+    version: 'v{{ modsecurity.version }}'
+    force: yes
+
+- name: modsecurity run build.sh
+  command:
+    cmd: sh ./build.sh
+    chdir: /usr/local/src/modsecurity
+
+- name: modsecurity run configure
+  command:
+    argv:
+      - ./configure
+      - --with-lmdb
+      - --with-pcre2
+    chdir: /usr/local/src/modsecurity
+
+- name: modsecurity run make
+  command:
+    cmd: make
+    chdir: /usr/local/src/modsecurity
+
+- name: modsecurity run make insntall
+  command:
+    cmd: make install
+    chdir: /usr/local/src/modsecurity

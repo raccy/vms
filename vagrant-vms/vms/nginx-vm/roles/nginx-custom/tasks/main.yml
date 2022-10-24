@@ -1,0 +1,10 @@
+# Nginx カスタム
+# nginx + modsecurity + mruby
+
+# EL9のみ
+
+- import_tasks: package.yml
+
+- import_tasks: modsecurity.yml
+
+- import_tasks: nginx.yml
