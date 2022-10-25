@@ -1,5 +1,10 @@
 # SE Linux
 
+- name: dnf insntall
+  dnf:
+    state: present
+    name: python3-policycoreutils
+
 - name: SE Linux fcontext for modsecurity
   sefcontext:
     state: present
