@@ -22,6 +22,7 @@
   - {target: '/usr/local/nginx/conf(/.*)?',       ftype: a, setype: httpd_config_t}
   - {target: '/usr/local/nginx/html(/.*)?',       ftype: a, setype: httpd_sys_content_t}
   - {target: '/var/local/nginx/logs(/.*)?',       ftype: a, setype: httpd_log_t}
+  - {target: '/var/local/nginx/modules(/.*)?',    ftype: a, setype: lib_t}
   - {target: '/usr/local/nginx/sbin',             ftype: a, setype: bin_t}
   - {target: '/usr/local/nginx/sbin/.*',          ftype: a, setype: bin_t}
   - {target: '/usr/local/nginx/sbin/nginx',       ftype: f, setype: httpd_exec_t}
@@ -30,4 +31,3 @@
   - {target: '/var/lib/nginx-local(/.*)?',        ftype: a, setype: httpd_var_lib_t}
   # /etc/systemd/system = /usr/lib/systemd/system
   - {target: '/usr/lib/systemd/system/nginx-local.*', ftype: f, setype: httpd_unit_file_t}
-

@@ -48,6 +48,11 @@
     src: ../files/nginx-local.conf
     dest: /usr/local/nginx/conf/nginx.conf
 
+- name: nginx html directory
+  copy:
+    src: ../files/html/
+    dest: /var/www/html/
+
 - name: nginx conf.d directory
   file:
     path: /usr/local/nginx/conf/conf.d

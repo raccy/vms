@@ -4,5 +4,9 @@ modsecurity:
   version: '3.0.8'
 modsecurity_nginx:
   version: '1.0.3'
+ngx_devel_kit:
+  version: '0.3.2'
+mruby:
+  version: '3.1.0'
 ngx_mruby:
   version: '2.2.5'
