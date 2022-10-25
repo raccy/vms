@@ -1,0 +1,28 @@
+
+- name: dnf install python3-cryptography
+  dnf:
+    state: present
+    name: python3-cryptography
+
+
+- name: create private key
+  openssl_privatekey:
+    path: /etc/pki/tls/private/server.key
+    type: ECC
+    curve: secp384r1
+    mode: '0600'
+
+- name: create csr
+  openssl_csr:
+    path: /etc/pki/tls/certs/server.csr
+    privatekey_path: /etc/pki/tls/private/server.key
+    digest: sha384
+    common_name: localhost
+
+- name: create sign crt
+  openssl_certificate:
+    provider: selfsigned
+    selfsigned_digest: sha384
+    path: /etc/pki/tls/certs/server.crt
+    privatekey_path: /etc/pki/tls/private/server.key
+    csr_path: /etc/pki/tls/certs/server.csr

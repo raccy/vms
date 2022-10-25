@@ -1,0 +1,12 @@
+/var/log/nginx-local/*log {
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        /bin/kill -USR1 `cat /run/nginx-local.pid 2>/dev/null` 2>/dev/null || true
+    endscript
+}

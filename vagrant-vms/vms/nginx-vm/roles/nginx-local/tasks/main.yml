@@ -1,10 +1,15 @@
-# Nginx カスタム
+# nginx local
+# localにインストールされるカスタマイズされたnginx
 # nginx + modsecurity + mruby
 
 # EL9のみ
 
-- import_tasks: package.yml
+- import_tasks: selinux.yml
 
-- import_tasks: modsecurity.yml
+# - import_tasks: package.yml
 
-- import_tasks: nginx.yml
+# - import_tasks: modsecurity.yml
+
+# - import_tasks: nginx.yml
+
+- import_tasks: conf.yml

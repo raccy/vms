@@ -1,0 +1,71 @@
+# コンフィグ
+
+- name: nginx create group
+  group:
+    system: yes
+    name: nginx
+
+- name: nginx create user
+  user:
+    name: nginx
+    system: yes
+    home: /var/lib/nginx-local
+    group: nginx
+    shell: /sbin/nologin
+    comment: Nginx web server
+    create_home: no
+
+- name: nginx logs dir
+  file:
+    path: /usr/local/nginx/logs
+    state: directory
+    owner: nginx
+
+- name: nginx var log dir
+  file:
+    path: /var/log/nginx-local
+    state: directory
+    owner: nginx
+    mode: '0770'
+
+- name: nginx var lib dir
+  file:
+    path: /var/lib/nginx-local
+    state: directory
+    owner: nginx
+    mode: '0770'
+
+- name: nginx var lib tmp dir
+  file:
+    path: /var/lib/nginx-local/tmp
+    state: directory
+    state: directory
+    owner: nginx
+    mode: '0770'
+
+- name: nginx conf file
+  copy:
+    src: ../files/nginx-local.conf
+    dest: /usr/local/nginx/conf/nginx.conf
+
+- name: nginx conf.d directory
+  file:
+    path: /usr/local/nginx/conf/conf.d
+    state: directory
+
+- name: nginx logrotate file
+  copy:
+    src: ../files/nginx-local.logrotate
+    dest: /etc/logrotate.d/nginx-local
+
+- name: nginx service unit file
+  copy:
+    src: ../files/nginx-local.service
+    dest: /etc/systemd/system/nginx-local.service
+
+- name: enable and restart nginx-local
+  systemd:
+    name: nginx-local.service
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
