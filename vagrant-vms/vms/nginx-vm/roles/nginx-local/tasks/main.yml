@@ -4,6 +4,8 @@
 
 # EL9のみ
 
+- import_tasks: stop.yml
+
 - import_tasks: selinux.yml
 
 - import_tasks: package.yml
@@ -12,4 +14,8 @@
 
 - import_tasks: nginx.yml
 
+- import_tasks: setup.yml
+
 - import_tasks: conf.yml
+
+- import_tasks: start.yml

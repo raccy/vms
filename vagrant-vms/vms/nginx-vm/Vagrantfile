@@ -44,31 +44,31 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision 'ansible' do |ansible|
-    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/el9/setup.yml'
-    vars = {
-      setup: {
-        pkgs: [
-          'vim',
-          'rsync',
-        ],
-      },
-    }
+  # config.vm.provision 'ansible' do |ansible|
+  #   ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
+  #   ansible.playbook = '../../ansible/el9/setup.yml'
+  #   vars = {
+  #     setup: {
+  #       pkgs: [
+  #         'vim',
+  #         'rsync',
+  #       ],
+  #     },
+  #   }
 
-    vars[:proxy] = proxy_env
+  #   vars[:proxy] = proxy_env
 
-    if vars[:git]
-      vars[:git][:config] ||= {}
-      vars[:git][:config][:user] ||= {}
-      %i[name email].each do |name|
-        value = `git config --get user.#{name}`.chomp
-        vars[:git][:config][:user][name] = value if value && !value.empty?
-      end
-    end
+  #   if vars[:git]
+  #     vars[:git][:config] ||= {}
+  #     vars[:git][:config][:user] ||= {}
+  #     %i[name email].each do |name|
+  #       value = `git config --get user.#{name}`.chomp
+  #       vars[:git][:config][:user][name] = value if value && !value.empty?
+  #     end
+  #   end
 
-    ansible.extra_vars = vars
-  end
+  #   ansible.extra_vars = vars
+  # end
 
   config.vm.provision 'nginx', type: 'ansible' do |ansible|
     ansible.playbook = 'nginx.yml'

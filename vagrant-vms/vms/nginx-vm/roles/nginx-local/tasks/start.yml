@@ -1,0 +1,11 @@
+- name: nginx service unit file
+  copy:
+    src: ../files/nginx-local.service
+    dest: /etc/systemd/system/nginx-local.service
+
+- name: enable and restart nginx-local
+  systemd:
+    name: nginx-local.service
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

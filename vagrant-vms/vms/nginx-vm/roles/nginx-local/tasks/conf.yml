@@ -1,76 +1,36 @@
-# コンフィグ
+# nginx.conf
 
-- name: nginx create group
-  group:
-    system: yes
-    name: nginx
+- name: ngixn.conf user
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s#]*user\b.*$'
+    line: 'user nginx;'
+    insertafter: '^[\s#]*user\b.*$'
 
-- name: nginx create user
-  user:
-    name: nginx
-    system: yes
-    home: /var/lib/nginx-local
-    group: nginx
-    shell: /sbin/nologin
-    comment: Nginx web server
-    create_home: no
+- name: ngixn.conf worker_processes
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s#]*worker_processes\b.*$'
+    line: 'worker_processes auto;'
+    insertafter: '^[\s#]*user\b.*$'
 
-- name: nginx logs dir
-  file:
-    path: /usr/local/nginx/logs
-    state: directory
-    owner: nginx
+# 逆順に入れていく
+- name: nginx.conf load_module
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s#]load_module\s+\S+{{ item }}.so;.*$'
+    line: 'load_module /usr/local/nginx/modules/{{ item }}.so;'
+    insertafter: '^[\s#]*pid\b.*$'
+  loop:
+    - ngx_http_mruby_module
+    - ndk_http_module
+    - ngx_http_modsecurity_module
+    - ngx_stream_module
+    - ngx_mail_module
 
-- name: nginx var log dir
-  file:
-    path: /var/log/nginx-local
-    state: directory
-    owner: nginx
-    mode: '0770'
-
-- name: nginx var lib dir
-  file:
-    path: /var/lib/nginx-local
-    state: directory
-    owner: nginx
-    mode: '0770'
-
-- name: nginx var lib tmp dir
-  file:
-    path: /var/lib/nginx-local/tmp
-    state: directory
-    state: directory
-    owner: nginx
-    mode: '0770'
-
-- name: nginx conf file
-  copy:
-    src: ../files/nginx-local.conf
-    dest: /usr/local/nginx/conf/nginx.conf
-
-- name: nginx html directory
-  copy:
-    src: ../files/html/
-    dest: /var/www/html/
-
-- name: nginx conf.d directory
-  file:
-    path: /usr/local/nginx/conf/conf.d
-    state: directory
-
-- name: nginx logrotate file
-  copy:
-    src: ../files/nginx-local.logrotate
-    dest: /etc/logrotate.d/nginx-local
-
-- name: nginx service unit file
-  copy:
-    src: ../files/nginx-local.service
-    dest: /etc/systemd/system/nginx-local.service
-
-- name: enable and restart nginx-local
-  systemd:
-    name: nginx-local.service
-    enabled: yes
-    state: restarted
-    daemon_reload: yes
+- name: ngixn.conf tcp_nopush
+  replace:
+    path: /usr/local/nginx/conf/nginx.conf
+    after: '^\s*http\s+{'
+    regexp: '^[\s#]*tcp_nopush\b.*$'
+    replace: '    tcp_nopush on;'
