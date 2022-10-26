@@ -5,7 +5,7 @@
     path: /usr/local/nginx/conf/nginx.conf
     regexp: '^[\s#]*user\b.*$'
     line: 'user nginx;'
-    insertafter: '^[\s#]*user\b.*$'
+    insertbefore: BOF
 
 - name: ngixn.conf worker_processes
   lineinfile:
