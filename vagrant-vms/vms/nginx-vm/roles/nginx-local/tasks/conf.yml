@@ -1,5 +1,18 @@
 # nginx.conf
 
+- name: nginx conf.d
+  file:
+    path: /usr/local/nginx/conf/conf.d
+    state: directory
+
+- name: nginx copy conf
+  copy:
+    src: '../files/conf.d/{{ item }}.conf'
+    dest: '/usr/local/nginx/conf/conf.d/{{ item }}.conf'
+  loop:
+    - security
+    - ssl
+
 - name: ngixn.conf user
   lineinfile:
     path: /usr/local/nginx/conf/nginx.conf
@@ -14,23 +27,67 @@
     line: 'worker_processes auto;'
     insertafter: '^[\s#]*user\b.*$'
 
-# 逆順に入れていく
 - name: nginx.conf load_module
   lineinfile:
     path: /usr/local/nginx/conf/nginx.conf
-    regexp: '^[\s#]load_module\s+\S+{{ item }}.so;.*$'
+    regexp: '^[\s#]load_module\s+(\S+/)?{{ item }}.so;.*$'
     line: 'load_module /usr/local/nginx/modules/{{ item }}.so;'
-    insertafter: '^[\s#]*pid\b.*$'
+    firstmatch: yes
+    insertbefore: '^[\s#]*\w+\s*{.*$'
   loop:
-    - ngx_http_mruby_module
-    - ndk_http_module
-    - ngx_http_modsecurity_module
-    - ngx_stream_module
     - ngx_mail_module
+    - ngx_stream_module
+    - ngx_http_modsecurity_module
+    - ndk_http_module
+    - ngx_http_mruby_module
 
-- name: ngixn.conf tcp_nopush
-  replace:
+- name: nginx.conf tcp_nopush
+  lineinfile:
     path: /usr/local/nginx/conf/nginx.conf
-    after: '^\s*http\s+{'
     regexp: '^[\s#]*tcp_nopush\b.*$'
-    replace: '    tcp_nopush on;'
+    line: '    tcp_nopush      on;'
+    firstmatch: yes
+    insertafter: '^\s*http\s*{'
+
+- name: ngixn.conf include http conf
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s#]include\s+(\S+/)?{{ item }}.conf;.*$'
+    line: '    include /usr/local/nginx/conf/conf.d/{{ item }}.conf;'
+    firstmatch: yes
+    insertbefore: '^\s*server\s*{'
+  loop:
+    - security
+    - ssl
+
+- name: nginx.conf server listen 80 default_server
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s]*listen\s+80\b.*$'
+    line: '        listen       80 default_server;'
+    firstmatch: yes
+    insertafter: '^\s*server\s*{'
+
+- name: nginx.conf server listen ipv6 80 default_server
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s]*listen\s+\[::\]:80\b.*$'
+    line: '        listen       [::]:80 default_server;'
+    firstmatch: yes
+    insertafter: '^[\s]*listen\s+80\b.*$'
+ 
+- name: nginx.conf server server_name
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s]*server_name\b.*$'
+    line: '        server_name  _;'
+    firstmatch: yes
+    insertafter: '^\s*server\s*{'
+
+- name: nginx.conf server return 301
+  lineinfile:
+    path: /usr/local/nginx/conf/nginx.conf
+    regexp: '^[\s]*return\s+301\shttps://.*$'
+    line: '        return       301 https://$host$request_uri;'
+    firstmatch: yes
+    insertbefore: '^\s*location\s+/\s*{'
