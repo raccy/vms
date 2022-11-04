@@ -1,6 +1,6 @@
 - name: nginx service unit file
-  copy:
-    src: ../files/nginx-local.service
+  template:
+    src: ../files/nginx-local.service.j2
     dest: /etc/systemd/system/nginx-local.service
 
 - name: enable and restart nginx-local

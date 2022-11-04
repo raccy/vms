@@ -8,7 +8,7 @@ server {
     ssl_certificate_key  {{ tls_file.key }};
 
     modsecurity             on;
-    modsecurity_rules_file  /usr/local/modsecurity/etc/modsec_includes.conf;
+    modsecurity_rules_file  {{ modsecurity.prefix }}/etc/modsec_includes.conf;
 
     location / {
         root   html;

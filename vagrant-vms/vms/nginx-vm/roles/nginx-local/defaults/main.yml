@@ -1,14 +1,17 @@
-nginx:
-  version: '1.22.1'
+src_dir: /usr/local/src
 modsecurity:
+  prefix: /usr/local/modsecurity
   version: '3.0.8'
+coreruleset:
+  version: '3.3.4'
+nginx:
+  prefix: /usr/local/nginx
+  version: '1.22.1'
 modsecurity_nginx:
   version: '1.0.3'
+ngx_mruby:
+  version: '2.2.5'
 ngx_devel_kit:
   version: '0.3.2'
 mruby:
   version: '3.1.0'
-ngx_mruby:
-  version: '2.2.5'
-coreruleset:
-  version: '3.3.4'

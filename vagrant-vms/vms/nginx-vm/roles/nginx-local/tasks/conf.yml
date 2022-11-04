@@ -2,49 +2,49 @@
 
 - name: nginx conf.d
   file:
-    path: /usr/local/nginx/conf/conf.d
+    path: '{{ nginx.prefix }}/conf/conf.d'
     state: directory
 
 - name: nginx copy conf
   copy:
     src: '../files/conf.d/{{ item }}.conf'
-    dest: '/usr/local/nginx/conf/conf.d/{{ item }}.conf'
+    dest: '{{ nginx.prefix }}/conf/conf.d/{{ item }}.conf'
   loop:
     - security
 
 - name: nginx template conf
   template:
     src: '../files/conf.d/{{ item }}.conf.j2'
-    dest: '/usr/local/nginx/conf/conf.d/{{ item }}.conf'
+    dest: '{{ nginx.prefix }}/conf/conf.d/{{ item }}.conf'
   loop:
     - ssl
 
 - name: nginx.conf user
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]*user\b.*$'
     line: 'user nginx;'
     insertbefore: BOF
 
 - name: nginx.conf worker_processes
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]*worker_processes\b.*$'
     line: 'worker_processes auto;'
     insertafter: '^[\s#]*user\b.*$'
 
 - name: nginx.conf pid
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]*pid\b.*$'
     line: 'pid /run/nginx-local.pid;'
     insertafter: '^[\s#]*error_log\b.*$'
 
 - name: nginx.conf load_module
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]load_module\s+(\S+/)?{{ item }}.so;.*$'
-    line: 'load_module /usr/local/nginx/modules/{{ item }}.so;'
+    line: 'load_module {{ nginx.prefix }}/modules/{{ item }}.so;'
     firstmatch: yes
     insertbefore: '^[\s#]*\w+\s*{.*$'
   loop:
@@ -56,7 +56,7 @@
 
 - name: nginx.conf tcp_nopush
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]*tcp_nopush\b.*$'
     line: '    tcp_nopush      on;'
     firstmatch: yes
@@ -64,9 +64,9 @@
 
 - name: nginx.conf include http conf
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s#]include\s+(\S+/)?{{ item }}.conf;.*$'
-    line: '    include /usr/local/nginx/conf/conf.d/{{ item }}.conf;'
+    line: '    include {{ nginx.prefix }}/conf/conf.d/{{ item }}.conf;'
     firstmatch: yes
     insertbefore: '^\s*server\s*{'
   loop:
@@ -75,7 +75,7 @@
 
 - name: nginx.conf server listen 80 default_server
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s]*listen\s+80\b.*$'
     line: '        listen       80 default_server;'
     firstmatch: yes
@@ -83,7 +83,7 @@
 
 - name: nginx.conf server listen ipv6 80 default_server
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s]*listen\s+\[::\]:80\b.*$'
     line: '        listen       [::]:80 default_server;'
     firstmatch: yes
@@ -91,7 +91,7 @@
  
 - name: nginx.conf server server_name
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s]*server_name\b.*$'
     line: '        server_name  _;'
     firstmatch: yes
@@ -99,7 +99,7 @@
 
 - name: nginx.conf server return 301
   lineinfile:
-    path: /usr/local/nginx/conf/nginx.conf
+    path: '{{ nginx.prefix }}/conf/nginx.conf'
     regexp: '^[\s]*return\s+301\shttps://.*$'
     line: '        return       301 https://$host$request_uri;'
     firstmatch: yes

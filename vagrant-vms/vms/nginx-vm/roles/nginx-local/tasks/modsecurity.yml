@@ -1,98 +1,97 @@
+# modsecurity and coreruleset
+
+- set_fact:
+    modsecurity_src: '{{ src_dir }}/modsecurity-v{{ modsecurity.version }}'
+    coreruleset_src: '{{ src_dir }}/coreruleset-{{ coreruleset.version }}'
+
 # modsecurity
 # https://github.com/SpiderLabs/ModSecurity
 
-- name: modsecurity git clone
-  git:
-    repo: https://github.com/SpiderLabs/ModSecurity.git
-    dest: /usr/local/src/modsecurity
-    version: 'v{{ modsecurity.version }}'
-    force: yes
+- name: modsecurity get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/SpiderLabs/ModSecurity/releases/download/v{{ modsecurity.version }}/modsecurity-v{{ modsecurity.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ modsecurity_src }}'
   environment: '{{ proxy_env }}'
 
 - name: modsecurity run build.sh
   command:
     cmd: sh ./build.sh
-    chdir: /usr/local/src/modsecurity
+    chdir: '{{ modsecurity_src }}'
 
 - name: modsecurity run configure
   command:
     argv:
       - ./configure
+      - '--prefix={{ modsecurity.prefix }}'
       - --with-lmdb
       - --with-pcre2
-    chdir: /usr/local/src/modsecurity
+    chdir: '{{ modsecurity_src }}'
 
 - name: modsecurity run make
   command:
     cmd: make
-    chdir: /usr/local/src/modsecurity
+    chdir: '{{ modsecurity_src }}'
 
 - name: modsecurity run make insntall
   command:
     cmd: make install
-    chdir: /usr/local/src/modsecurity
+    chdir: '{{ modsecurity_src }}'
 
 - name: modsecurity mkdir etc
   file:
-    path: /usr/local/modsecurity/etc
+    path: '{{ modsecurity.prefix }}/etc'
     state: directory
 
-- name: modsecurity copy modsecurity.conf
+- name: modsecurity copy modsecurity.conf recommeded
   copy:
     remote_src: yes
-    src: /usr/local/src/modsecurity/modsecurity.conf-recommended
-    dest: /usr/local/modsecurity/etc/modsecurity.conf
+    src: '{{ modsecurity_src }}/modsecurity.conf-recommended'
+    dest: '{{ modsecurity.prefix }}/etc/modsecurity.conf'
 
 - name: modsecurity copy unicode.mapping
   copy:
     remote_src: yes
-    src: /usr/local/src/modsecurity/unicode.mapping
-    dest: /usr/local/modsecurity/etc/unicode.mapping
+    src: '{{ modsecurity_src }}/unicode.mapping'
+    dest: '{{ modsecurity.prefix }}/etc/unicode.mapping'
 
 # OWASP ModSecurity Core Rule Set
 # https://coreruleset.org/
 
-# - name: coreruleset git clone
-#   git:
-#     repo: https://github.com/coreruleset/coreruleset.git
-#     dest: /usr/local/modsecurity/etc/crs
-#     version: 'v{{ coreruleset.version }}'
-#     force: yes
-#   environment: '{{ proxy_env }}'
-
-- name: unarchive coreruleset
+- name: coreruleset get and unarchive
   unarchive:
     remote_src: yes
     src: 'https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ coreruleset.version }}.tar.gz'
-    dest: /usr/local/src
-    creates: '/usr/local/src/coreruleset-{{ coreruleset.version }}'
+    dest: '{{ src_dir }}'
+    creates: '{{ coreruleset_src }}'
   environment: '{{ proxy_env }}'
 
-- name: delete coreruleset
+- name: coreruleset delete crs
   file:
-    path: /usr/local/modsecurity/etc/crs
+    path: '{{ modsecurity.prefix }}/etc/crs'
     state: absent
 
-- name: copy coreruleset
+- name: coreruleset copy crs
   copy:
     remote_src: yes
-    src: '/usr/local/src/coreruleset-{{ coreruleset.version }}/'
-    dest: /usr/local/modsecurity/etc/crs
+    src: '{{ coreruleset_src }}/'
+    dest: '{{ modsecurity.prefix }}/etc/crs'
 
 - name: coreruleset copy exapmle
   copy:
     remote_src: yes
-    src: '/usr/local/modsecurity/etc/crs/{{ item }}.example'
-    dest: '/usr/local/modsecurity/etc/crs/{{ item }}'
+    src: '{{ modsecurity.prefix }}/etc/crs/{{ item }}.example'
+    dest: '{{ modsecurity.prefix }}/etc/crs/{{ item }}'
   loop:
     - crs-setup.conf
     - rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
     - rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
 
-- name: copy modsec_includes.conf
+- name: modsecurity copy modsec_includes.conf
   copy:
     src: ../files/modsec_includes.conf
-    dest: /usr/local/modsecurity/etc/modsec_includes.conf
+    dest: '{{ modsecurity.prefix }}/etc/modsec_includes.conf'
 
-- name: modesecurity restorecon
-  command: restorecon -irvF /usr/local/modsecurity
+- name: modsecurity restorecon
+  command: 'restorecon -irvF {{ modsecurity.prefix }}'

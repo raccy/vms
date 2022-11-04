@@ -1,4 +1,4 @@
-/usr/local/nginx/logs/*log {
+/var/log/nginx-local/*log {
     daily
     rotate 10
     missingok

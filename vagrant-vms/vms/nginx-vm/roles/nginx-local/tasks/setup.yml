@@ -9,7 +9,7 @@
   user:
     name: nginx
     system: yes
-    home: /usr/local/nginx
+    home: /var/lib/nginx-local
     group: nginx
     shell: /sbin/nologin
     comment: Nginx web server

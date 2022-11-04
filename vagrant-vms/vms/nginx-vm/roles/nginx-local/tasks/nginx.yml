@@ -1,47 +1,50 @@
 # nginx + modsecurity + mruby
 
 - set_fact:
-    nginx_src: 'nginx-{{ nginx.version }}'
+    nginx_src: '{{ src_dir }}/nginx-{{ nginx.version }}'
+    modsecurity_nginx_src: '{{ src_dir }}/modsecurity-nginx-v{{ modsecurity_nginx.version }}'
+    ngx_mruby_src: '{{ src_dir }}/ngx_mruby-{{ ngx_mruby.version }}'
+    ngx_devel_kit_src: '{{ src_dir }}/ngx_devel_kit-{{ ngx_devel_kit.version }}'
+    mruby_src: '{{ src_dir }}/mruby-{{ mruby.version }}'
 
-- name: nginx get source
-  get_url:
-    url: 'http://nginx.org/download/{{ nginx_src }}.tar.gz'
-    dest: '/usr/local/src/{{ nginx_src }}.tar.gz'
-  environment: '{{ proxy_env }}'
-
-- name: nginx unarchive soruce
+- name: nginx get and unarchive
   unarchive:
     remote_src: yes
-    src: '/usr/local/src/{{ nginx_src }}.tar.gz'
-    dest: /usr/local/src/
-
-- name: modsecurity-nginx git clone
-  git:
-    repo: https://github.com/SpiderLabs/ModSecurity-nginx.git
-    dest: /usr/local/src/modsecurity-nginx
-    version: 'v{{ modsecurity_nginx.version }}'
-    force: yes
+    src: 'http://nginx.org/download/nginx-{{ nginx.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ nginx_src }}'
   environment: '{{ proxy_env }}'
 
-- name: ngx_devel_kit git clone
-  git:
-    repo: https://github.com/vision5/ngx_devel_kit.git
-    dest: /usr/local/src/ngx_devel_kit
-    version: 'v{{ ngx_devel_kit.version }}'
+- name: modsecurity-nginx get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v{{ modsecurity_nginx.version }}/modsecurity-nginx-v{{ modsecurity_nginx.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ modsecurity_nginx_src }}'
   environment: '{{ proxy_env }}'
 
-- name: mruy git clone
-  git:
-    repo: https://github.com/mruby/mruby.git
-    dest: /usr/local/src/mruby
-    version: '{{ mruby.version }}'
+- name: ngx_mruy get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/matsumotory/ngx_mruby/archive/refs/tags/v{{ ngx_mruby.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ ngx_mruby_src }}'
   environment: '{{ proxy_env }}'
 
-- name: ngx_mruy git clone
-  git:
-    repo: https://github.com/matsumotory/ngx_mruby.git
-    dest: /usr/local/src/ngx_mruby
-    version: 'v{{ ngx_mruby.version }}'
+- name: ngx_devel_kit get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/vision5/ngx_devel_kit/archive/refs/tags/v{{ ngx_devel_kit.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ ngx_devel_kit_src }}'
+  environment: '{{ proxy_env }}'
+
+- name: mruby get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/mruby/mruby/archive/refs/tags/{{ mruby.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ mruby_src }}'
   environment: '{{ proxy_env }}'
 
 - name: ngx_mruby run configure
@@ -49,29 +52,29 @@
     argv:
       - ./configure
       - --enable-dynamic-module
-      - --with-mruby-root=/usr/local/src/mruby
-      - --with-ndk-root=/usr/local/src/ngx_devel_kit
-      - '--with-ngx-src-root=/usr/local/src/{{ nginx_src }}'
-    chdir: /usr/local/src/ngx_mruby
+      - '--with-mruby-root={{ mruby_src }}'
+      - '--with-ndk-root={{ ngx_devel_kit_src }}'
+      - '--with-ngx-src-root={{ nginx_src }}'
+    chdir: '{{ ngx_mruby_src }}'
 
-# ネットワーク接続あり
+# ネットワーク接続必要
 - name: ngx_mruby run make build_mruby
   command:
     cmd: make build_mruby
-    chdir: /usr/local/src/ngx_mruby
+    chdir: '{{ ngx_mruby_src }}'
   environment: '{{ proxy_env }}'
 
 - name: ngx_mruby run make generate_gems_config_dynamic
   command:
     cmd: make generate_gems_config_dynamic
-    chdir: /usr/local/src/ngx_mruby
+    chdir: '{{ ngx_mruby_src }}'
 
 # https://nginx.org/en/docs/configure.html
 - name: nginx run configure
   command:
     argv:
       - ./configure
-      # - --prefix=/usr/local/nginx
+      - '--prefix=/usr/local/{{ nginx.prefix }}'
       - --error-log-path=/var/log/nginx-local/error.log
       - --http-log-path=/var/log/nginx-local/access.log
       - --http-client-body-temp-path=/var/lib/nginx-local/tmp/client_body
@@ -116,20 +119,20 @@
       # - --with-cpp_test_module
       - --with-compat
       - --with-debug
-      - --add-dynamic-module=/usr/local/src/modsecurity-nginx
-      - --add-dynamic-module=/usr/local/src/ngx_devel_kit
-      - --add-dynamic-module=/usr/local/src/ngx_mruby
-    chdir: '/usr/local/src/{{ nginx_src }}'
+      - '--add-dynamic-module={{ modsecurity_nginx_src }}'
+      - '--add-dynamic-module={{ ngx_devel_kit_src }}'
+      - '--add-dynamic-module={{ ngx_mruby_src }}'
+    chdir: '{{ nginx_src }}'
 
 - name: nginx run make
   command:
     cmd: make
-    chdir: '/usr/local/src/{{ nginx_src }}'
+    chdir: '{{ nginx_src }}'
 
 - name: nginx run make install
   command:
     cmd: make install
-    chdir: '/usr/local/src/{{ nginx_src }}'
+    chdir: '{{ nginx_src }}'
 
 - name: nginx make directory
   file:
@@ -146,6 +149,6 @@
 - name: nginx restorecon
   command: 'restorecon -irvF {{ item }}'
   loop:
-    - /usr/local/nginx
+    - '{{ nginx.prefix }}'
     - /var/lib/nginx-local
     - /var/log/nginx-local
