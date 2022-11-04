@@ -71,6 +71,18 @@
   command:
     argv:
       - ./configure
+      # - --prefix=/usr/local/nginx
+      - --error-log-path=/var/log/nginx-local/error.log
+      - --http-log-path=/var/log/nginx-local/access.log
+      - --http-client-body-temp-path=/var/lib/nginx-local/tmp/client_body
+      - --http-proxy-temp-path=/var/lib/nginx-local/tmp/proxy
+      - --http-fastcgi-temp-path=/var/lib/nginx-local/tmp/fastcgi
+      - --http-uwsgi-temp-path=/var/lib/nginx-local/tmp/uwsgi
+      - --http-scgi-temp-path=/var/lib/nginx-local/tmp/scgi
+      - --pid-path=/run/nginx-local.pid
+      - --lock-path=/run/lock/subsys/nginx-local
+      - --user=nginx
+      - --group=nginx
       - --with-threads
       - --with-file-aio
       - --with-http_ssl_module
@@ -118,3 +130,15 @@
   command:
     cmd: make install
     chdir: '/usr/local/src/{{ nginx_src }}'
+
+- name: nginx make directory
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: nginx
+    group: root
+    mode: '0750'
+  loop:
+    - /var/lib/nginx-local
+    - /var/lib/nginx-local/tmp
+    - /var/log/ngixn-local

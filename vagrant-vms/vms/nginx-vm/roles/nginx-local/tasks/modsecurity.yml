@@ -77,7 +77,7 @@
   copy:
     remote_src: yes
     src: '/usr/local/src/coreruleset-{{ coreruleset.version }}/'
-    dest: /usr/local/modsecurity/etc/crs/
+    dest: /usr/local/modsecurity/etc/crs
 
 - name: coreruleset copy exapmle
   copy:

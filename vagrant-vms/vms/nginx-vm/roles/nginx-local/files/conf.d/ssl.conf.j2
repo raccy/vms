@@ -7,6 +7,9 @@ server {
     ssl_certificate      {{ tls_file.cert }};
     ssl_certificate_key  {{ tls_file.key }};
 
+    modsecurity             on;
+    modsecurity_rules_file  /usr/local/modsecurity/etc/modsec_includes.conf;
+
     location / {
         root   html;
         index  index.html index.htm;
