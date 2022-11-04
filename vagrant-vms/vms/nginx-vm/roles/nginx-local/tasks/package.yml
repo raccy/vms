@@ -11,12 +11,6 @@
   command:
     cmd: dnf config-manager --set-enabled crb
 
-# Git
-- name: dnf uninstall git
-  dnf:
-    state: absent
-    name: git
-
 # 開発環境
 - name: dnf install Development Tools
   dnf:

@@ -74,7 +74,7 @@
   command:
     argv:
       - ./configure
-      - '--prefix=/usr/local/{{ nginx.prefix }}'
+      - '--prefix={{ nginx.prefix }}'
       - --error-log-path=/var/log/nginx-local/error.log
       - --http-log-path=/var/log/nginx-local/access.log
       - --http-client-body-temp-path=/var/lib/nginx-local/tmp/client_body
