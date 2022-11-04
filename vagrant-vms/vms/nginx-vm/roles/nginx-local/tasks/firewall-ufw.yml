@@ -1,0 +1,9 @@
+- name: ufw allow http and https
+  ufw:
+    rule: allow
+    proto: tcp
+    port: '{{ item }}'
+  loop:
+    - http
+    - https
+

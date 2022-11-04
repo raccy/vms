@@ -10,3 +10,5 @@ mruby:
   version: '3.1.0'
 ngx_mruby:
   version: '2.2.5'
+coreruleset:
+  version: '3.3.4'

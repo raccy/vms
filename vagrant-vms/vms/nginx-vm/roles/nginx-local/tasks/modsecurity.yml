@@ -7,6 +7,7 @@
     dest: /usr/local/src/modsecurity
     version: 'v{{ modsecurity.version }}'
     force: yes
+  environment: '{{ proxy_env }}'
 
 - name: modsecurity run build.sh
   command:
@@ -30,3 +31,65 @@
   command:
     cmd: make install
     chdir: /usr/local/src/modsecurity
+
+- name: modsecurity mkdir etc
+  file:
+    path: /usr/local/modsecurity/etc
+    state: directory
+
+- name: modsecurity copy modsecurity.conf
+  copy:
+    remote_src: yes
+    src: /usr/local/src/modsecurity/modsecurity.conf-recommended
+    dest: /usr/local/modsecurity/etc/modsecurity.conf
+
+- name: modsecurity copy unicode.mapping
+  copy:
+    remote_src: yes
+    src: /usr/local/src/modsecurity/unicode.mapping
+    dest: /usr/local/modsecurity/etc/unicode.mapping
+
+# OWASP ModSecurity Core Rule Set
+# https://coreruleset.org/
+
+# - name: coreruleset git clone
+#   git:
+#     repo: https://github.com/coreruleset/coreruleset.git
+#     dest: /usr/local/modsecurity/etc/crs
+#     version: 'v{{ coreruleset.version }}'
+#     force: yes
+#   environment: '{{ proxy_env }}'
+
+- name: unarchive coreruleset
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ coreruleset.version }}.tar.gz'
+    dest: /usr/local/src
+    creates: '/usr/local/src/coreruleset-{{ coreruleset.version }}'
+  environment: '{{ proxy_env }}'
+
+- name: delete coreruleset
+  file:
+    path: /usr/local/modsecurity/etc/crs
+    state: absent
+
+- name: copy coreruleset
+  copy:
+    remote_src: yes
+    src: '/usr/local/src/coreruleset-{{ coreruleset.version }}/'
+    dest: /usr/local/modsecurity/etc/crs/
+
+- name: coreruleset copy exapmle
+  copy:
+    remote_src: yes
+    src: '/usr/local/modsecurity/etc/crs/{{ item }}.example'
+    dest: '/usr/local/modsecurity/etc/crs/{{ item }}'
+  loop:
+    - crs-setup.conf
+    - rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+    - rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+
+- name: copy modsec_includes.conf
+  copy:
+    src: ../files/modsec_includes.conf
+    dest: /usr/local/modsecurity/etc/modsec_includes.conf

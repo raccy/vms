@@ -5,9 +5,9 @@
     state: present
     name: python3-policycoreutils
 
-- name: SE Linux fcontext for modsecurity
+- name: SE Linux fcontext for modsecurity absent
   sefcontext:
-    state: present
+    state: absent
     target: '{{ item.target }}'
     ftype: '{{ item.ftype }}'
     setype: '{{ item.setype }}'
@@ -16,6 +16,31 @@
   - {target: '/usr/local/modsecurity/bin/.*', ftype: a, setype: bin_t}
   - {target: '/usr/local/modsecurity/lib',    ftype: a, setype: lib_t}
   - {target: '/usr/local/modsecurity/lib/.*', ftype: a, setype: lib_t}
+  - {target: '/usr/local/nginx/logs/nginx\.pid',  ftype: a, setype: httpd_var_run_t}
+  - {target: '/usr/local/modsecurity/bin(/.*)?', ftype: a, setype: bin_t}
+  - {target: '/usr/local/modsecurity/etc(/.*)?', ftype: a, setype: etc_t}
+  - {target: '/usr/local/modsecurity/lib(/.*)?', ftype: a, setype: lib_t}
+  - {target: '/usr/local/nginx/conf(/.*)?',       ftype: a, setype: httpd_config_t}
+  - {target: '/usr/local/nginx/html(/.*)?',       ftype: a, setype: httpd_sys_content_t}
+  - {target: '/usr/local/nginx/logs(/.*)?',       ftype: a, setype: httpd_log_t}
+  - {target: '/usr/local/nginx/modules(/.*)?',    ftype: a, setype: lib_t}
+  - {target: '/usr/local/nginx/sbin(/.*)?',       ftype: a, setype: bin_t}
+  - {target: '/usr/local/nginx/sbin/nginx',       ftype: f, setype: httpd_exec_t}
+  - {target: '/usr/local/nginx/logs/nginx\.pid',  ftype: f, setype: httpd_var_run_t}
+  - {target: '/usr/local/nginx/[^/]+_temp(/.*)?', ftype: a, setype: httpd_var_lib_t}
+  # /etc/systemd/system = /usr/lib/systemd/system
+  - {target: '/usr/lib/systemd/system/nginx-local.*', ftype: f, setype: httpd_unit_file_t}
+
+- name: SE Linux fcontext for modsecurity
+  sefcontext:
+    state: present
+    target: '{{ item.target }}'
+    ftype: '{{ item.ftype }}'
+    setype: '{{ item.setype }}'
+  loop:
+  - {target: '/usr/local/modsecurity/bin(/.*)?', ftype: a, setype: bin_t}
+  - {target: '/usr/local/modsecurity/etc(/.*)?', ftype: a, setype: etc_t}
+  - {target: '/usr/local/modsecurity/lib(/.*)?', ftype: a, setype: lib_t}
 
 - name: SE Linux fcontext for nginx
   sefcontext:
@@ -30,7 +55,7 @@
   - {target: '/usr/local/nginx/modules(/.*)?',    ftype: a, setype: lib_t}
   - {target: '/usr/local/nginx/sbin(/.*)?',       ftype: a, setype: bin_t}
   - {target: '/usr/local/nginx/sbin/nginx',       ftype: f, setype: httpd_exec_t}
-  - {target: '/usr/local/nginx/logs/nginx\.pid',  ftype: a, setype: httpd_var_run_t}
+  # - {target: '/usr/local/nginx/logs/nginx\.pid',  ftype: f, setype: httpd_var_run_t}
   - {target: '/usr/local/nginx/[^/]+_temp(/.*)?', ftype: a, setype: httpd_var_lib_t}
   # /etc/systemd/system = /usr/lib/systemd/system
   - {target: '/usr/lib/systemd/system/nginx-local.*', ftype: f, setype: httpd_unit_file_t}

@@ -19,3 +19,9 @@
 - import_tasks: conf.yml
 
 - import_tasks: start.yml
+
+- import_tasks: firewall-firewalld.yml
+  when: firewall_mgr == 'firewalld'
+
+- import_tasks: firewall-ufw.yml
+  when: firewall_mgr == 'ufw'

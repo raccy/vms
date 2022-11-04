@@ -1,5 +1,16 @@
 # 依存関係があるパッケージ
 
+# EPEL
+- name: dnf install epel
+  dnf:
+    state: present
+    name: epel-release
+
+# enable CRB
+- name: def config-manager set enabled crb
+  command:
+    cmd: dnf config-manager --set-enabled crb
+
 # Git
 - name: dnf install git
   dnf:
@@ -18,18 +29,14 @@
     name:
       - curl-devel 
       - libxml2-devel
-      - ssdeep-devel
-      - compat-lua-devel
       - pcre2-devel
-
-- name: dnf install devels for modsecurity in CRB
-  dnf:
-    enablerepo: crb
-    state: present
-    name:
+      # CRB
       - libmaxminddb-devel
       - yajl-devel
       - lmdb-devel
+      # EPEL
+      - ssdeep-devel
+      - compat-lua-devel
 
 - name: dnf install devels for nginx
   dnf:

@@ -1,0 +1,9 @@
+- name: firewalld add http and shttps
+  firewalld:
+    state: enabled
+    service: '{{ item }}'
+    immediate: yes
+    permanent: yes
+  loop:
+    - http
+    - https

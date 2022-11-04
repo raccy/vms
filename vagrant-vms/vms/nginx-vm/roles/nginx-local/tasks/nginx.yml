@@ -7,6 +7,7 @@
   get_url:
     url: 'http://nginx.org/download/{{ nginx_src }}.tar.gz'
     dest: '/usr/local/src/{{ nginx_src }}.tar.gz'
+  environment: '{{ proxy_env }}'
 
 - name: nginx unarchive soruce
   unarchive:
@@ -20,24 +21,28 @@
     dest: /usr/local/src/modsecurity-nginx
     version: 'v{{ modsecurity_nginx.version }}'
     force: yes
+  environment: '{{ proxy_env }}'
 
 - name: ngx_devel_kit git clone
   git:
     repo: https://github.com/vision5/ngx_devel_kit.git
     dest: /usr/local/src/ngx_devel_kit
     version: 'v{{ ngx_devel_kit.version }}'
+  environment: '{{ proxy_env }}'
 
 - name: mruy git clone
   git:
     repo: https://github.com/mruby/mruby.git
     dest: /usr/local/src/mruby
     version: '{{ mruby.version }}'
+  environment: '{{ proxy_env }}'
 
 - name: ngx_mruy git clone
   git:
     repo: https://github.com/matsumotory/ngx_mruby.git
     dest: /usr/local/src/ngx_mruby
     version: 'v{{ ngx_mruby.version }}'
+  environment: '{{ proxy_env }}'
 
 - name: ngx_mruby run configure
   command:
@@ -49,10 +54,12 @@
       - '--with-ngx-src-root=/usr/local/src/{{ nginx_src }}'
     chdir: /usr/local/src/ngx_mruby
 
+# ネットワーク接続あり
 - name: ngx_mruby run make build_mruby
   command:
     cmd: make build_mruby
     chdir: /usr/local/src/ngx_mruby
+  environment: '{{ proxy_env }}'
 
 - name: ngx_mruby run make generate_gems_config_dynamic
   command:
