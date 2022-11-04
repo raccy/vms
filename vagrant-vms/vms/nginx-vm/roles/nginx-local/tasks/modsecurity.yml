@@ -93,3 +93,6 @@
   copy:
     src: ../files/modsec_includes.conf
     dest: /usr/local/modsecurity/etc/modsec_includes.conf
+
+- name: modesecurity restorecon
+  command: restorecon -irvF /usr/local/modsecurity

@@ -11,11 +11,11 @@
   command:
     cmd: dnf config-manager --set-enabled crb
 
-# Git
-- name: dnf install git
-  dnf:
-    state: present
-    name: git
+# # Git
+# - name: dnf install git
+#   dnf:
+#     state: present
+#     name: git
 
 # 開発環境
 - name: dnf install Development Tools

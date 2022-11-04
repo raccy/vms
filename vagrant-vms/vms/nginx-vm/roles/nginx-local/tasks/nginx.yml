@@ -141,4 +141,11 @@
   loop:
     - /var/lib/nginx-local
     - /var/lib/nginx-local/tmp
-    - /var/log/ngixn-local
+    - /var/log/nginx-local
+
+- name: nginx restorecon
+  command: 'restorecon -irvF {{ item }}'
+  loop:
+    - /usr/local/nginx
+    - /var/lib/nginx-local
+    - /var/log/nginx-local
