@@ -1,12 +1,22 @@
 src_dir: /usr/local/src
 modsecurity:
-  prefix: /usr/local/modsecurity
   version: '3.0.8'
+  prefix: /usr/local/modsecurity
 coreruleset:
   version: '3.3.4'
 nginx:
-  prefix: /usr/local/nginx
   version: '1.22.1'
+  prefix: /usr/local/nginx
+  sbin_path: sbin/nginx
+  conf_dir: conf
+  html_dir: html
+  modules_dir: modules
+  logs_dir: logs
+  temp_dir: temp
+  run_dir: run
+  lock_dir: lock
+  user: nginx
+  group: nginx
 modsecurity_nginx:
   version: '1.0.3'
 ngx_mruby:

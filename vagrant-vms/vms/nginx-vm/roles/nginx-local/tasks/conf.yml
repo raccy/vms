@@ -33,12 +33,12 @@
     line: 'worker_processes auto;'
     insertafter: '^[\s#]*user\b.*$'
 
-- name: nginx.conf pid
-  lineinfile:
-    path: '{{ nginx.prefix }}/conf/nginx.conf'
-    regexp: '^[\s#]*pid\b.*$'
-    line: 'pid /run/nginx-local.pid;'
-    insertafter: '^[\s#]*error_log\b.*$'
+# - name: nginx.conf pid
+#   lineinfile:
+#     path: '{{ nginx.prefix }}/conf/nginx.conf'
+#     regexp: '^[\s#]*pid\b.*$'
+#     line: 'pid /run/nginx-local.pid;'
+#     insertafter: '^[\s#]*error_log\b.*$'
 
 - name: nginx.conf load_module
   lineinfile:

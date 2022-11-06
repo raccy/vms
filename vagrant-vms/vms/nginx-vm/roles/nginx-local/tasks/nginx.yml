@@ -74,18 +74,18 @@
   command:
     argv:
       - ./configure
-      - '--prefix={{ nginx.prefix }}'
-      - --error-log-path=/var/log/nginx-local/error.log
-      - --http-log-path=/var/log/nginx-local/access.log
-      - --http-client-body-temp-path=/var/lib/nginx-local/tmp/client_body
-      - --http-proxy-temp-path=/var/lib/nginx-local/tmp/proxy
-      - --http-fastcgi-temp-path=/var/lib/nginx-local/tmp/fastcgi
-      - --http-uwsgi-temp-path=/var/lib/nginx-local/tmp/uwsgi
-      - --http-scgi-temp-path=/var/lib/nginx-local/tmp/scgi
-      - --pid-path=/run/nginx-local.pid
-      - --lock-path=/run/lock/subsys/nginx-local
-      - --user=nginx
-      - --group=nginx
+      # - '--prefix={{ nginx.prefix }}'
+      # - --error-log-path=/var/log/nginx-local/error.log
+      # - --http-log-path=/var/log/nginx-local/access.log
+      - --http-client-body-temp-path={{ nginx.temp_dir }}/client_body
+      - --http-proxy-temp-path={{ nginx.temp_dir }}/proxy
+      - --http-fastcgi-temp-path={{ nginx.temp_dir }}/fastcgi
+      - --http-uwsgi-temp-path={{ nginx.temp_dir }}/uwsgi
+      - --http-scgi-temp-path={{ nginx.temp_dir }}/scgi
+      - --pid-path={{ nginx.run_dir }}/nginx.pid
+      - --lock-path={{ nginx.lock_dir }}/nginx.lock
+      - --user={{ nginx.user }}
+      - --group={{ nginx.group }}
       - --with-threads
       - --with-file-aio
       - --with-http_ssl_module
