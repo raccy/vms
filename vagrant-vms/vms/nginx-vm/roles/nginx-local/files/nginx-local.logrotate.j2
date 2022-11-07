@@ -1,4 +1,4 @@
-/var/log/nginx-local/*log {
+{{ nginx_logs }}*log {
     daily
     rotate 10
     missingok
@@ -7,6 +7,6 @@
     delaycompress
     sharedscripts
     postrotate
-        /bin/kill -USR1 `cat /usr/nginx-local.pid 2>/dev/null` 2>/dev/null || true
+        /bin/kill -USR1 `cat {{ nginx_pid }} 2>/dev/null` 2>/dev/null || true
     endscript
 }

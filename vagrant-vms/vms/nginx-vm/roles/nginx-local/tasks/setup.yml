@@ -3,19 +3,19 @@
 - name: nginx create group
   group:
     system: yes
-    name: nginx
+    name: '{{ nginx.group }}'
 
 - name: nginx create user
   user:
-    name: nginx
+    name: '{{ nginx.user }}'
     system: yes
-    home: /var/lib/nginx-local
-    group: nginx
+    home: '{{ nginx_prefix }}'
+    group: '{{ nginx.group }}'
     shell: /sbin/nologin
     comment: Nginx web server
     create_home: no
 
 - name: nginx logrotate file
-  copy:
-    src: ../files/nginx-local.logrotate
+  template:
+    src: ../files/nginx-local.logrotate.j2
     dest: /etc/logrotate.d/nginx-local

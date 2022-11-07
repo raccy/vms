@@ -4,6 +4,8 @@
 
 # EL9のみ
 
+- import_tasks: vars.yml
+
 - import_tasks: stop.yml
 
 - import_tasks: setup.yml

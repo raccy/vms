@@ -1,20 +1,22 @@
 src_dir: /usr/local/src
 modsecurity:
   version: '3.0.8'
-  prefix: /usr/local/modsecurity
+  # prefix: /usr/local/modsecurity
+  conf: etc/modsec_includes.conf
 coreruleset:
   version: '3.3.4'
 nginx:
+  service: nginx-local.service
   version: '1.22.1'
-  prefix: /usr/local/nginx
-  sbin_path: sbin/nginx
-  conf_dir: conf
-  html_dir: html
-  modules_dir: modules
-  logs_dir: logs
-  temp_dir: temp
-  run_dir: run
-  lock_dir: lock
+  # prefix: /usr/local/nginx
+  # sbin: sbin/nginx
+  # modules: modules
+  # conf: conf/nginx.conf
+  # logs: logs
+  pid: run/nginx.pid
+  lock: run/lock/nginx.lock
+  temp: temp
+  # html: html
   user: nginx
   group: nginx
 modsecurity_nginx:

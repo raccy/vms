@@ -70,20 +70,22 @@
     chdir: '{{ ngx_mruby_src }}'
 
 # https://nginx.org/en/docs/configure.html
-- name: nginx run configure
-  command:
-    argv:
-      - ./configure
-      # - '--prefix={{ nginx.prefix }}'
-      # - --error-log-path=/var/log/nginx-local/error.log
-      # - --http-log-path=/var/log/nginx-local/access.log
-      - --http-client-body-temp-path={{ nginx.temp_dir }}/client_body
-      - --http-proxy-temp-path={{ nginx.temp_dir }}/proxy
-      - --http-fastcgi-temp-path={{ nginx.temp_dir }}/fastcgi
-      - --http-uwsgi-temp-path={{ nginx.temp_dir }}/uwsgi
-      - --http-scgi-temp-path={{ nginx.temp_dir }}/scgi
-      - --pid-path={{ nginx.run_dir }}/nginx.pid
-      - --lock-path={{ nginx.lock_dir }}/nginx.lock
+- name: nginx configure option
+  set_fact:
+    nginx_configure_option:
+      - '{{ "--prefix=" ~ nginx.prefix if nginx.prefix is defined else None }}'
+      - '{{ "--sbin-path=" ~ nginx.sbin if nginx.sbin is defined else None }}'
+      - '{{ "--modules-path=" ~ nginx.modules if nginx.modules is defined else None }}'
+      - '{{ "--conf-path=" ~ nginx.conf if nginx.conf is defined else None }}'
+      - '{{ "--error-log-path=" ~ nginx.logs ~ "/error.log" if nginx.logs is defined else None }}'
+      - '{{ "--pid-path=" ~ nginx.pid if nginx.pid is defined else None }}'
+      - '{{ "--lock-path=" ~ nginx.lock if nginx.lock is defined else None }}'
+      - '{{ "--http-log-path=" ~ nginx.logs ~ "/access.log" if nginx.logs is defined else None }}'
+      - '{{ "--http-client-body-temp-path=" ~ nginx.temp ~ "client_body" if nginx.temp is defined else None }}'
+      - '{{ "--http-proxy-temp-path=" ~ nginx.temp ~ "proxy" if nginx.temp is defined else None }}'
+      - '{{ "--http-fastcgi-temp-path=" ~ nginx.temp ~ "fastcgi" if nginx.temp is defined else None }}'
+      - '{{ "--http-uwsgi-temp-path=" ~ nginx.temp ~ "uwsgi" if nginx.temp is defined else None }}'
+      - '{{ "--http-scgi-temp-path=" ~ nginx.temp ~ "scgi" if nginx.temp is defined else None }}'
       - --user={{ nginx.user }}
       - --group={{ nginx.group }}
       - --with-threads
@@ -122,7 +124,12 @@
       - '--add-dynamic-module={{ modsecurity_nginx_src }}'
       - '--add-dynamic-module={{ ngx_devel_kit_src }}'
       - '--add-dynamic-module={{ ngx_mruby_src }}'
+
+- name: nginx run configure
+  command:
+    argv: '{{ ["./configure"] + (nginx_configure_option | select() | list)}}'
     chdir: '{{ nginx_src }}'
+  environment: '{{ modsecurity_env | default({}) }}'
 
 - name: nginx run make
   command:
@@ -139,16 +146,12 @@
     path: '{{ item }}'
     state: directory
     owner: nginx
-    group: root
-    mode: '0750'
+    group: nginx
+    mode: '0755'
   loop:
-    - /var/lib/nginx-local
-    - /var/lib/nginx-local/tmp
-    - /var/log/nginx-local
+    - '{{ nginx_pid | dirname }}'
+    - '{{ nginx_lock | dirname }}'
+    - '{{ nginx_temp }}'
 
 - name: nginx restorecon
-  command: 'restorecon -irvF {{ item }}'
-  loop:
-    - '{{ nginx.prefix }}'
-    - /var/lib/nginx-local
-    - /var/log/nginx-local
+  command: 'restorecon -irvF {{ nginx_prefix }}'

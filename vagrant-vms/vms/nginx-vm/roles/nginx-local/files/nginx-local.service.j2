@@ -5,11 +5,11 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-PIDFile=/run/nginx-local.pid
-ExecStartPre=/usr/bin/rm -f /run/nginx-local.pid
-ExecStartPre={{ nginx.prefix }}/sbin/nginx -t
-ExecStart={{ nginx.prefix }}/sbin/nginx
-ExecReload={{ nginx.prefix }}/sbin/nginx -s reload
+PIDFile={{ nginx_pid }}
+ExecStartPre=/usr/bin/rm -f {{ nginx_pid }}
+ExecStartPre={{ nginx_sbin }} -t
+ExecStart={{ nginx_sbin }}
+ExecReload={{ nginx_sbin }} -s reload
 KillSignal=SIGQUIT
 TimeoutStopSec=5
 KillMode=mixed

@@ -1,0 +1,38 @@
+# set_fact
+
+- name: set src dircetory
+  set_fact:
+    modsecurity_src: '{{ src_dir }}/modsecurity-v{{ modsecurity.version }}'
+    coreruleset_src: '{{ src_dir }}/coreruleset-{{ coreruleset.version }}'
+    nginx_src: '{{ src_dir }}/nginx-{{ nginx.version }}'
+    modsecurity_nginx_src: '{{ src_dir }}/modsecurity-nginx-v{{ modsecurity_nginx.version }}'
+    ngx_mruby_src: '{{ src_dir }}/ngx_mruby-{{ ngx_mruby.version }}'
+    ngx_devel_kit_src: '{{ src_dir }}/ngx_devel_kit-{{ ngx_devel_kit.version }}'
+    mruby_src: '{{ src_dir }}/mruby-{{ mruby.version }}'
+
+- name: set prefix
+  set_fact:
+    modsecurity_prefix: '{{ modsecurity.prefix | default("/usr/local/modsecurity") }}'
+    nginx_prefix: '{{ nginx.prefix | default("/usr/local/nginx") }}'
+
+- name: set modsecurity path
+  set_fact:
+    modsecurity_conf: '{{ modsecurity_prefix }}/{{ modsecurity.conf }}'
+ 
+- name: set nginx path
+  set_fact:
+    nginx_sbin: '{{ nginx_prefix }}/{{ nginx.sbin | default("sbin/nginx") }}'
+    nginx_modules: '{{ nginx_prefix }}/{{ nginx.modules | default("modules") }}'
+    nginx_conf: '{{ nginx_prefix }}/{{ nginx.conf | default("conf/nginx.conf") }}'
+    nginx_logs: '{{ nginx_prefix }}/{{ nginx.logs | default("logs") }}'
+    nginx_pid: '{{ nginx_prefix }}/{{ nginx.pid | default("logs/nginx.pid") }}'
+    nginx_lock: '{{ nginx_prefix }}/{{ nginx.lock | default("logs/nginx.lock") }}'
+    nginx_temp: '{{ nginx_prefix }}/{{ nginx.temp | default("")}}'
+    nginx_html: '{{ nginx_prefix }}/{{ nginx.html | default("html")}}'
+
+- name: set medsecurity path environment
+  set_fact:
+    modsecurity_env:
+      MODSECURITY_INC: '{{ modsecurity_prefix }}/include'
+      MODSECURITY_LIB: '{{ modsecurity_prefix }}/lib'
+  when: modsecurity.prefix is defined

@@ -12,9 +12,9 @@
     ftype: '{{ item.ftype }}'
     setype: '{{ item.setype }}'
   loop:
-  - {target: '{{ modsecurity.prefix }}/bin(/.*)?', ftype: a, setype: bin_t}
-  - {target: '{{ modsecurity.prefix }}/etc(/.*)?', ftype: a, setype: etc_t}
-  - {target: '{{ modsecurity.prefix }}/lib(/.*)?', ftype: a, setype: lib_t}
+  - {target: '{{ modsecurity_prefix }}/bin(/.*)?', ftype: a, setype: bin_t}
+  - {target: '{{ modsecurity_prefix }}/lib(/.*)?', ftype: a, setype: lib_t}
+  - {target: '{{ modsecurity_conf | dirname }}(/.*)?', ftype: a, setype: etc_t}
 
 - name: SE Linux fcontext for nginx
   sefcontext:
@@ -23,19 +23,13 @@
     ftype: '{{ item.ftype }}'
     setype: '{{ item.setype }}'
   loop:
-  - {target: '{{ nginx.prefix }}/{{ nginx.conf_dir }}(/.*)?', ftype: a, setype: httpd_config_t}
-  - {target: '{{ nginx.prefix }}/{{ nginx.html_dir }}(/.*)?', ftype: a, setype: httpd_sys_content_t}
-  - {target: '{{ nginx.prefix }}/{{ nginx.logs_dir }}(/.*)?', ftype: a, setype: httpd_log_t}
-  - {target: '{{ nginx.prefix }}/{{ nginx.modules_dir }}(/.*)?', ftype: a, setype: httpd_modules_t}
-  # - {target: '{{ nginx.prefix }}/sbin(/.*)?',       ftype: a, setype: bin_t}
-  - {target: '{{ nginx.prefix }}/{{ nginx.sbin_dir }}/nginx',       ftype: f, setype: httpd_exec_t}
-  # - {target: '{{ nginx.prefix }}/logs/nginx\.pid',  ftype: f, setype: httpd_var_run_t}
-  # - {target: '{{ nginx.prefix }}/logs/nginx\.lock',  ftype: f, setype: httpd_lock_t}
-  # - {target: '{{ nginx.prefix }}/[^/]+_temp(/.*)?', ftype: a, setype: httpd_var_lib_t}
-  - {target: '{{ nginx.prefix }}/{{ nginx.temp_dir }}(/.*)?', ftype: a, setype: httpd_var_lib_t}
-  # - {target: '/var/run/nginx-local.*', ftype: a, setype: httpd_var_run_t }
-  # - {target: '/var/lib/nginx-local(/.*)?', ftype: a, setype: httpd_var_lib_t }
-  # - {target: '/var/log/nginx-local(/.*)?', ftype: a, setype: httpd_log_t}
-  # - {target: '/var/cache/nginx-local(/.*)?', ftype: a, setype: httpd_cache_t }
+  - {target: '{{ nginx_conf | dirname }}(/.*)?', ftype: a, setype: httpd_config_t}
+  - {target: '{{ nginx_html }}(/.*)?',           ftype: a, setype: httpd_sys_content_t}
+  - {target: '{{ nginx_logs }}(/.*)?',           ftype: a, setype: httpd_log_t}
+  - {target: '{{ nginx_modules }}(/.*)?',        ftype: a, setype: httpd_modules_t}
+  - {target: '{{ nginx_sbin }}',                 ftype: f, setype: httpd_exec_t}
+  - {target: '{{ nginx_pid | dirname }}(/.*)?',  ftype: a, setype: httpd_var_run_t}
+  - {target: '{{ nginx_lock | dirname }}(/.*)?', ftype: a, setype: httpd_lock_t}
+  - {target: '{{ nginx_temp }}(/.*)?',           ftype: a, setype: httpd_tmp_t}
   # /etc/systemd/system = /usr/lib/systemd/system
   - {target: '/usr/lib/systemd/system/nginx-local.*', ftype: f, setype: httpd_unit_file_t}

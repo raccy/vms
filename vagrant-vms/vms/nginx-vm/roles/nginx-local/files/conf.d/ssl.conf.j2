@@ -8,10 +8,10 @@ server {
     ssl_certificate_key  {{ tls_file.key }};
 
     modsecurity             on;
-    modsecurity_rules_file  {{ modsecurity.prefix }}/etc/modsec_includes.conf;
+    modsecurity_rules_file  {{ modsecurity_conf }};
 
     location / {
-        root   html;
+        root   {{ nginx.html | default("html") }};
         index  index.html index.htm;
     }
 }

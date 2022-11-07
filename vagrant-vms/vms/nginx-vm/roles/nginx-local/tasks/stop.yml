@@ -1,10 +1,10 @@
 - name: nginx service unit file stat
   stat:
-    path: /etc/systemd/system/nginx-local.service
+    path: '/etc/systemd/system/{{ nginx.service }}'
   register: service_file
 
 - name: stop nginx-local
   systemd:
-    name: nginx-local.service
+    name: '{{ nginx.service }}'
     state: stopped
   when: service_file.stat.isreg is defined and service_file.stat.isreg

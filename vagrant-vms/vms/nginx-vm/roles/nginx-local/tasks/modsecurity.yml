@@ -1,9 +1,5 @@
 # modsecurity and coreruleset
 
-- set_fact:
-    modsecurity_src: '{{ src_dir }}/modsecurity-v{{ modsecurity.version }}'
-    coreruleset_src: '{{ src_dir }}/coreruleset-{{ coreruleset.version }}'
-
 # modsecurity
 # https://github.com/SpiderLabs/ModSecurity
 
@@ -20,13 +16,16 @@
     cmd: sh ./build.sh
     chdir: '{{ modsecurity_src }}'
 
-- name: modsecurity run configure
-  command:
-    argv:
-      - ./configure
-      - '--prefix={{ modsecurity.prefix }}'
+- name: modsecurity configure option
+  set_fact:
+    modsecurity_configure_option:
+      - '{{ "--prefix=" ~ modsecurity.prefix if modsecurity.prefix is defined else None }}'
       - --with-lmdb
       - --with-pcre2
+
+- name: modsecurity run configure
+  command:
+    argv: '{{ ["./configure"] + (modsecurity_configure_option | select() | list) }}'
     chdir: '{{ modsecurity_src }}'
 
 - name: modsecurity run make
@@ -39,22 +38,22 @@
     cmd: make install
     chdir: '{{ modsecurity_src }}'
 
-- name: modsecurity mkdir etc
+- name: modsecurity mkdir conf diretory
   file:
-    path: '{{ modsecurity.prefix }}/etc'
+    path: '{{ modsecurity_conf | dirname}}'
     state: directory
 
 - name: modsecurity copy modsecurity.conf recommeded
   copy:
     remote_src: yes
     src: '{{ modsecurity_src }}/modsecurity.conf-recommended'
-    dest: '{{ modsecurity.prefix }}/etc/modsecurity.conf'
+    dest: '{{ modsecurity_conf | dirname}}/modsecurity.conf'
 
 - name: modsecurity copy unicode.mapping
   copy:
     remote_src: yes
     src: '{{ modsecurity_src }}/unicode.mapping'
-    dest: '{{ modsecurity.prefix }}/etc/unicode.mapping'
+    dest: '{{ modsecurity_conf | dirname}}/unicode.mapping'
 
 # OWASP ModSecurity Core Rule Set
 # https://coreruleset.org/
@@ -69,20 +68,20 @@
 
 - name: coreruleset delete crs
   file:
-    path: '{{ modsecurity.prefix }}/etc/crs'
+    path: '{{ modsecurity_conf | dirname}}/crs'
     state: absent
 
 - name: coreruleset copy crs
   copy:
     remote_src: yes
     src: '{{ coreruleset_src }}/'
-    dest: '{{ modsecurity.prefix }}/etc/crs'
+    dest: '{{ modsecurity_conf | dirname}}/crs'
 
 - name: coreruleset copy exapmle
   copy:
     remote_src: yes
-    src: '{{ modsecurity.prefix }}/etc/crs/{{ item }}.example'
-    dest: '{{ modsecurity.prefix }}/etc/crs/{{ item }}'
+    src: '{{ modsecurity_conf | dirname}}/crs/{{ item }}.example'
+    dest: '{{ modsecurity_conf | dirname}}/crs/{{ item }}'
   loop:
     - crs-setup.conf
     - rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
@@ -91,7 +90,7 @@
 - name: modsecurity copy modsec_includes.conf
   copy:
     src: ../files/modsec_includes.conf
-    dest: '{{ modsecurity.prefix }}/etc/modsec_includes.conf'
+    dest: '{{ modsecurity_conf | dirname}}/modsec_includes.conf'
 
 - name: modsecurity restorecon
-  command: 'restorecon -irvF {{ modsecurity.prefix }}'
+  command: 'restorecon -irvF {{ modsecurity_prefix }}'
