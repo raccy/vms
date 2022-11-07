@@ -81,11 +81,11 @@
       - '{{ "--pid-path=" ~ nginx.pid if nginx.pid is defined else None }}'
       - '{{ "--lock-path=" ~ nginx.lock if nginx.lock is defined else None }}'
       - '{{ "--http-log-path=" ~ nginx.logs ~ "/access.log" if nginx.logs is defined else None }}'
-      - '{{ "--http-client-body-temp-path=" ~ nginx.temp ~ "client_body" if nginx.temp is defined else None }}'
-      - '{{ "--http-proxy-temp-path=" ~ nginx.temp ~ "proxy" if nginx.temp is defined else None }}'
-      - '{{ "--http-fastcgi-temp-path=" ~ nginx.temp ~ "fastcgi" if nginx.temp is defined else None }}'
-      - '{{ "--http-uwsgi-temp-path=" ~ nginx.temp ~ "uwsgi" if nginx.temp is defined else None }}'
-      - '{{ "--http-scgi-temp-path=" ~ nginx.temp ~ "scgi" if nginx.temp is defined else None }}'
+      - '{{ "--http-client-body-temp-path=" ~ nginx.temp ~ "/client_body" if nginx.temp is defined else None }}'
+      - '{{ "--http-proxy-temp-path=" ~ nginx.temp ~ "/proxy" if nginx.temp is defined else None }}'
+      - '{{ "--http-fastcgi-temp-path=" ~ nginx.temp ~ "/fastcgi" if nginx.temp is defined else None }}'
+      - '{{ "--http-uwsgi-temp-path=" ~ nginx.temp ~ "/uwsgi" if nginx.temp is defined else None }}'
+      - '{{ "--http-scgi-temp-path=" ~ nginx.temp ~ "/scgi" if nginx.temp is defined else None }}'
       - --user={{ nginx.user }}
       - --group={{ nginx.group }}
       - --with-threads
@@ -145,9 +145,6 @@
   file:
     path: '{{ item }}'
     state: directory
-    owner: nginx
-    group: nginx
-    mode: '0755'
   loop:
     - '{{ nginx_pid | dirname }}'
     - '{{ nginx_lock | dirname }}'
