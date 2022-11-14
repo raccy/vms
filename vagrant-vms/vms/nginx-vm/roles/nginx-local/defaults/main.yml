@@ -26,4 +26,4 @@ ngx_mruby:
 ngx_devel_kit:
   version: '0.3.2'
 mruby:
-  version: '3.1.0'
+  version: '2.1.2'

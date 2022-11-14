@@ -150,5 +150,11 @@
     - '{{ nginx_lock | dirname }}'
     - '{{ nginx_temp }}'
 
+- name: nginx logs 0750
+  file:
+    path: '{{ nginx_logs }}'
+    state: directory
+    mode: '0750'
+
 - name: nginx restorecon
   command: 'restorecon -irvF {{ nginx_prefix }}'

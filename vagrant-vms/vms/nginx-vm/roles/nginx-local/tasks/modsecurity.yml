@@ -92,25 +92,16 @@
     src: ../files/modsec_includes.conf
     dest: '{{ modsecurity_conf | dirname}}/modsec_includes.conf'
 
-- name: modsecurity SecRuleEngine On
+- name: modsecurity config
   lineinfile:
     path: '{{ modsecurity_conf | dirname}}/modsecurity.conf'
-    regexp: '^[\s#]*SecRuleEngine\b.*$'
-    line: 'SecRuleEngine On'
-    insertbefore: BOF
-
-# custom conf
-- name: modsecurity SecRuleEngine On
-  lineinfile:
-    path: '{{ modsecurity_conf | dirname}}/modsecurity.conf'
-    regexp: '^[\s#]*SecRuleEngine\b.*$'
-    line: 'SecRuleEngine On'
-
-- name: modsecurity SecAuditLog On
-  lineinfile:
-    path: '{{ modsecurity_conf | dirname}}/modsecurity.conf'
-    regexp: '^[\s#]*SecAuditLog\b.*$'
-    line: 'SecAuditLog {{ nginx_logs }}/modsec_audit.log'
+    regexp: '^[\s#]*{{ item.name }}\b.*$'
+    line: '{{ item.name }} {{ item.value }}'
+  loop:
+    - {name: SecRuleEngine, value: 'On'}
+    - {name: SecAuditLogRelevantStatus, value: '"^0"'} # No match
+    - {name: SecAuditLogParts, value: 'ABHZ'}
+    - {name: SecAuditLog, value: '{{ nginx_logs }}/modsec_audit.log'}
 
 - name: modsecurity restorecon
   command: 'restorecon -irvF {{ modsecurity_prefix }}'
