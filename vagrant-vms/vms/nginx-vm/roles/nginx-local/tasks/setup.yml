@@ -19,3 +19,13 @@
   template:
     src: ../files/nginx-local.logrotate.j2
     dest: /etc/logrotate.d/nginx-local
+
+- name: logrotate service diretory
+  file:
+    path: /etc/systemd/system/logrotate.service.d
+    state: directory
+
+- name: logrotate serivce conf for nginx
+  template:
+    src: ../files/logrotate.service.nginx-local.conf.j2
+    dest: /etc/systemd/system/logrotate.service.d/nginx-local.conf
