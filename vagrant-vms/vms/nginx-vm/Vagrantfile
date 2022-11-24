@@ -44,6 +44,23 @@ Vagrant.configure('2') do |config|
     end
   end
 
+  # proxy:
+  #   uri: http://proxy.example.jp:3128/
+  #   scheme: http
+  #   host: proxy.example.jp
+  #   port: 3128
+  #   excludes:
+  #     - '.example.jp'
+  # proxy_env:
+  #   HTTP_PROXY: http://proxy.example.jp:3128
+  #   HTTPS_PROXY: http://proxy.example.jp:3128
+  #   FTP_PROXY: http://proxy.example.jp:3128
+  #   http_proxy: http://proxy.example.jp:3128
+  #   https_proxy: http://proxy.example.jp:3128
+  #   ftp_proxy: http://proxy.example.jp:3128
+  #   NO_PROXY: 'localhost,127.0.0.1,::1,.example.jp'
+  #   no_proxy: 'localhost,127.0.0.1,::1,.example.jp'
+
   config.vm.provision 'ansible' do |ansible|
     ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
     ansible.playbook = '../../ansible/el9/setup.yml'
