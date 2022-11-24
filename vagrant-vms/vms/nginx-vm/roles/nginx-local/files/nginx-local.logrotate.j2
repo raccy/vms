@@ -7,6 +7,6 @@
     delaycompress
     sharedscripts
     postrotate
-        /bin/kill -USR1 `cat {{ nginx_pid }} 2>/dev/null` 2>/dev/null || true
+        /bin/systemctl restart {{ nginx.service }} 2>/dev/null || true
     endscript
 }

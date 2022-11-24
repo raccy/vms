@@ -27,3 +27,5 @@
 
 - import_tasks: firewall-ufw.yml
   when: firewall_mgr == 'ufw'
+
+- import_tasks: log_user.yml

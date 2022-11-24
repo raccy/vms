@@ -145,15 +145,19 @@
   file:
     path: '{{ item }}'
     state: directory
+    owner: '{{ nginx.user }}'
+    group: '{{ nginx.group }}'
   loop:
     - '{{ nginx_pid | dirname }}'
     - '{{ nginx_lock | dirname }}'
     - '{{ nginx_temp }}'
 
-- name: nginx logs 0750
+- name: nginx logs 0750 owner nginx
   file:
     path: '{{ nginx_logs }}'
     state: directory
+    owner: '{{ nginx.user }}'
+    group: '{{ nginx.group }}'
     mode: '0750'
 
 - name: nginx restorecon

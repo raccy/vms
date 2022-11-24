@@ -1,0 +1,7 @@
+# TODO: ログユーザーがいない場合は作成されてしまう。
+- name: add group log user
+  user:
+    name: '{{ log_user }}'
+    append: yes
+    groups: '{{ nginx.group }}'
+  when: log_user is defined
