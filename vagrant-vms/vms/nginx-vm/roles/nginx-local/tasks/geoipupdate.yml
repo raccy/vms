@@ -16,7 +16,7 @@
     - {name: LicenseKey, value: '{{ geoip.license_key }}'}
 
 - debug:
-    msg: '{{ proxy_env }}'
+    msg: '{{ geoip }}'
 
 - name: geoipupdate config proxy
   lineinfile:
