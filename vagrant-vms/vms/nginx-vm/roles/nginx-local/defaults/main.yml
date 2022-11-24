@@ -5,6 +5,8 @@ modsecurity:
   conf: etc/modsec_includes.conf
 coreruleset:
   version: '3.3.4'
+geoipupdate:
+  version: '4.10.0'
 nginx:
   service: nginx-local.service
   version: '1.22.1'
@@ -21,6 +23,8 @@ nginx:
   group: nginx
 modsecurity_nginx:
   version: '1.0.3'
+ngx_http_geoip2_module:
+  version: '3.4'
 ngx_mruby:
   version: '2.2.5'
 ngx_devel_kit:

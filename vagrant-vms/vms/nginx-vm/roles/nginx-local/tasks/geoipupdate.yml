@@ -1,0 +1,35 @@
+# geoipupdate
+# https://github.com/maxmind/geoipupdate
+
+- name: geoipupdate install
+  dnf:
+    name: 'https://github.com/maxmind/geoipupdate/releases/download/v{{ geoipupdate.version }}/geoipupdate_{{ geoipupdate.version }}_linux_amd64.rpm'
+    state: present
+
+- name: geoipupdate config
+  lineinfile:
+    path: /etc/GeoIP.conf
+    regexp: '^[\s#]*{{ item.name }}\b.*$'
+    line: '{{ item.name }} {{ item.value }}'
+  loop:
+    - {name: AccountID, value: '{{ geoip.account_id }}'}
+    - {name: LicenseKey, value: '{{ geoip.license_key }}'}
+
+- debug:
+    msg: '{{ proxy_env }}'
+
+- name: geoipupdate config proxy
+  lineinfile:
+    path: /etc/GeoIP.conf
+    regexp: '^[\s#]*{{ item.name }}\b.*$'
+    line: '{{ item.name }} {{ item.value }}'
+  loop:
+    - {name: Proxy, value: '{{ proxy_env.https_proxy | regex_replace("^http://(.*)$", "\1") }}'}
+  when: proxy_env is defined
+
+- name: crontab geoipupdate
+  blockinfile:
+    path: /etc/crontab
+    marker: "# {mark} ANSIBLE MANAGED BLOCK geoipupdate"
+    block: |
+      {{ 60 | random }} 5 * * 0,3 root /usr/bin/geoipupdate >/dev/null 2>&1

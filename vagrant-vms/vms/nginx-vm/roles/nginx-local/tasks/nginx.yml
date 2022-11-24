@@ -6,6 +6,7 @@
     ngx_mruby_src: '{{ src_dir }}/ngx_mruby-{{ ngx_mruby.version }}'
     ngx_devel_kit_src: '{{ src_dir }}/ngx_devel_kit-{{ ngx_devel_kit.version }}'
     mruby_src: '{{ src_dir }}/mruby-{{ mruby.version }}'
+    ngx_http_geoip2_module_src: '{{ src_dir }}/ngx_http_geoip2_module-{{ ngx_http_geoip2_module.version }}'
 
 - name: nginx get and unarchive
   unarchive:
@@ -21,6 +22,14 @@
     src: 'https://github.com/SpiderLabs/ModSecurity-nginx/releases/download/v{{ modsecurity_nginx.version }}/modsecurity-nginx-v{{ modsecurity_nginx.version }}.tar.gz'
     dest: '{{ src_dir }}'
     creates: '{{ modsecurity_nginx_src }}'
+  environment: '{{ proxy_env }}'
+
+- name: ngx_http_geoip2_module get and unarchive
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/leev/ngx_http_geoip2_module/archive/refs/tags/{{ ngx_http_geoip2_module.version }}.tar.gz'
+    dest: '{{ src_dir }}'
+    creates: '{{ ngx_http_geoip2_module_src }}'
   environment: '{{ proxy_env }}'
 
 - name: ngx_mruy get and unarchive
@@ -122,6 +131,7 @@
       - --with-compat
       - --with-debug
       - '--add-dynamic-module={{ modsecurity_nginx_src }}'
+      - '--add-dynamic-module={{ ngx_http_geoip2_module_src }}'
       - '--add-dynamic-module={{ ngx_devel_kit_src }}'
       - '--add-dynamic-module={{ ngx_mruby_src }}'
 

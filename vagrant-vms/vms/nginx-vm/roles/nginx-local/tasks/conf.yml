@@ -52,6 +52,7 @@
     - ngx_mail_module
     - ngx_stream_module
     - ngx_http_modsecurity_module
+    - ngx_http_geoip2_module
     - ndk_http_module
     - ngx_http_mruby_module
 

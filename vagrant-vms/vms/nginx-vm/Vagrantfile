@@ -78,6 +78,10 @@ Vagrant.configure('2') do |config|
         key: '/etc/pki/tls/private/server.key',
       },
       firewall_mgr: 'firewalld',
+      geoip: {
+        account_id: ENV['GEOIP_ACCOUNT_ID'],
+        license_key: ENV['GEOIP_LICENSE_KEY'],
+      },
     }
     vars[:proxy_env] = proxy_env
     ansible.extra_vars = vars
