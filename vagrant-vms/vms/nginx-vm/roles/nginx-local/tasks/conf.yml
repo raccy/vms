@@ -56,13 +56,29 @@
     - ndk_http_module
     - ngx_http_mruby_module
 
-- name: nginx.conf tcp_nopush
+- name: nginx.conf http tcp_nopush
   lineinfile:
     path: '{{ nginx_conf }}'
     regexp: '^[\s#]*tcp_nopush\b.*$'
     line: '    tcp_nopush      on;'
     firstmatch: yes
     insertafter: '^\s*http\s*{'
+
+- name: nginx.conf http geoip2
+  blockinfile:
+    path: '{{ nginx_conf }}'
+    marker: "# {mark} ANSIBLE MANAGED BLOCK geoip2"
+    insertbefore: '^\s*server\s*{'
+    block: |
+      geoip2 /usr/share/GeoIP/GeoLite2-Country.mmdb {
+          $geoip2_country_code country iso_code;
+          $geoip2_country_name country names en;
+      }
+      log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                     '$status $body_bytes_sent "$http_referer" '
+                     '"$http_user_agent" "$http_x_forwarded_for" '
+                     '$geoip2_country_code "$geoip2_country_name"';
+      access_log {{ nginx.logs | default("logs") }}/access.log main;
 
 - name: nginx.conf include http conf
   lineinfile:
