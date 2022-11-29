@@ -16,8 +16,8 @@
   dnf:
     state: present
     name: 'rubygem-{{ item }}'
-  loop: '{{ ruby.mods | default([]) }}'
-  when: ruby.mods is defined
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.pkgs is defined
 
 - name: set PATH and GEM_HOME in .bashrc
   blockinfile:
@@ -37,9 +37,13 @@
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
 
+- debug:
+    msg: '{{ "rubocop@1.28.2" | split("@") }}'
+
 - name: gem install packages
   gem:
-    name: '{{ item }}'
+    name: '{{ item | split("@") | first }}'
+    version: '{{ item | split("@") | first if "@" in item }}'
     state: present
   loop: '{{ ruby.gems | default([]) }}'
   when: ruby.gems is defined

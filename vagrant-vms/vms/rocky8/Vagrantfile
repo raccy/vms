@@ -75,7 +75,7 @@ Vagrant.configure('2') do |config|
         dev: true,
         pkgs: ['bundler'],
         gems: [
-          {name: 'rubocop', version: '1.28.2'},
+          'rubocop@1.28.2',
         ],
       },
     }

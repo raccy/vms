@@ -18,8 +18,8 @@
   apt:
     name: 'ruby-{{ item }}'
     state: present
-  loop: '{{ ruby.mods | default([]) }}'
-  when: ruby.mods is defined
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.pkgs is defined
 
 - name: set PATH in .bashrc
   blockinfile:

@@ -16,8 +16,8 @@
   dnf:
     state: present
     name: 'rubygem-{{ item }}'
-  loop: '{{ ruby.mods | default([]) }}'
-  when: ruby.mods is defined
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.pkgs is defined
 
 - name: set PATH and GEM_HOME in .bashrc
   blockinfile:

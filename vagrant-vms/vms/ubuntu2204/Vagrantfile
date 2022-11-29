@@ -83,7 +83,7 @@ Vagrant.configure('2') do |config|
       ruby: {
         type: 'apt', # or 'snap' or 'rbenv'
         dev: true,
-        mods: %w[bundler],
+        pkgs: %w[bundler],
         gems: %w[rubocop],
       },
     }

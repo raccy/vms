@@ -16,8 +16,8 @@
   yum:
     state: present
     name: 'rubygem-{{ item }}'
-  loop: '{{ ruby.mods | default([]) }}'
-  when: ruby.mods is defined
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.pkgs is defined
 
 - name: copy .gemrc
   copy:

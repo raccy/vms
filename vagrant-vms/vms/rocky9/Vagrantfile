@@ -69,7 +69,7 @@ Vagrant.configure('2') do |config|
       reids: {},
       ruby: {
         dev: true,
-        mods: %w[bundler],
+        pkgs: %w[bundler],
         gems: %w[rubocop],
       },
     }
