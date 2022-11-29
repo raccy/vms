@@ -9,7 +9,7 @@
     src: 'https://github.com/SpiderLabs/ModSecurity/releases/download/v{{ modsecurity.version }}/modsecurity-v{{ modsecurity.version }}.tar.gz'
     dest: '{{ src_dir }}'
     creates: '{{ modsecurity_src }}'
-  environment: '{{ proxy_env }}'
+  environment: '{{ proxy.env | default({}) }}'
 
 - name: modsecurity run build.sh
   command:
@@ -64,7 +64,7 @@
     src: 'https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ coreruleset.version }}.tar.gz'
     dest: '{{ src_dir }}'
     creates: '{{ coreruleset_src }}'
-  environment: '{{ proxy_env }}'
+  environment: '{{ proxy.env | default({}) }}'
 
 - name: coreruleset delete crs
   file:

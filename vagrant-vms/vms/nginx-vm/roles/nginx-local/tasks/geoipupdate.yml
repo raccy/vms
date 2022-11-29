@@ -5,6 +5,7 @@
   dnf:
     name: 'https://github.com/maxmind/geoipupdate/releases/download/v{{ geoipupdate.version }}/geoipupdate_{{ geoipupdate.version }}_linux_amd64.rpm'
     state: present
+  environment: '{{ proxy.env | default({}) }}'
 
 - name: geoipupdate config
   lineinfile:
@@ -15,17 +16,14 @@
     - {name: AccountID, value: '{{ geoip.account_id }}'}
     - {name: LicenseKey, value: '{{ geoip.license_key }}'}
 
-- debug:
-    msg: '{{ geoip }}'
-
 - name: geoipupdate config proxy
   lineinfile:
     path: /etc/GeoIP.conf
     regexp: '^[\s#]*{{ item.name }}\b.*$'
     line: '{{ item.name }} {{ item.value }}'
   loop:
-    - {name: Proxy, value: '{{ proxy_env.https_proxy | regex_replace("^http://(.*)$", "\1") }}'}
-  when: proxy_env is defined
+    - {name: Proxy, value: '{{ proxy.host }}:{{proxy.port}}'}
+  when: proxy is defined
 
 - name: crontab geoipupdate
   blockinfile:
