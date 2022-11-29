@@ -5,6 +5,7 @@
   dnf:
     name: 'https://github.com/maxmind/geoipupdate/releases/download/v{{ geoipupdate.version }}/geoipupdate_{{ geoipupdate.version }}_linux_amd64.rpm'
     state: present
+    disable_gpg_check: yes
   environment: '{{ proxy.env | default({}) }}'
 
 - name: geoipupdate config
@@ -22,8 +23,11 @@
     regexp: '^[\s#]*{{ item.name }}\b.*$'
     line: '{{ item.name }} {{ item.value }}'
   loop:
-    - {name: Proxy, value: '{{ proxy.host }}:{{proxy.port}}'}
+    - {name: Proxy, value: '{{ proxy.host }}:{{ proxy.port }}'}
   when: proxy is defined
+
+- name: run geoipupdate
+  command: /usr/bin/geoipupdate
 
 - name: crontab geoipupdate
   blockinfile:
