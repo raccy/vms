@@ -1,4 +1,0 @@
-- name: git clone nodokan
-  git:
-    repo: "https://github.com/kue-ipc/tools.git"
-    dest: /home/vagrant/tools
