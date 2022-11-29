@@ -20,12 +20,6 @@
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
 
-- name: mkdir .npm/lib
-  file:
-    state: directory
-    recurse: yes
-    path: /home/vagrant/.npm/lib
-
 - name: install npm packages
   npm:
     state: present
