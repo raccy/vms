@@ -55,7 +55,6 @@ Vagrant.configure('2') do |config|
   end
 
   if proxy_protocols.empty?
-    proxy_env = nil
     proxy = nil
   else
     proxy_env = {
