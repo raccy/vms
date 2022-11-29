@@ -25,6 +25,6 @@
   become: yes
   apt:
     state: present
-    name: "{{ item }}"
-  loop: "{{ setup.pkgs | default([]) }}"
+    name: '{{ item }}'
+  loop: '{{ setup.pkgs | default([]) }}'
   when: setup.pkgs is defined

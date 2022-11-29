@@ -9,6 +9,6 @@
   become: yes
   snap:
     name: node
-    channel: "{{ nodejs_version ~ '/' if nodejs_version is defined else '' }}stable"
+    channel: '{{ nodejs.version ~ "/" if nodejs.version is defined else "" }}stable'
     state: present
     classic: yes

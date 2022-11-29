@@ -2,12 +2,12 @@
   become: yes
   dnf:
     state: present
-    name: "@nodejs{{ ':' ~ nodejs.version if nodejs.version is defined else '' }}"
+    name: '@nodejs{{ ":" ~ nodejs.version if nodejs.version is defined else "" }}'
 
 - name: set PATH for npm in .bashrc
   blockinfile:
     path: /home/vagrant/.bashrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK nodejs"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
     block: |
       if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
       then
@@ -24,6 +24,6 @@
   npm:
     state: present
     global: yes
-    name: "{{ item }}"
-  loop: "{{ nodejs.npms | default([]) }}"
+    name: '{{ item }}'
+  loop: '{{ nodejs.npms | default([]) }}'
   when: nodejs.npms is defined

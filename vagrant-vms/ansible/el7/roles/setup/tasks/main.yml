@@ -1,7 +1,7 @@
 - name: lineinfile timeout=600
   become: yes
   lineinfile:
-    path: "{{ item }}"
+    path: '{{ item }}'
     regexp: '^timeout=.*$'
     line: 'timeout=600'
   loop:
@@ -10,9 +10,9 @@
 - name: lineinfile proxy
   become: yes
   lineinfile:
-    path: "{{ item }}"
+    path: '{{ item }}'
     regexp: '^proxy=.*$'
-    line: "proxy={{ proxy.http }}"
+    line: 'proxy={{ proxy.http }}'
   loop:
     - /etc/yum.conf
   when: proxy.http is defined
@@ -20,7 +20,7 @@
 - name: yum update
   become: yes
   yum:
-    name: "*"
+    name: '*'
     state: latest
 
 - name: set locale ja_JP.UTF-8
@@ -37,6 +37,6 @@
   become: yes
   yum:
     state: present
-    name: "{{ item }}"
-  loop: "{{ setup.pkgs | default([]) }}"
+    name: '{{ item }}'
+  loop: '{{ setup.pkgs | default([]) }}'
   when: setup.pkgs is defined

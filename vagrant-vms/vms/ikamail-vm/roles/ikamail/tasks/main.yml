@@ -1,6 +1,6 @@
 - name: git clone ikamail
   git:
-    repo: "https://github.com/kue-ipc/ikamail.git"
+    repo: https://github.com/kue-ipc/ikamail.git
     dest: /home/vagrant/ikamail
     version: dev
 

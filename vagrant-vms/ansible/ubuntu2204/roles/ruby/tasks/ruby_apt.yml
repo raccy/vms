@@ -16,9 +16,9 @@
 - name: apt install ruby modules (gems)
   become: yes
   apt:
-    name: "ruby-{{ item }}"
+    name: 'ruby-{{ item }}'
     state: present
-  loop: "{{ ruby.mods | default([]) }}"
+  loop: '{{ ruby.mods | default([]) }}'
   when: ruby.mods is defined
 
 - name: set PATH in .bashrc

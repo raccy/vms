@@ -1,6 +1,6 @@
 - name: git clone yuzakan
   git:
-    repo: "https://github.com/kue-ipc/yuzakan.git"
+    repo: https://github.com/kue-ipc/yuzakan.git
     dest: /home/vagrant/yuzakan
     version: dev
 

@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: "@redis{{ ':' ~ redis.version if redis.version is defined else '' }}"
+    name: '@redis{{ ":" ~ redis.version if redis.version is defined else "" }}'
 
 - name: dnf install redis devel
   become: yes

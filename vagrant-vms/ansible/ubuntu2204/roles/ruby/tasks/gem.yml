@@ -8,7 +8,7 @@
     name: '{{ item }}'
     state: present
     user_install: no
-  loop: "{{ ruby.gems | default([]) }}"
+  loop: '{{ ruby.gems | default([]) }}'
   environment:
     GEM_HOME: /home/vagrant/.gem
   when: ruby.type is not defined or ruby.type != 'rbenv'
@@ -19,5 +19,5 @@
     state: present
     user_install: no
     executable: /home/vagrant/.rbenv/shims/gem
-  loop: "{{ ruby.gems | default([]) }}"
+  loop: '{{ ruby.gems | default([]) }}'
   when: ruby.type is defined and ruby.type == 'rbenv'

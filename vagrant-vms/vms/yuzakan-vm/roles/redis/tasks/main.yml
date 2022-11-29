@@ -8,7 +8,7 @@
   become: yes
   dnf:
     state: present
-    name: "@redis{{ ':' ~ redis_version if redis_version is defined else '' }}"
+    name: '@redis{{ ":" ~ redis_version if redis_version is defined else "" }}'
 
 - name: start redis 
   become: yes

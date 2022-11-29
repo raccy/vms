@@ -3,7 +3,7 @@
 - name: add nodesource repository
   become: yes
   shell:
-    cmd: 'curl -fsSL https://deb.nodesource.com/setup_{{ nodejs.ver | default("lts") }}.x | bash -'
+    cmd: 'curl -fsSL https://deb.nodesource.com/setup_{{ nodejs.version | default("lts") }}.x | bash -'
 
 - name: apt install nodejs
   become: yes

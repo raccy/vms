@@ -32,6 +32,6 @@
 - name: crontab geoipupdate
   blockinfile:
     path: /etc/crontab
-    marker: "# {mark} ANSIBLE MANAGED BLOCK geoipupdate"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK geoipupdate'
     block: |
       {{ 60 | random }} 5 * * 0,3 root /usr/bin/geoipupdate >/dev/null 2>&1

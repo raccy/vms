@@ -15,8 +15,8 @@
   become: yes
   yum:
     state: present
-    name: "rubygem-{{ item }}"
-  loop: "{{ ruby.mods | default([]) }}"
+    name: 'rubygem-{{ item }}'
+  loop: '{{ ruby.mods | default([]) }}'
   when: ruby.mods is defined
 
 - name: copy .gemrc
@@ -27,7 +27,7 @@
 - name: set PATH in .bashrc
   blockinfile:
     path: /home/vagrant/.bashrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK bin"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK bin'
     block: |
       if ! [[ "$PATH" =~ "$HOME/bin:" ]]
       then
@@ -37,7 +37,7 @@
 
 - name: gem install packages
   gem:
-    name: "{{ item }}"
+    name: '{{ item }}'
     state: present
-  loop: "{{ ruby.gems | default([]) }}"
+  loop: '{{ ruby.gems | default([]) }}'
   when: ruby.gems is defined
