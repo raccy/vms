@@ -2,7 +2,7 @@
   become: yes
   dnf:
     state: present
-    name: "@nodejs{{ ':' ~ nodejs_version if nodejs_version is defined else '' }}"
+    name: "@nodejs{{ ':' ~ nodejs.version if nodejs.version is defined else '' }}"
 
 - name: set PATH for npm in .bashrc
   blockinfile:
@@ -20,10 +20,10 @@
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
 
-# - name: npm install packages
-#   npm:
-#     name: '{{ item }}'
-#     state: present
-#     global: yes
-#   loop:
-#     - npm-check-updates
+- name: install npm packages
+  npm:
+    state: present
+    global: yes
+    name: "{{ item }}"
+  loop: "{{ nodejs.npms | default([]) }}"
+  when: nodejs.npms is defined

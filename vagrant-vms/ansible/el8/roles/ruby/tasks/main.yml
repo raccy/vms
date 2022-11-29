@@ -2,15 +2,22 @@
   become: yes
   dnf:
     state: present
-    name: "@ruby{{ ':' ~ ruby_version if ruby_version is defined else '' }}"
+    name: "@ruby{{ ':' ~ ruby.version if ruby.version is defined else '' }}"
 
-- name: dnf install ruby packages
+- name: dnf install ruby devel
   become: yes
   dnf:
     state: present
-    name:
-      - ruby-devel
-      - rubygem-bundler
+    name: ruby-devel
+  when: ruby.dev | default(False)
+
+- name: dnf install ruby modules (gems)
+  become: yes
+  dnf:
+    state: present
+    name: "rubygem-{{ item }}"
+  loop: "{{ ruby.mods | default([]) }}"
+  when: ruby.mods is defined
 
 - name: set PATH and GEM_HOME in .bashrc
   blockinfile:
@@ -30,12 +37,9 @@
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
 
-# - name: gem install packages
-#   gem:
-#     name: "{{ item }}"
-#     state: present
-#   loop:
-#     - rubocop
-#     - yard
-#     - solargraph
-#     - slim_lint
+- name: gem install packages
+  gem:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ruby.gems | default([]) }}"
+  when: ruby.gems is defined
