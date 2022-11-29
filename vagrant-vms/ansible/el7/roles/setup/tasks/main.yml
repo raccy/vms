@@ -12,47 +12,16 @@
   lineinfile:
     path: "{{ item }}"
     regexp: '^proxy=.*$'
-    line: "proxy={{ http_proxy }}"
+    line: "proxy={{ proxy.http }}"
   loop:
     - /etc/yum.conf
-  when: http_proxy is defined
-
-# - name: yum remove haveged
-#   become: yes
-#   yum:
-#     state: absent
-#     autoremove: yes
-#     name:
-#       - haveged
-#       - jwhois
-#       - libidn2
-
-# - name: yum remove epel-relese
-#   become: yes
-#   yum:
-#     name: epel-release
-#     state: absent
-#     autoremove: yes
+  when: proxy.http is defined
 
 - name: yum update
   become: yes
   yum:
     name: "*"
     state: latest
-
-- name: yum install epel-release
-  become: yes
-  yum:
-    state: present
-    name: epel-release
-
-- name: yum install packages
-  become: yes
-  yum:
-    state: present
-    name:
-      - vim
-      - rsync
 
 - name: set locale ja_JP.UTF-8
   become: yes
@@ -64,8 +33,10 @@
     name: fs.inotify.max_user_watches
     value: '524288'
 
-- name: yum install Development Tools
+- name: yum install other packages
   become: yes
   yum:
     state: present
-    name: '@Development Tools'
+    name: "{{ item }}"
+  loop: "{{ setup.pkgs | default([]) }}"
+  when: setup.pkgs is defined

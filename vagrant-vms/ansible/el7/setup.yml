@@ -1,6 +1,9 @@
 - hosts: all
   roles:
     - setup
-    - git
-    - ruby
-    - nodejs
+    - role: git
+      when: git is defined
+    - role: nodejs
+      when: nodejs is defined
+    - role: ruby
+      when: ruby is defined

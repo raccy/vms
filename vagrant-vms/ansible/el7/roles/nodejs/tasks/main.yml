@@ -1,8 +1,10 @@
-- name: yum install nodejs
+- name: yum install nodejs and npm
   become: yes
   yum:
     state: present
-    name: nodejs
+    name:
+      - nodejs
+      - npm
 
 - name: set PATH for npm in .bashrc
   blockinfile:
@@ -19,3 +21,19 @@
   copy:
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
+
+- name: mkdir .npm/lib
+  file:
+    state: directory
+    recurse: yes
+    path: /home/vagrant/.npm/lib
+
+- name: install npm packages
+  npm:
+    state: present
+    global: yes
+    name: "{{ item }}"
+  loop: "{{ nodejs.npms | default([]) }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.PATH }}"
+  when: nodejs.npms is defined

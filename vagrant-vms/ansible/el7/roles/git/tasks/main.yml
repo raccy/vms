@@ -8,15 +8,15 @@
   git_config:
     scope: global
     name: user.name
-    value: "{{ git_config_user_name }}"
-  when: git_config_user_name is defined
+    value: "{{ git.config.user.name }}"
+  when: git.config.user.name is defined
 
 - name: git config user.email
   git_config:
     scope: global
     name: user.email
-    value: "{{ git_config_user_email }}"
-  when: git_config_user_email is defined
+    value: "{{ git.config.user.email }}"
+  when: git.config.user.email is defined
 
 - name: git config pull.rebase
   git_config:
