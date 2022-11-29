@@ -37,13 +37,10 @@
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
 
-- debug:
-    msg: '{{ "rubocop@1.28.2" | split("@") }}'
-
 - name: gem install packages
   gem:
-    name: '{{ item | split("@") | first }}'
-    version: '{{ item | split("@") | first if "@" in item }}'
+    name: '{{ item.split("@") | first }}'
+    version: '{{ item.split("@") | first if "@" in item }}'
     state: present
   loop: '{{ ruby.gems | default([]) }}'
   when: ruby.gems is defined
