@@ -53,9 +53,9 @@ Vagrant.configure('2') do |config|
     ansible.playbook = '../../ansible/el9/setup.yml'
     vars = {
       setup: {
-        pkgs: %w[
-          vim
-          rsync
+        pkgs: [
+          'vim',
+          'rsync',
           '@Development Tools',
         ],
       },

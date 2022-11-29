@@ -19,30 +19,30 @@
   loop: "{{ ruby.mods | default([]) }}"
   when: ruby.mods is defined
 
-- name: set PATH and GEM_HOME in .bashrc
-  blockinfile:
-    path: /home/vagrant/.bashrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK ruby"
-    block: |
-      GEM_HOME="$HOME/.gem/ruby"
-      export GEM_HOME
-      if ! [[ "$PATH" =~ "$HOME/bin:" ]]
-      then
-          PATH="$HOME/bin:$PATH"
-      fi
-      export PATH
-
 - name: copy .gemrc
   copy:
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
 
-- name: gem install packages
-  gem:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ ruby.gems | default([]) }}"
-  environment:
-    GEM_HOME: "{{ ansible_env.HOME }}/.gem/ruby"
-    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.PATH }}"
-  when: ruby.gems is defined
+# - name: set PATH and GEM_HOME in .bashrc
+#   blockinfile:
+#     path: /home/vagrant/.bashrc
+#     marker: "# {mark} ANSIBLE MANAGED BLOCK ruby"
+#     block: |
+#       GEM_HOME="$HOME/.gem/ruby"
+#       export GEM_HOME
+#       if ! [[ "$PATH" =~ "$HOME/bin:" ]]
+#       then
+#           PATH="$HOME/bin:$PATH"
+#       fi
+#       export PATH
+
+# - name: gem install packages
+#   gem:
+#     name: "{{ item }}"
+#     state: present
+#   loop: "{{ ruby.gems | default([]) }}"
+#   environment:
+#     GEM_HOME: "{{ ansible_env.HOME }}/.gem/ruby"
+#     PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.PATH }}"
+#   when: ruby.gems is defined

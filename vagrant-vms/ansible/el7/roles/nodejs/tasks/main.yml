@@ -6,34 +6,34 @@
       - nodejs
       - npm
 
-- name: set PATH for npm in .bashrc
-  blockinfile:
-    path: /home/vagrant/.bashrc
-    marker: "# {mark} ANSIBLE MANAGED BLOCK nodejs"
-    block: |
-      if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
-      then
-          PATH="$HOME/.npm/bin:$PATH"
-      fi
-      export PATH
-
 - name: copy .npmrc
   copy:
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
 
-- name: mkdir .npm/lib
-  file:
-    state: directory
-    recurse: yes
-    path: /home/vagrant/.npm/lib
+# - name: set PATH for npm in .bashrc
+#   blockinfile:
+#     path: /home/vagrant/.bashrc
+#     marker: "# {mark} ANSIBLE MANAGED BLOCK nodejs"
+#     block: |
+#       if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
+#       then
+#           PATH="$HOME/.npm/bin:$PATH"
+#       fi
+#       export PATH
 
-- name: install npm packages
-  npm:
-    state: present
-    global: yes
-    name: "{{ item }}"
-  loop: "{{ nodejs.npms | default([]) }}"
-  environment:
-    PATH: "{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.PATH }}"
-  when: nodejs.npms is defined
+# - name: mkdir .npm/lib
+#   file:
+#     state: directory
+#     recurse: yes
+#     path: /home/vagrant/.npm/lib
+
+# - name: install npm packages
+#   npm:
+#     state: present
+#     global: yes
+#     name: "{{ item }}"
+#   loop: "{{ nodejs.npms | default([]) }}"
+#   environment:
+#     PATH: "{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.PATH }}"
+#   when: nodejs.npms is defined

@@ -1,4 +1,4 @@
-require 'digest/md5'
+require_relative '../common'
 
 Vagrant.configure('2') do |config|
   config.vm.box = 'generic/rocky9'
@@ -6,7 +6,7 @@ Vagrant.configure('2') do |config|
   config.vm.box_check_update = true
 
   hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
-  ssh_port = 10_000 + (Digest::MD5.digest(hostname).unpack1('L') % 20_000)
+  ssh_port = calc_port(hostname)
 
   config.vm.hostname = hostname
 
@@ -25,22 +25,26 @@ Vagrant.configure('2') do |config|
     hv.maxmemory = 4096
   end
 
+  # enable env
+  config.env.enable if Vagrant.has_plugin?('vagrant-env')
+
   # do manual 'vagrant vbguest --do install'
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
 
   # BUG... selinux enforced
   # config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
 
-  proxy_env = %i[http https ftp].to_h do |name|
-    envs = ["VAGRANT_#{name.upcase}_PROXY", "#{name.upcase}_PROXY", "#{name}_proxy"]
-    [name, envs.map { |n| ENV[n] }.find(&:itself)]
-  end
-  proxy_env[:no_proxy] = %w[VAGRANT_NO_PROXY NO_PROXY no_proxy].map { |n| ENV[n] }.find(&:itself)
-  proxy_env.compact!
+  proxy = get_proxy
 
   if Vagrant.has_plugin?('vagrant-proxyconf')
-    proxy_env.each do |name, value|
-      config.proxy.__send__("#{name}=", value)
+    if proxy
+      config.proxy.enabled = true
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
+    else
+      config.proxy.enabled = false
     end
   end
 
@@ -52,7 +56,7 @@ Vagrant.configure('2') do |config|
         pkgs: [
           'vim',
           'rsync',
-          '@Development Tools',
+          # '@Development Tools',
         ],
       },
       ds: {},
@@ -70,16 +74,9 @@ Vagrant.configure('2') do |config|
       },
     }
 
-    vars[:proxy] = proxy_env
+    vars[:proxy] = proxy if proxy
 
-    if vars[:git]
-      vars[:git][:config] ||= {}
-      vars[:git][:config][:user] ||= {}
-      %i[name email].each do |name|
-        value = `git config --get user.#{name}`.chomp
-        vars[:git][:config][:user][name] = value if value && !value.empty?
-      end
-    end
+    vars[:git][:config] = git_config if vars[:git]
 
     ansible.extra_vars = vars
   end
