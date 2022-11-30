@@ -1,25 +1,3 @@
-- name: yum install git
-  become: yes
-  yum:
-    state: present
-    name: git
+- import_tasks: yum.yml
 
-- name: git config user.name
-  git_config:
-    scope: global
-    name: user.name
-    value: '{{ git.config.user.name }}'
-  when: git.config.user.name is defined
-
-- name: git config user.email
-  git_config:
-    scope: global
-    name: user.email
-    value: '{{ git.config.user.email }}'
-  when: git.config.user.email is defined
-
-- name: git config pull.rebase
-  git_config:
-    scope: global
-    name: pull.rebase
-    value: 'false'
+- import_tasks: config.yml

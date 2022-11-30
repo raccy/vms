@@ -1,0 +1,5 @@
+- name: yum install git
+  become: yes
+  yum:
+    state: present
+    name: git
