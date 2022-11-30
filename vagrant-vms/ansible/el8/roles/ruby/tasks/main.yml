@@ -40,7 +40,7 @@
 - name: gem install packages
   gem:
     name: '{{ item.split("@") | first }}'
-    version: '{{ item.split("@") | first if "@" in item }}'
+    version: '{{ item.split("@") | last if "@" in item }}'
     state: present
   loop: '{{ ruby.gems | default([]) }}'
   when: ruby.gems is defined
