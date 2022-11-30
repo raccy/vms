@@ -1,0 +1,19 @@
+# タイムゾーン設定
+# EL8/EL9ではバグのため、SE Linuxが有効だとtimezoneが変更できない
+
+- name: permissive mode SE Linux
+  become: yes
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: set timezone
+  become: yes
+  timezone:
+    name: Asia/Tokyo
+
+- name: erforcing mode SE Linux
+  become: yes
+  selinux:
+    policy: targeted
+    state: enforcing

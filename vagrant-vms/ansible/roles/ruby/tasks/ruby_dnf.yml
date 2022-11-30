@@ -1,0 +1,20 @@
+- name: dnf install ruby
+  become: yes
+  dnf:
+    state: present
+    name: ruby
+
+- name: dnf install ruby devel
+  become: yes
+  dnf:
+    state: present
+    name: ruby-devel
+  when: ruby.dev | default(False)
+
+- name: dnf install ruby modules (gems)
+  become: yes
+  dnf:
+    state: present
+    name: 'rubygem-{{ item }}'
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.pkgs is defined

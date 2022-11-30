@@ -1,0 +1,12 @@
+- import_tasks: timezone.yml
+  when: ansible_os_family in ["RedHat", "Rocky"] and ansible_destribution_major_version in ["8", "9"]
+
+- import_tasks: pkg_conf.yml
+
+- import_tasks: pkg_update.yml
+
+- import_tasks: pkg_install.yml
+
+- import_tasks: ja.yml
+
+- import_tasks: vscode.yml

@@ -1,0 +1,20 @@
+- hosts: all
+  tasks:
+    - debug:
+        msg: '{{ ansible_facts }}'
+  # roles:
+  #   - setup
+  #   - role: ds
+  #     when: ds is defined
+  #   - role: git
+  #     when: git is defined
+  #   - role: mariadb
+  #     when: mariadb is defined
+  #   - role: nginx
+  #     when: nginx is defined
+  #   - role: nodejs
+  #     when: nodejs is defined
+  #   - role: redis
+  #     when: redis is defined
+  #   - role: ruby
+  #     when: ruby is defined

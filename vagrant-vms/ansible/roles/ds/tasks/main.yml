@@ -1,0 +1,40 @@
+- name: dnf module enable 389 Directory Server
+  become: yes
+  command:
+    cmd: dnf module enable -y 389-ds
+
+- name: dnf install 389 Directory Server
+  become: yes
+  dnf:
+    state: present
+    name: 389-ds-base
+
+- name: copy 389 DS setup files
+  become: yes
+  copy:
+    src: ../files/
+    dest: /var/tmp/389ds-setup/
+
+- name: dscreate
+  become: yes
+  command:
+    cmd: dscreate from-file /var/tmp/389ds-setup/389ds.inf
+    creates: /etc/dirsrv/slapd-localhost
+
+- name: dsconf plugin memberof
+  become: yes
+  command:
+    cmd: 'dsconf -D "{{ ldap_auth.bind_dn }}" -w "{{ ldap_auth.bind_pw }}" {{ ldap_auth.server_uri }} plugin memberof enable'
+
+- name: dsctl restart
+  become: yes
+  command:
+    cmd: 'dsctl slapd-localhost restart'
+
+- import_tasks: samba.yml
+
+# - import_tasks: user_group.yml
+
+# - import_tasks: person_user_group.yml
+
+- import_tasks: user_group_complex.yml

@@ -1,0 +1,27 @@
+- name: copy .gemrc
+  copy:
+    src: ../files/.gemrc
+    dest: /home/vagrant/.gemrc
+
+- name: set PATH and GEM_HOME in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
+    block: |
+      GEM_HOME="$HOME/.gem/ruby"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
+      then
+          PATH="$GEM_HOME/bin:$PATH"
+      fi
+      export PATH
+
+- name: gem install packages
+  gem:
+    name: '{{ item.split("@") | first }}'
+    version: '{{ item.split("@") | last if "@" in item }}'
+    state: present
+  loop: '{{ ruby.gems | default([]) }}'
+  environment:
+    GEM_HOME: /home/vagrant/.gem
+  when: ruby.gems is defined

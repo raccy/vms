@@ -1,0 +1,23 @@
+- name: yum update
+  become: yes
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+  when: ansible_pgk_mgr == "yum"
+
+- name: dnf update
+  become: yes
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: yes
+  when: ansible_pgk_mgr == "dnf"
+
+- name: apt update
+  become: yes
+  apt:
+    name: '*'
+    state: latest
+    update_cache: yes
+  when: ansible_pgk_mgr == "apt"

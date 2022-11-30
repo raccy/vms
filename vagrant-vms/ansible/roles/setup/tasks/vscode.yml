@@ -1,0 +1,7 @@
+# VS Code のための設定
+
+- name: set fs.inotify.max_user_watches 524288 in sysctl
+  become: yes
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'

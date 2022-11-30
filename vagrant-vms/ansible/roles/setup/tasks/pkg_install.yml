@@ -1,0 +1,23 @@
+- name: yum install other packages
+  become: yes
+  yum:
+    state: present
+    name: '{{ item }}'
+  loop: '{{ setup.pkgs | default([]) }}'
+  when: ansible_pgk_mgr == "yum" and setup.pkgs is defined
+
+- name: dnf install other packages
+  become: yes
+  dnf:
+    state: present
+    name: '{{ item }}'
+  loop: '{{ setup.pkgs | default([]) }}'
+  when: ansible_pgk_mgr == "dnf" and setup.pkgs is defined
+
+- name: apt install other packages
+  become: yes
+  apt:
+    state: present
+    name: '{{ item }}'
+  loop: '{{ setup.pkgs | default([]) }}'
+  when: ansible_pgk_mgr == "apt" and setup.pkgs is defined

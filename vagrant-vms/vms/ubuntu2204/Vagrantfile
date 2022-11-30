@@ -59,7 +59,8 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision 'ansible' do |ansible|
     ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/ubuntu2204/setup.yml'
+    # ansible.playbook = '../../ansible/ubuntu2204/setup.yml'
+    ansible.playbook = '../../ansible/check.yml'
 
     vars = {
       setup: {
