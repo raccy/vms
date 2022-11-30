@@ -1,3 +1,4 @@
+# EL8 では先に 389-ds モジュールを有効にしておく必要がある
 - name: dnf module enable 389 Directory Server
   become: yes
   command:

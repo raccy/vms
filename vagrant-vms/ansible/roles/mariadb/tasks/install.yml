@@ -1,0 +1,50 @@
+- set_fact:
+    mariadb_type: '{{ mariadb.type | default(ansible_pkg_mgr) }}'
+
+- name: yum install mariadb
+  become: yes
+  yum:
+    state: present
+    name:
+      - mariadb
+      - mariadb-server
+  when: mariadb_type == "yum"
+
+- name: dnf module install mariadb
+  become: yes
+  dnf:
+    state: present
+    name: '@mariadb{{ ":" ~ mariadb.version if mariadb.version is defined else "" }}/server'
+  when: mariadb_type == 'module'
+
+- name: dnf install maraidb
+  become: yes
+  dnf:
+    state: present
+    name:
+      - mariadb
+      - mariadb-server
+  when: ansible_pkg_mgr in ["dnf", "module"]
+
+- name: apt install mariadb
+  become: yes
+  apt:
+    state: present
+    name:
+      - mariadb-client
+      - mariadb-server
+  when: ansible_pkg_mgr == "apt"
+
+- name: dnf install mariadb devel
+  become: yes
+  dnf:
+    state: present
+    name: mariadb-connector-c-devel
+  when: ansible_pkg_mgr in ["dnf", "module"] and mariadb.dev | default(False)
+
+- name: apt install mariadb devel
+  become: yes
+  dnf:
+    state: present
+    name: libmariadb-dev
+  when: ansible_pkg_mgr == "apt" and mariadb.dev | default(False)

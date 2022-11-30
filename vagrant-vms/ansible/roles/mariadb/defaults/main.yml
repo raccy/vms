@@ -1,0 +1,3 @@
+mariadb_admin:
+  name: admin
+  password: admin_password

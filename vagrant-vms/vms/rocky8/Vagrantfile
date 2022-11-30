@@ -58,29 +58,30 @@ Vagrant.configure('2') do |config|
           '@Development Tools',
         ],
       },
-      ds: {
-        user_gorup: 'posix', # or 'preson'
-        member_of: true,
-      },
-      git: {},
+      # ds: {
+      #   user_gorup: 'posix', # or 'preson'
+      #   member_of: true,
+      # },
+      # git: {},
       mariadb: {
+        type: 'module', # or 'dnf'
         vresion: '10.5',
       },
-      nginx: {},
-      nodejs: {
-        versino: '14',
-        npms: ['coffeescript'],
-      },
-      reids: {},
-      ruby: {
-        versino: '2.7',
-        dev: true,
-        pkgs: ['bundler'],
-        gems: [
-          'rubocop-ast@1.17.0',
-          'rubocop@1.28.2',
-        ],
-      },
+      # nginx: {},
+      # nodejs: {
+      #   versino: '14',
+      #   npms: ['coffeescript'],
+      # },
+      # reids: {},
+      # ruby: {
+      #   versino: '2.7',
+      #   dev: true,
+      #   pkgs: ['bundler'],
+      #   gems: [
+      #     'rubocop-ast@1.17.0',
+      #     'rubocop@1.28.2',
+      #   ],
+      # },
     }
 
     vars[:proxy] = proxy if proxy

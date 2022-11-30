@@ -1,25 +1,5 @@
-- name: dnf install git
-  become: yes
-  dnf:
-    state: present
-    name: git
+# Git
 
-- name: git config user.name
-  git_config:
-    scope: global
-    name: user.name
-    value: '{{ git.config.user.name }}'
-  when: git.config.user.name is defined
+- import_tasks: install.yml
 
-- name: git config user.email
-  git_config:
-    scope: global
-    name: user.email
-    value: '{{ git.config.user.email }}'
-  when: git.config.user.email is defined
-
-- name: git config pull.rebase
-  git_config:
-    scope: global
-    name: pull.rebase
-    value: 'false'
+- import_tasks: config.yml
