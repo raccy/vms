@@ -14,7 +14,7 @@
   become: yes
   dnf:
     state: present
-    name: '@mariadb{{ ":" ~ mariadb.version if mariadb.version is defined else "" }}/server'
+    name: '@mariadb{{ ":" ~ mariadb.version if mariadb.version is defined else "" }}'
   when: mariadb_type == 'module'
 
 - name: dnf install maraidb
@@ -44,7 +44,7 @@
 
 - name: apt install mariadb devel
   become: yes
-  dnf:
+  apt:
     state: present
     name: libmariadb-dev
   when: ansible_pkg_mgr == "apt" and mariadb.dev | default(False)

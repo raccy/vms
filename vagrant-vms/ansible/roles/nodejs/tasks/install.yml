@@ -1,0 +1,56 @@
+- name: yum install nodejs
+  become: yes
+  yum:
+    state: present
+    name:
+      - nodejs
+      - npm
+  when: nodejs.type == "yum"
+
+- name: dnf module install nodejs
+  become: yes
+  dnf:
+    state: present
+    name: '@nodejs{{ ":" ~ nodejs.version if nodejs.version is defined else "" }}'
+  when: nodejs.type == "module"
+
+- name: dnf install nodejs
+  become: yes
+  dnf:
+    state: present
+    name:
+      - nodejs
+      - npm
+  when: nodejs.type in ["dnf", "module"]
+
+- name: apt install nodejs
+  become: yes
+  apt:
+    state: present
+    name:
+      - nodejs
+      - npm
+  when: nodejs.type == "apt"
+
+- name: snap install nodejs
+  become: yes
+  snap:
+    state: present
+    name: node
+    channel: '{{ nodejs.version ~ "/" if nodejs.version is defined else "" }}stable'
+    classic: yes
+  when: nodejs.type == "snap"
+
+# TODO: use 'get_url' or 'uri'
+- name: add nodesource repository
+  become: yes
+  shell:
+    cmd: 'curl -fsSL https://deb.nodesource.com/setup_{{ nodejs.version if nodejs.version is defined else "lts" }}.x | bash -'
+  when: nodejs.type == "nodesource"
+
+- name: apt install nodejs
+  become: yes
+  apt:
+    name: nodejs
+    state: present
+  when: nodejs.type == "nodesource" and ansible_pkg_mgr == "apt"

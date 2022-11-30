@@ -1,3 +1,7 @@
+- import_tasks: vars.yml
+
+- import_tasks: install.yml
+
 - name: dnf install nodejs
   become: yes
   dnf:

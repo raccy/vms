@@ -1,0 +1,27 @@
+- name: yum install nginx
+  become: yes
+  yum:
+    state: present
+    name: nginx
+  when: nginx.type == "yum"
+
+- name: dnf module install nginx
+  become: yes
+  dnf:
+    state: present
+    name: '@nginx{{ ":" ~ nginx.version if nginx.version is defined else "" }}'
+  when: nginx.type == "module"
+
+- name: dnf install nginx
+  become: yes
+  dnf:
+    state: present
+    name: nginx
+  when: nginx.type in ["dnf", "module"]
+
+- name: apt install nginx
+  become: yes
+  apt:
+    state: present
+    name: nginx
+  when: nginx.type == "apt"

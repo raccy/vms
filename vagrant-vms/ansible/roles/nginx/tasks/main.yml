@@ -1,12 +1,5 @@
-- name: dnf install nginx
-  become: yes
-  dnf:
-    state: present
-    name: nginx
+- import_tasks: vars.yml
 
-- name: start nginx 
-  become: yes
-  systemd:
-    name: nginx.service
-    enabled: yes
-    state: started
+- import_tasks: install.yml
+
+- import_tasks: restart.yml
