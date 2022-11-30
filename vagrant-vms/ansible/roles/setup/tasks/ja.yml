@@ -7,14 +7,14 @@
     name:
       - langpacks-ja
       - glibc-langpack-ja
-  when: ansible_pgk_mgr == "apt"
+  when: ansible_pkg_mgr == "dnf"
 
 - name: apt install japanese packages
   become: yes
   apt:
     state: present
     name: language-pack-ja
-  when: ansible_pgk_mgr == "apt"
+  when: ansible_pkg_mgr == "apt"
 
 # - name: set locale ja_JP.UTF-8
 #   become: yes

@@ -5,7 +5,7 @@
       when:
         ds is defined and
         ansible_os_family in ["RedHat", "Rocky"] and
-        ansible_destribution_major_version in ["8", "9"]
+        ansible_distribution_major_version in ["8", "9"]
     - role: git
       when: git is defined
     - role: mariadb

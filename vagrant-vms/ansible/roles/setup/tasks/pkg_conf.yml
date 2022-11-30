@@ -3,11 +3,11 @@
 
 - set_fact:
     pkg_confs: '{{ pkg_confs + ["/etc/yum.conf"] }}'
-  when: ansible_pgk_mgr in ["yum", "dnf"]
+  when: ansible_pkg_mgr in ["yum", "dnf"]
 
 - set_fact:
     pkg_confs: '{{ pkg_confs + ["/etc/dnf/dnf.conf"] }}'
-  when: ansible_pgk_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf"
 
 - name: lineinfile timeout=600
   become: yes

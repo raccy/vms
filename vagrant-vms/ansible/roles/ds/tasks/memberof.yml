@@ -1,3 +1,15 @@
+# memberof プラグインとユーザーとグループのサンプル
+
+- name: dsconf plugin memberof
+  become: yes
+  command:
+    cmd: 'dsconf -D "{{ ldap_auth.bind_dn }}" -w "{{ ldap_auth.bind_pw }}" {{ ldap_auth.server_uri }} plugin memberof enable'
+
+- name: dsctl restart
+  become: yes
+  command:
+    cmd: 'dsctl slapd-localhost restart'
+
 - name: ldap entry ou=Group,dc=example,dc=jp
   ldap_entry:
     dn: ou=Group,dc=example,dc=jp

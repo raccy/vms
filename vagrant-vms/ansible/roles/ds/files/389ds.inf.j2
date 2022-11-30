@@ -1,7 +1,7 @@
 [general]
 [slapd]
-root_dn = cn=admin,dc=example,dc=jp
-root_password = admin_password
+root_dn = {{ ldap_auth.bind_dn }}
+root_password = {{ ldap_auth.bind_pw }}
 [backend-userroot]
 create_suffix_entry = True
 sample_entries = yes

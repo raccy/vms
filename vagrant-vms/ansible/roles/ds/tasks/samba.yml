@@ -1,3 +1,5 @@
+# Sambaスキーマの有効化
+
 - name: dnf install samba
   become: yes
   dnf:
