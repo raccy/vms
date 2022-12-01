@@ -31,18 +31,18 @@
   yum:
     state: present
     name: redis-devel
-  when: redis.type == "yum" and redis.dev | default(False)
+  when: redis.type == "yum" and redis.dev
 
 - name: dnf install redis devel
   become: yes
   dnf:
     state: present
     name: redis-devel
-  when: redis.type == "dnf" and redis.dev | default(False)
+  when: redis.type == "dnf" and redis.dev
 
 - name: apt install redis devel
   become: yes
   apt:
     state: present
     name: libredis-dev
-  when: redis.type == "apt" and redis.dev | default(False)
+  when: redis.type == "apt" and redis.dev

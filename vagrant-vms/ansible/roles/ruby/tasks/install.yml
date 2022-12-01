@@ -35,6 +35,27 @@
     classic: yes
   when: ruby.type == "snap"
 
+- name: yum install ruby devel
+  become: yes
+  yum:
+    state: present
+    name: ruby-dev
+  when: ruby.type == "yum" and ruby.dev
+
+- name: dnf install ruby
+  become: yes
+  dnf:
+    state: present
+    name: ruby-dev
+  when: ruby.type == "dnf" and ruby.dev
+
+- name: apt install ruby
+  become: yes
+  apt:
+    state: present
+    name: ruby-devel
+  when: ruby.type == "apt" and ruby.dev
+
 - name: yum install ruby packages (gems)
   become: yes
   yum:
