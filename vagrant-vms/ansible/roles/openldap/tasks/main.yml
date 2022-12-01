@@ -1,3 +1,5 @@
+# TODO: 整理がまだ
+
 - name: debconf shared/organization
   become: yes
   debconf:

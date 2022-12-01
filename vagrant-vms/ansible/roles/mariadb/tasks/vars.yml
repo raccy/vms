@@ -1,8 +1,8 @@
 - set_fact:
-    mariadb: '{{ {"type": ansible_pkg_mgr} | combine(mariadb_default, mariadb, recursive=True) }}'
+    mariadb_default: '{{ {"type": ansible_pkg_mgr} | combine(mariadb_default, mariadb, recursive=True) }}'
 
 - debug:
-    var: mariadb
+    var: mariadb_default
 
 - fail:
     msg: 'fail'

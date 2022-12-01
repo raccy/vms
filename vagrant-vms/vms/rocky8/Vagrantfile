@@ -50,19 +50,21 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision 'ansible' do |ansible|
     ansible.playbook = '../../ansible/setup.yml'
-    vars = {
-      setup: {
-        pkgs: [
-          'vim',
-          'rsync',
-          '@Development Tools',
-        ],
-      },
+    setup = {
+      pkgs: [
+        'vim',
+        'rsync',
+        '@Development Tools',
+      ],
+    }
+    app = {
       ds: {
         user_gorup: 'posix', # or 'preson'
         member_of: true,
       },
-      git: {},
+      git: {
+        config: git_config,
+      },
       mariadb: {
         type: 'module', # or 'dnf'
         vresion: '10.5',
@@ -89,10 +91,11 @@ Vagrant.configure('2') do |config|
       },
     }
 
-    vars[:proxy] = proxy if proxy
-
-    vars[:git][:config] = git_config if vars[:git]
-
-    ansible.extra_vars = vars
+    proxy = nil
+    ansible.extra_vars = {
+      setup: setup,
+      app: app,
+      proxy: proxy,
+    }.compact
   end
 end

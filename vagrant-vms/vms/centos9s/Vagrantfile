@@ -58,18 +58,25 @@ Vagrant.configure('2') do |config|
           '@Development Tools',
         ],
       },
-      ds: {},
+      ds: {
+        user_gorup: 'posix', # or 'preson'
+        member_of: true,
+      },
       git: {},
-      mariadb: {},
+      mariadb: {
+        dev: true,
+      },
       nginx: {},
       nodejs: {
-        npms: %w[coffeescript],
+        npms: ['coffeescript'],
       },
-      reids: {},
+      reids: {
+        dev: true,
+      },
       ruby: {
         dev: true,
-        pkgs: %w[bundler],
-        gems: %w[rubocop],
+        pkgs: ['bundler'],
+        gems: ['rubocop'],
       },
     }
 
