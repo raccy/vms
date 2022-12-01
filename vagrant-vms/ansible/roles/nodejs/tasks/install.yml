@@ -1,3 +1,10 @@
+- name: dnf module install nodejs
+  become: yes
+  dnf:
+    state: present
+    name: '@nodejs:{{ nodejs.version }}'
+  when: os_type == "el8" and nodejs.type == "dnf" and nodejs.version
+
 - name: yum install nodejs
   become: yes
   yum:
@@ -7,13 +14,6 @@
       - npm
   when: nodejs.type == "yum"
 
-- name: dnf module install nodejs
-  become: yes
-  dnf:
-    state: present
-    name: '@nodejs{{ ":" ~ nodejs.version if nodejs.version is defined else "" }}'
-  when: nodejs.type == "module"
-
 - name: dnf install nodejs
   become: yes
   dnf:
@@ -21,7 +21,7 @@
     name:
       - nodejs
       - npm
-  when: nodejs.type in ["dnf", "module"]
+  when: nodejs.type == "dnf"
 
 - name: apt install nodejs
   become: yes

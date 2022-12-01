@@ -1,3 +1,10 @@
+- name: dnf module install nginx
+  become: yes
+  dnf:
+    state: present
+    name: '@nginx:{{ nginx.version }}'
+  when: os_type == "el8" and nginx.type == "dnf" and nginx.version
+
 - name: yum install nginx
   become: yes
   yum:
@@ -5,19 +12,12 @@
     name: nginx
   when: nginx.type == "yum"
 
-- name: dnf module install nginx
-  become: yes
-  dnf:
-    state: present
-    name: '@nginx{{ ":" ~ nginx.version if nginx.version is defined else "" }}'
-  when: nginx.type == "module"
-
 - name: dnf install nginx
   become: yes
   dnf:
     state: present
     name: nginx
-  when: nginx.type in ["dnf", "module"]
+  when: nginx.type == "dnf"
 
 - name: apt install nginx
   become: yes
