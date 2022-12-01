@@ -7,7 +7,7 @@
 
 - name: yum install 389 Directory Server
   become: yes
-  dnf:
+  yum:
     state: present
     name: 389-ds-base
   when: ds.type == "yum"
@@ -21,7 +21,7 @@
 
 - name: apt install 389 Directory Server
   become: yes
-  dnf:
+  apt:
     state: present
     name: 389-ds-base
   when: ds.type == "apt"

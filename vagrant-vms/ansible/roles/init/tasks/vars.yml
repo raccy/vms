@@ -1,6 +1,6 @@
 - set_fact:
     os_type: 'el{{ ansible_distribution_major_version }}'
-  when: ansible_os_family in ["Redhat", "Rocky"]
+  when: ansible_os_family in ["RedHat", "Rocky"]
 
 - set_fact:
     os_type: 'deb{{ (ansible_distribution_major_version | int) // 2 - 9 }}'

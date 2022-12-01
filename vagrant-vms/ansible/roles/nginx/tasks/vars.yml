@@ -1,2 +1,3 @@
-- set_fact:
+- name: set fact nginx
+  set_fact:
     nginx: '{{ {"type": ansible_pkg_mgr} | combine(nginx, app.nginx, recursive=True) }}'

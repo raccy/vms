@@ -3,7 +3,7 @@
   dnf:
     state: present
     name: '@mariadb:{{ mariadb.version }}'
-  when: os_type == "el8" and mariadb.type == "dnf" and mariadb.version
+  when: os_type == "el8" and mariadb.type == "dnf" and mariadb.version is defined
 
 - name: yum install mariadb
   become: yes

@@ -58,40 +58,54 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision 'ansible' do |ansible|
     ansible.playbook = '../../ansible/setup.yml'
-
-    vars = {
-      setup: {
-        pkgs: [
-          'vim',
-          'rsync',
-          'build-essential',
-        ],
+    setup = {
+      pkgs: [
+        'vim',
+        'rsync',
+        '@Development Tools',
+      ],
+    }
+    app = {
+      # ds: {
+      #   user_gorup: 'posix', # or 'preson'
+      #   member_of: true,
+      # },
+      git: {
+        config: git_config,
       },
-      git: {},
       mariadb: {
         dev: true,
       },
-      nginx: {},
+      nginx: {
+      },
       nodejs: {
-        type: 'apt', # or 'snap' or 'nodesource'
-        npms: ['coffeescript'],
+        npms: [
+          'coffeescript',
+          'npm-check-updates',
+        ],
       },
       openldap: {},
       reids: {
         dev: true,
       },
       ruby: {
-        type: 'apt', # or 'snap' or 'rbenv'
         dev: true,
-        pkgs: ['bundler'],
-        gems: ['rubocop'],
+        pkgs: [
+          'ruby-bundler',
+          'rbuy-ffi',
+          'ruby-mysql2',
+        ],
+        gems: [
+          'rubocop',
+          'nokogiri',
+        ],
       },
     }
 
-    vars[:proxy] = proxy if proxy
-
-    vars[:git][:config] = git_config if vars[:git]
-
-    ansible.extra_vars = vars
+    ansible.extra_vars = {
+      setup: setup,
+      app: app,
+      proxy: proxy,
+    }.compact
   end
 end
