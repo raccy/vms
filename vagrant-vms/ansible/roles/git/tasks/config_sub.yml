@@ -1,7 +1,8 @@
-- name: git config {{ name }}
+- name: git config {{ item.key }}
   git_config:
     scope: global
-    name: 'user.{{ item.key }}'
-    value: '{{ item.value }}'
-  loop: '{{ git.config[name] | dict2items }}'
-  when: git.config[name] is defined
+    name: '{{ item.key }}.{{ sub_item.key }}'
+    value: '{{ sub_item.value }}'
+  loop: '{{ item.value | dict2items }}'
+  loop_control:
+    loop_var: sub_item

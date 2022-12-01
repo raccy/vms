@@ -60,7 +60,7 @@
   become: yes
   yum:
     state: present
-    name: 'rubygem-{{ item }}'
+    name: '{{ item }}'
   loop: '{{ ruby.pkgs | default([]) }}'
   when: ruby.type == "yum" and ruby.pkgs is defined
 
@@ -68,7 +68,7 @@
   become: yes
   dnf:
     state: present
-    name: 'rubygem-{{ item }}'
+    name: '{{ item }}'
   loop: '{{ ruby.pkgs | default([]) }}'
   when: ruby.type == "dnf" and ruby.pkgs is defined
 
@@ -76,6 +76,6 @@
   become: yes
   apt:
     state: present
-    name: 'ruby-{{ item }}'
+    name: '{{ item }}'
   loop: '{{ ruby.pkgs | default([]) }}'
   when: ruby.type == "apt" and ruby.pkgs is defined
