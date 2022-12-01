@@ -1,4 +1,0 @@
-ldap_auth:
-  server_uri: 'ldap://localhost'
-  bind_dn: 'cn=admin,dc=example,dc=jp'
-  bind_pw: 'admin_password'

@@ -1,8 +1,0 @@
-[general]
-[slapd]
-root_dn = cn=admin,dc=example,dc=jp
-root_password = admin_password
-[backend-userroot]
-create_suffix_entry = True
-sample_entries = yes
-suffix = dc=example,dc=jp
