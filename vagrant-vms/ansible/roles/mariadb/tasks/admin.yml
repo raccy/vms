@@ -33,7 +33,7 @@
     login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
-    name: '{{ mariadb_admin.name }}'
+    name: '{{ mariadb.admin.name }}'
     host: localhost
-    password: '{{ mariadb_admin.password }}'
+    password: '{{ mariadb.admin.password }}'
     priv: '*.*:ALL'

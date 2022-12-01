@@ -1,0 +1,2 @@
+- set_fact:
+    mariadb: '{{ {"type": ansible_pkg_mgr} | combine(mariadb_default, mariadb, recursive=True) }}'

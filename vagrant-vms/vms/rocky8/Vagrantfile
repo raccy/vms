@@ -63,10 +63,10 @@ Vagrant.configure('2') do |config|
       #   member_of: true,
       # },
       # git: {},
-      # mariadb: {
-      #   type: 'module', # or 'dnf'
-      #   vresion: '10.5',
-      # },
+      mariadb: {
+        type: 'module', # or 'dnf'
+        vresion: '10.5',
+      },
       nginx: {},
       # nodejs: {
       #   versino: '14',
