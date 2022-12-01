@@ -57,8 +57,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.provision 'ansible' do |ansible|
-    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/check.yml'
+    ansible.playbook = '../../ansible/setup.yml'
 
     vars = {
       setup: {
@@ -72,18 +71,20 @@ Vagrant.configure('2') do |config|
       mariadb: {
         dev: true,
       },
-      # nginx: {},
+      nginx: {},
       nodejs: {
-        type: 'apt', # or 'snap' or 'nodesource
-        npms: %w[coffeescript],
+        type: 'apt', # or 'snap' or 'nodesource'
+        npms: ['coffeescript'],
       },
       openldap: {},
-      # reids: {},
+      reids: {
+        dev: true,
+      },
       ruby: {
         type: 'apt', # or 'snap' or 'rbenv'
         dev: true,
-        pkgs: %w[bundler],
-        gems: %w[rubocop],
+        pkgs: ['bundler'],
+        gems: ['rubocop'],
       },
     }
 

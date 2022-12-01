@@ -1,19 +1,5 @@
-- name: dnf install redis
-  become: yes
-  dnf:
-    state: present
-    name: redis
+- import_tasks: vars.yml
 
-- name: dnf install redis devel
-  become: yes
-  dnf:
-    state: present
-    name: redis-devel
-  when: redis.dev | default(False)
+- import_tasks: install.yml
 
-- name: start redis 
-  become: yes
-  systemd:
-    name: redis.service
-    enabled: yes
-    state: started
+- import_tasks: restart.yml

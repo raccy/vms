@@ -1,0 +1,60 @@
+- name: yum install ruby
+  become: yes
+  yum:
+    state: present
+    name: ruby
+  when: ruby.type == "yum"
+
+- name: dnf module install ruby
+  become: yes
+  dnf:
+    state: present
+    name: '@ruby{{ ":" ~ ruby.version if ruby.version is defined else "" }}'
+  when: ruby.type == "module"
+
+- name: dnf install ruby
+  become: yes
+  dnf:
+    state: present
+    name: ruby
+  when: ruby.type in ["dnf", "module"]
+
+- name: apt install ruby
+  become: yes
+  apt:
+    state: present
+    name: ruby
+  when: ruby.type == "apt"
+
+- name: snap install ruby
+  become: yes
+  snap:
+    state: present
+    name: node
+    channel: '{{ ruby.version ~ "/" if ruby.version is defined else "" }}stable'
+    classic: yes
+  when: ruby.type == "snap"
+
+- name: yum install ruby packages (gems)
+  become: yes
+  yum:
+    state: present
+    name: 'rubygem-{{ item }}'
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.type == "yum" and ruby.pkgs is defined
+
+- name: dnf install ruby packages (gems)
+  become: yes
+  dnf:
+    state: present
+    name: 'rubygem-{{ item }}'
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.type == "dnf" and ruby.pkgs is defined
+
+- name: apt install ruby packages (gems)
+  become: yes
+  apt:
+    state: present
+    name: 'ruby-{{ item }}'
+  loop: '{{ ruby.pkgs | default([]) }}'
+  when: ruby.type == "apt" and ruby.pkgs is defined

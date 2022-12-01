@@ -1,0 +1,48 @@
+- name: yum install redis
+  become: yes
+  yum:
+    state: present
+    name: redis
+  when: redis.type == "yum"
+
+- name: dnf module install redis
+  become: yes
+  dnf:
+    state: present
+    name: '@redis{{ ":" ~ redis.version if redis.version is defined else "" }}'
+  when: redis.type == "module"
+
+- name: dnf install redis
+  become: yes
+  dnf:
+    state: present
+    name: redis
+  when: redis.type in ["dnf", "module"]
+
+- name: apt install redis
+  become: yes
+  apt:
+    state: present
+    name: redis
+  when: redis.type == "apt"
+
+- name: yum install redis devel
+  become: yes
+  yum:
+    state: present
+    name: redis-devel
+  when: redis.type == "yum" and redis.dev | default(False)
+
+- name: dnf install redis devel
+  become: yes
+  dnf:
+    state: present
+    name: redis-devel
+  when: redis.type in ["dnf", "module"] and redis.dev | default(False)
+
+- name: apt install redis devel
+  become: yes
+  apt:
+    state: present
+    name: libredis-dev
+  when: redis.type == "apt" and redis.dev | default(False)

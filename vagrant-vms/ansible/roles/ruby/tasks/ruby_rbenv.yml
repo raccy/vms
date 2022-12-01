@@ -1,0 +1,37 @@
+# TODO
+
+- name: apt install rbenv
+  become: yes
+  apt:
+    name: rbenv
+    state: present
+
+- name: set rbenv in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
+    block: |
+      eval "$(rbenv init - bash)"
+
+- name: make dir rbenv plugins
+  file:
+    path: /home/vagrant/.rbenv/plugins
+    state: directory
+
+- name: git ruby-build
+  git:
+    repo: https://github.com/rbenv/ruby-build.git
+    dest: /home/vagrant/.rbenv/plugins/ruby-build
+
+- name: rbenv install
+  shell:
+    cmd: 'rbenv install -s {{ ruby.version }}'
+    executable: /bin/bash
+    creates: '/home/vagrant/.rbenv/versions/{{ ruby.version }}'
+  when: ruby.version is defined
+
+- name: rbenv global
+  shell:
+    cmd: 'rbenv global {{ ruby.version }}'
+    executable: /bin/bash
+  when: ruby.version is defined

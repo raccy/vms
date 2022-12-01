@@ -19,14 +19,6 @@
     name: python3-pymysql
   when: ansible_pkg_mgr == "apt"
 
-- set_fact:
-    mariadb_socket: /var/lib/mysql/mysql.sock
-  when: ansible_os_family in ["RedHat", "Rocky"]
-
-- set_fact:
-    mariadb_socket: /var/run/mysqld/mysqld.sock
-  when: ansible_os_family == "Debian"
-
 - name: create admin user
   become: yes
   mysql_user:

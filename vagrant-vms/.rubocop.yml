@@ -34,6 +34,9 @@ Style/PerlBackrefs:
 Style/SpecialGlobalVars:
   Enabled: false
 
+Style/WordArray:
+  EnforcedStyle: brackets
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 

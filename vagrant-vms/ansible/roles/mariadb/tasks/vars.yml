@@ -1,2 +1,16 @@
 - set_fact:
     mariadb: '{{ {"type": ansible_pkg_mgr} | combine(mariadb_default, mariadb, recursive=True) }}'
+
+- debug:
+    var: mariadb
+
+- fail:
+    msg: 'fail'
+
+- set_fact:
+    mariadb: '{{ {"socket": "/var/lib/mysql/mysql.sock"} | combine(mariadb) }}'
+  when: ansible_os_family in ["RedHat", "Rocky"]
+
+- set_fact:
+    mariadb: '{{ {"socket": "/var/run/mysqld/mysqld.sock"} | combine(mariadb) }}'
+  when: ansible_os_family == "Debian"
