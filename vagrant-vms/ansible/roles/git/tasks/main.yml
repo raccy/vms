@@ -1,5 +1,7 @@
 # Git
 
+- import_tasks: vars.yml
+
 - import_tasks: install.yml
 
 - import_tasks: config.yml

@@ -1,4 +1,5 @@
-mariadb_default:
+mariadb:
+  dev: false
   admin:
     name: admin
     password: admin_password

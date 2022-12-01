@@ -1,27 +1,20 @@
 - hosts: all
   roles:
+    - init
     - setup
     - role: ds
-      when:
-        ds is defined and
-        ansible_os_family in ["RedHat", "Rocky"] and
-        ansible_distribution_major_version in ["8", "9"]
+      when: app.ds is defined
     - role: git
-      when: git is defined
+      when: app.git is defined
     - role: mariadb
-      when: mariadb is defined
+      when: app.mariadb is defined
     - role: nginx
-      when: nginx is defined
+      when: app.nginx is defined
     - role: nodejs
-      when: nodejs is defined
+      when: app.nodejs is defined
     - role: openldap
-      when:
-        openldap is defined and (
-          ansible_os_family == "Debian" or (
-            ansible_os_family == "RedHat" and
-            ansible_distribution_major_version == "7"
-          )
+      when: app.openldap is defined
     - role: redis
-      when: redis is defined
+      when: app.redis is defined
     - role: ruby
-      when: ruby is defined
+      when: app.ruby is defined

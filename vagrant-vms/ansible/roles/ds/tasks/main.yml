@@ -1,4 +1,6 @@
-# EL8 and EL9
+# 389 DS
+
+- import_tasks: vars.yml
 
 - import_tasks: install.yml
 

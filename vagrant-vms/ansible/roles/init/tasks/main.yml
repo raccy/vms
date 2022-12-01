@@ -1,0 +1,14 @@
+- set_fact:
+    os_type: 'el{{ ansible_distribution_major_version }}'
+  when: ansible_os_family in ["Redhat", "Rocky"]
+
+- set_fact:
+    os_type: 'deb{{ (ansible_distribution_major_version | int) // 2 - 9 }}'
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version in ["18", "19"]
+
+- set_fact:
+    os_type: 'deb{{ ansible_distribution_major_version }}'
+  when: ansible_distribution == "Debian"
+
+- debug:
+    var: os_type

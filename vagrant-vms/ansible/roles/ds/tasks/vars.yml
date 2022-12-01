@@ -1,0 +1,10 @@
+- name: set fact ds
+  set_fact:
+    ds: '{{ {"type": ansible_pkg_mgr} | combine(ds, app.ds, recursive=True) }}'
+
+- name: set fact ldap_auth
+  set_fact:
+    ldap_auth:
+      server_uri: ldap://localhost
+      bind_dn: '{{ ds.root.dn }}'
+      bind_pw: '{{ ds.root.password }}'

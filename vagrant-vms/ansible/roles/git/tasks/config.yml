@@ -1,19 +1,9 @@
-- name: git config user.name
-  git_config:
-    scope: global
-    name: user.name
-    value: '{{ git.config.user.name }}'
-  when: git.config.user.name is defined
-
-- name: git config user.email
-  git_config:
-    scope: global
-    name: user.email
-    value: '{{ git.config.user.email }}'
-  when: git.config.user.email is defined
-
-- name: git config pull.rebase
-  git_config:
-    scope: global
-    name: pull.rebase
-    value: 'false'
+- include_tasks: config_sub.yml
+  loop:
+    - core
+    - filter
+    - http
+    - pull
+    - user
+  loop_control:
+    loop_var: name

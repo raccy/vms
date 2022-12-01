@@ -1,4 +1,6 @@
-ldap_auth:
-  server_uri: ldap://localhost
-  bind_dn: cn=admin,dc=example,dc=jp
-  bind_pw: admin_password
+ds:
+  user_gorup: person
+  member_of: false
+  root:
+    dn: cn=admin,dc=example,dc=jp
+    password: admin_password
