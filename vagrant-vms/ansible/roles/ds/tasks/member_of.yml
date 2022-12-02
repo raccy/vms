@@ -1,4 +1,4 @@
-# memberof プラグインとユーザーとグループのサンプル
+# member_of プラグインとユーザーとグループのサンプル
 
 - name: dsconf plugin memberof
   become: yes
