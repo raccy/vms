@@ -1,0 +1,10 @@
+- name: set fact openldap
+  set_fact:
+    openldap: '{{ {"type": ansible_pkg_mgr} | combine(openldap, app.openldap, recursive=True) }}'
+
+- name: set fact ldap_auth
+  set_fact:
+    ldap_auth:
+      server_uri: ldap://localhost
+      bind_dn: '{{ openldap.root.dn }}'
+      bind_pw: '{{ openldap.root.password }}'

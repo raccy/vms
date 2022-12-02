@@ -1,92 +1,25 @@
 # TODO: 整理がまだ
 
-- name: debconf shared/organization
-  become: yes
-  debconf:
-    name: slapd
-    question: shared/organization
-    value: example
-    vtype: string
+- import_tasks: vars.yml
 
-- name: debconf slapd/domain
-  become: yes
-  debconf:
-    name: slapd
-    question: slapd/domain
-    value: example.jp
-    vtype: string
+- import_takks: install.yml
 
-- name: debconf slapd/password
-  become: yes
-  debconf:
-    name: slapd
-    question: '{{ item }}'
-    value: admin_password
-    vtype: password
-  loop:
-    - slapd/password1
-    - slapd/password2
+- import_tasks: samba.yml
 
-- name: apt install slapd
-  become: yes
-  apt:
-    name: slapd
-    state: present
+- import_tasks: restart.yml
 
-- name: start slapd
-  become: yes
-  systemd:
-    name: slapd.service
-    enabled: yes
-    state: started
-
-- name: apt install pkgs for ldap
-  become: yes
-  apt:
-    pkg:
-      - ldap-utils
-      - python3-ldap
-
-- name: ldap entry people ou
-  ldap_entry:
-    state: present
-    dn: 'ou=people,dc=example,dc=jp'
-    objectClass:
-      - organizationalUnit
-      - top
-  args: '{{ ldap_auth }}'
-
-- name: ldap entry groups ou
-  ldap_entry:
-    state: present
-    dn: 'ou=groups,dc=example,dc=jp'
-    objectClass:
-      - organizationalUnit
-      - top
-  args: '{{ ldap_auth }}'
-
-- import_tasks: user_group.yml
-
-# - name: check slapcat
+# - name: apt install pkgs for ldap
 #   become: yes
-#   command:
-#     cmd: slapcat
-#   register: slapcat_result
+#   apt:
+#     pkg:
+#       - ldap-utils
+#       - python3-ldap
 
-# - name: ldapadd
-#   become: yes
-#   command:
-#     argv:
-#       - ldapadd
-#       - -x
-#       - -h
-#       - localhost
-#       - -p
-#       - '389'
-#       - -D
-#       - 'cn=admin,dc=example,dc=jp'
-#       - -w
-#       - admin_password
-#       - -f
-#       - /var/tmp/openldap-setup/user_group.ldif'
-#   when: 'not "dn: uid=admin,ou=people,dc=example,dc=jp" in slapcat_result.stdout_lines'
+- import_tasks: user_group_person.yml
+  when: ds.user_group is defined and ds.user_group == "person"
+
+- import_tasks: user_group_account.yml
+  when: ds.user_group is defined and ds.user_group == "account"
+
+- import_tasks: member_of.yml
+  when: ds.member_of | default(False)
