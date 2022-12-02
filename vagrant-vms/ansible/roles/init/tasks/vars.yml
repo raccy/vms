@@ -1,12 +1,15 @@
-- set_fact:
+- name: set fact os_type for RedaHat or Rocky
+  set_fact:
     os_type: 'el{{ ansible_distribution_major_version }}'
   when: ansible_os_family in ["RedHat", "Rocky"]
 
-- set_fact:
+- name: set fact os_type for Ubuntu
+  set_fact:
     os_type: 'deb{{ (ansible_distribution_major_version | int) // 2 - 9 }}'
   when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version in ["18", "19"]
 
-- set_fact:
+- name: set fact os_type for Debian
+  set_fact:
     os_type: 'deb{{ ansible_distribution_major_version }}'
   when: ansible_distribution == "Debian"
 

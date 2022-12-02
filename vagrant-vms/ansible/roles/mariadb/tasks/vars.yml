@@ -2,12 +2,22 @@
   set_fact:
     mariadb: '{{ {"type": ansible_pkg_mgr} | combine(mariadb, app.mariadb, recursive=True) }}'
 
-- name: set fact mariadb.socket for el
+- name: set fact mariadb file for el
   set_fact:
-    mariadb: '{{ {"socket": "/var/lib/mysql/mysql.sock"} | combine(mariadb) }}'
+    mariadb: '{{ item | combine(mariadb) }}'
+  vars:
+    item:
+      socket: /var/lib/mysql/mysql.sock
+      client_cnf: /etc/my.cnf.d/client.cnf
+      server_cnf: /etc/my.cnf.d/mariadb-server.cnf
   when: os_type is match("el")
 
-- name: set fact mariadb.socket for deb
+- name: set fact mariadb file for deb
   set_fact:
-    mariadb: '{{ {"socket": "/var/run/mysqld/mysqld.sock"} | combine(mariadb) }}'
+    mariadb: '{{ item | combine(mariadb) }}'
+  vars:
+    item:
+      socket: /var/run/mysqld/mysqld.sock
+      client_cnf: /etc/mysql/mariadb.conf.d/50-client.cnf
+      server_cnf: /etc/mysql/mariadb.conf.d/50-server.cnf
   when: os_type is match("deb")

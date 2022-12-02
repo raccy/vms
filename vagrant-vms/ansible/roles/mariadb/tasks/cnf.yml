@@ -1,19 +1,9 @@
 # cnf
 
-- set_fact:
-    mariadb_client_cnf: /etc/my.cnf.d/client.cnf
-    mariadb_server_cnf: /etc/my.cnf.d/mariadb-server.cnf
-  when: os_type is match("el")
-
-- set_fact:
-    mariadb_client_cnf: /etc/mysql/mariadb.conf.d/50-client.cnf
-    mariadb_server_cnf: /etc/mysql/mariadb.conf.d/50-server.cnf
-  when: os_type is match("deb")
-
 - name: lineinfile client.cnf default-character-set
   become: yes
   lineinfile:
-    path: '{{ mariadb_client_cnf }}'
+    path: '{{ mariadb.client_cnf }}'
     insertafter: '\[client\]'
     regexp: '^default-character-set\s.*$'
     line: 'default-character-set = utf8mb4'
@@ -21,7 +11,7 @@
 - name: lineinfile server.scnf character-set-server
   become: yes
   lineinfile:
-    path: '{{ mariadb_server_cnf }}'
+    path: '{{ mariadb.server_cnf }}'
     insertafter: '\[server\]'
     regexp: '^character-set-server\s.*$'
     line: 'character-set-server = utf8mb4'
@@ -29,7 +19,7 @@
 - name: lineinfile server.cnf cllation-server
   become: yes
   lineinfile:
-    path: '{{ mariadb_server_cnf }}'
+    path: '{{ mariadb.server_cnf }}'
     insertafter: '\[server\]'
     regexp: '^collation-server\s.*$'
     line: 'collation-server = utf8mb4_general_ci'

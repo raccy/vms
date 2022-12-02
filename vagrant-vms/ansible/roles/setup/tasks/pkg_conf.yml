@@ -1,11 +1,14 @@
-- set_fact:
+- name: set fact pkg_confs empty dict
+  set_fact:
     pkg_confs: []
 
-- set_fact:
+- name: set fact pkg_confs for yum and dnf
+  set_fact:
     pkg_confs: '{{ pkg_confs + ["/etc/yum.conf"] }}'
   when: ansible_pkg_mgr in ["yum", "dnf"]
 
-- set_fact:
+- name: set fact pkg_confs for dnf
+  set_fact:
     pkg_confs: '{{ pkg_confs + ["/etc/dnf/dnf.conf"] }}'
   when: ansible_pkg_mgr == "dnf"
 

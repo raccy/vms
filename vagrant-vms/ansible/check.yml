@@ -8,3 +8,5 @@
           distribution_version: '{{ ansible_distribution_version }}'
           os_family: '{{ ansible_os_family }}'
           pkg_mgr: '{{ ansible_pkg_mgr }}'
+    - debug:
+        var: check_facts
