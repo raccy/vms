@@ -95,12 +95,11 @@ Vagrant.configure('2') do |config|
           'ruby-irb',
           'rubygem-rake',
           'rubygem-bundler',
-          'rubygem-ffi',
           'rubygem-mysql2',
         ],
         gems: [
           'rubocop',
-          # 'nokogiri',
+          'nokogiri',
         ],
       },
     }
