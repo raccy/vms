@@ -16,13 +16,20 @@
   become: yes
   apt:
     state: present
+    name: python-pymysql
+  when: ansible_pkg_mgr == "apt" and os_type == "deb10"
+
+- name: apt install python mysql for ansible
+  become: yes
+  apt:
+    state: present
     name: python3-pymysql
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and os_type != "deb10"
 
 - name: create admin user
   become: yes
   mysql_user:
-    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_unix_socket: '{{ mariadb.socket }}'
     login_user: root
     state: present
     name: '{{ mariadb.admin.name }}'

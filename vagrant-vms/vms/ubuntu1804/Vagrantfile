@@ -81,7 +81,6 @@ Vagrant.configure('2') do |config|
       nodejs: {
         npms: [
           'coffeescript',
-          'npm-check-updates',
         ],
       },
       openldap: {
@@ -95,12 +94,12 @@ Vagrant.configure('2') do |config|
         dev: true,
         pkgs: [
           'ruby-bundler',
-          'rbuy-ffi',
+          'ruby-ffi',
           'ruby-mysql2',
         ],
         gems: [
-          'rubocop',
-          'nokogiri',
+          'rubocop-ast@1.17.0',
+          'rubocop@1.28.2',
         ],
       },
     }
