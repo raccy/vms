@@ -2,7 +2,7 @@
   become: yes
   yum:
     state: present
-    name: python3-PyMySQL
+    name: python2-PyMySQL
   when: ansible_pkg_mgr == "yum"
 
 - name: dnf install python mysql for ansible

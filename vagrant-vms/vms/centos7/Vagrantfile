@@ -84,7 +84,6 @@ Vagrant.configure('2') do |config|
         pkgs: [
           'rubygem-bundler',
           'rubygem-ffi',
-          'rubygem-mysql2',
         ],
         gems: [
           'rubocop',

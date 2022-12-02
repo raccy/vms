@@ -2,7 +2,10 @@
 
 - import_tasks: vars.yml
 
-- import_takks: install.yml
+- import_tasks: debconf.yml
+  when: openldap.type == "apt"
+
+- import_tasks: install.yml
 
 - import_tasks: samba.yml
 

@@ -80,7 +80,10 @@ Vagrant.configure('2') do |config|
           'npm-check-updates',
         ],
       },
-      # openldap: {},
+      # openldap: {
+      #   user_gorup: 'posix', # or 'preson'
+      #   member_of: true,
+      # },
       reids: {
         versino: '6',
         dev: true,

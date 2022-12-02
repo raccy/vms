@@ -1,33 +1,24 @@
-- name: debconf shared/organization
+- name: yum install openldap-servers
   become: yes
-  debconf:
-    name: slapd
-    question: shared/organization
-    value: example
-    vtype: string
+  yum:
+    state: present
+    name: openldap-servers
+  when: openldap.type == "yum"
 
-- name: debconf slapd/domain
+- name: dnf install openldap-servers
   become: yes
-  debconf:
-    name: slapd
-    question: slapd/domain
-    value: example.jp
-    vtype: string
-
-- name: debconf slapd/password
-  become: yes
-  debconf:
-    name: slapd
-    question: '{{ item }}'
-    value: admin_password
-    vtype: password
-  loop:
-    - slapd/password1
-    - slapd/password2
+  dnf:
+    state: present
+    name: openldap-servers
+    enablerepo:
+      - plus
+      - powertools
+  when: openldap.type == "dnf"
 
 - name: apt install slapd
   become: yes
   apt:
-    name: slapd
     state: present
+    name: slapd
+  when: openldap.type == "apt"
 
