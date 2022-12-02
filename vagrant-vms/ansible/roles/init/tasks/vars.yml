@@ -13,5 +13,14 @@
     os_type: 'deb{{ ansible_distribution_major_version }}'
   when: ansible_distribution == "Debian"
 
-- debug:
-    var: os_type
+- name: check os_type
+  debug:
+    msg:
+      os_family: '{{ ansible_os_family }}'
+      distribution_major_version: '{{ ansible_distribution_major_version }}'
+      os_type: '{{ os_type | default(None) }}'
+
+- name: faile if os_type isnot defined
+  fail:
+    msg: Unknown OS! The os_type is not defined.
+  when: os_type is not defined

@@ -71,7 +71,7 @@ Vagrant.configure('2') do |config|
         dev: true,
       },
       nginx: {
-        version: '1.20'
+        version: '1.20',
       },
       nodejs: {
         versino: '18',
@@ -90,12 +90,12 @@ Vagrant.configure('2') do |config|
         dev: true,
         pkgs: [
           'rubygem-bundler',
-          'rbuygem-ffi',
+          'rubygem-ffi',
           'rubygem-mysql2',
         ],
         gems: [
           'rubocop',
-          'nokogiri',
+          # 'nokogiri',
         ],
       },
     }

@@ -57,10 +57,10 @@ Vagrant.configure('2') do |config|
       ],
     }
     app = {
-      ds: {
-        user_gorup: 'posix', # or 'preson'
-        member_of: true,
-      },
+      # ds: {
+      #   user_gorup: 'posix', # or 'preson'
+      #   member_of: true,
+      # },
       git: {
         config: git_config,
       },
@@ -83,7 +83,7 @@ Vagrant.configure('2') do |config|
         dev: true,
         pkgs: [
           'rubygem-bundler',
-          'rbuygem-ffi',
+          'rubygem-ffi',
           'rubygem-mysql2',
         ],
         gems: [

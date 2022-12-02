@@ -9,7 +9,7 @@
   become: yes
   yum:
     state: present
-    name: 389-ds-base
+    name: 389-ds
   when: ds.type == "yum"
 
 - name: dnf install 389 Directory Server

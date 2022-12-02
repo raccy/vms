@@ -19,7 +19,7 @@
 - name: gem install packages
   gem:
     name: '{{ item.split("@") | first }}'
-    version: '{{ item.split("@") | last if "@" in item }}'
+    version: '{{ item.split("@") | last if "@" in item else None }}'
     state: present
   loop: '{{ ruby.gems | default([]) }}'
   environment:

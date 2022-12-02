@@ -1,4 +1,5 @@
 # 389 DS
+# os: el8, el9
 
 - import_tasks: vars.yml
 

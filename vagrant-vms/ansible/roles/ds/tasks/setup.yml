@@ -1,6 +1,7 @@
 # セットアップ
 
 - name: mkdir 389 DS setup directory
+  become: yes
   file:
     path: /var/tmp/389ds-setup
     state: directory

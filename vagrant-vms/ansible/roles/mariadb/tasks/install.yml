@@ -36,7 +36,7 @@
   become: yes
   yum:
     state: present
-    name: mariadb-connector-c-devel
+    name: mariadb-devel
   when: mariadb.type == "yum" and mariadb.dev
 
 - name: dnf install mariadb devel
