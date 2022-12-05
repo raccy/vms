@@ -22,3 +22,9 @@
     name: slapd
   when: openldap.type == "apt"
 
+- name: apt install pkgs for ldap
+  become: yes
+  apt:
+    pkg:
+      - python3-ldap
+  when: openldap.type == "apt"

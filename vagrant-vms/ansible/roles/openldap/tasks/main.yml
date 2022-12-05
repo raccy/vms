@@ -11,13 +11,6 @@
 
 - import_tasks: restart.yml
 
-# - name: apt install pkgs for ldap
-#   become: yes
-#   apt:
-#     pkg:
-#       - ldap-utils
-#       - python3-ldap
-
 - import_tasks: user_group_person.yml
   when: ds.user_group is defined and ds.user_group == "person"
 

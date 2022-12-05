@@ -6,15 +6,35 @@
 
 - name: bundle install
   command:
-    cmd: bash -lic "bundle install"
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
     chdir: /home/vagrant/nodokan
 
 - name: rails yarn:install
   command:
-    cmd: bash -lic "rails yarn:install"
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails yarn:install
     chdir: /home/vagrant/nodokan
+
+- name: check rails db version
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:version
+    chdir: /home/vagrant/nodokan
+  ignore_errors: yes
+  register: rails_db_version_result
 
 - name: rails db:setup
   command:
-    cmd: bash -lic "rails db:setup"
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:setup
     chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0
