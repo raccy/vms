@@ -1,5 +1,5 @@
 ds:
-  user_gorup: person
+  user_group: person
   member_of: false
   root:
     dn: cn=admin,dc=example,dc=jp

@@ -35,6 +35,9 @@
     classic: yes
   when: ruby.type == "snap"
 
+- import_tasks: install_rbenv.yml
+  when: ruby.type == "rbenv"
+
 - name: yum install ruby devel
   become: yes
   yum:

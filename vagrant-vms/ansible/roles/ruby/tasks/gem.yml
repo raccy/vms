@@ -15,6 +15,7 @@
           PATH="$GEM_HOME/bin:$PATH"
       fi
       export PATH
+  when: ruby.type != "rbenv"
 
 - name: gem install packages
   gem:
@@ -24,4 +25,15 @@
   loop: '{{ ruby.gems | default([]) }}'
   environment:
     GEM_HOME: /home/vagrant/.gem
-  when: ruby.gems is defined
+  when: ruby.gems is defined and ruby.type != "rbenv"
+
+- name: gem install packages
+  gem:
+    name: '{{ item.split("@") | first }}'
+    version: '{{ item.split("@") | last if "@" in item else None }}'
+    state: present
+  loop: '{{ ruby.gems | default([]) }}'
+  environment:
+    PATH: '/home/vagrant/.rbenv/shims:/home/vagrant/.rbenv/bin:{{ ansible_env.path }}'
+    RBENV_VERSION: '{{ ruby.version }}'
+  when: ruby.gems is defined and ruby.type == "rbenv"

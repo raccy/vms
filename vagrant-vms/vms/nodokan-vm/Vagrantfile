@@ -32,27 +32,19 @@ Vagrant.configure('2') do |config|
 
   config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
 
-  proxy_protocols = %w[http https ftp].to_h do |name|
-    env_name = "#{name}_proxy"
-    env_value = ENV[env_name]
-    if env_value
-      [name, {name: env_name, value: env_value}]
+  proxy = get_proxy
+
+  if Vagrant.has_plugin?('vagrant-proxyconf')
+    if proxy
+      # cannot write snap npm, so disable
+      config.proxy.enabled = {npm: false}
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
     else
-      [name, nil]
+      config.proxy.enabled = false
     end
-  end.compact
-
-  proxy_enable = !proxy_protocols.empty?
-
-  if proxy_enable && Vagrant.has_plugin?('vagrant-proxyconf')
-    proxy_protocols.each do |name, env|
-      config.proxy.__send__("#{name}=", env[:value])
-    end
-
-    config.proxy.no_proxy = ENV['no_proxy'] if ENV.has_key?('no_proxy')
-
-    # cannot write snap npm, so disable
-    config.proxy.enabled = {npm: false}
   end
 
   config.vm.provision 'fix-dns', type: 'shell', before: :all do |script|
@@ -65,23 +57,45 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.provision 'ansible' do |ansible|
-    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/ubuntu2004/setup.yml'
-    vars = {
-      ruby_version: '2.7.5',
-      ruby_type: 'rbenv',
-      nodejs_version: '14',
-      nodejs_type: 'snap',
+    ansible.playbook = '../../ansible/setup.yml'
+    setup = {
+      pkgs: [
+        'vim',
+        'rsync',
+        'build-essential',
+      ],
+    }
+    app = {
+      git: {
+        config: git_config,
+      },
+      mariadb: {
+        dev: true,
+      },
+      nodejs: {
+        type: 'snap',
+        version: '14',
+        npms: [
+          'npm-check-updates',
+        ],
+      },
+      openldap: {
+        user_group: 'preson',
+      },
+      ruby: {
+        type: 'rbenv',
+        version: '2.7.5',
+        gems: [
+          'rubocop',
+        ],
+      },
     }
 
-    proxy_protocols.each_value { |env| vars[env[:name]] = env[:value] } if proxy_enable
-
-    %w[name email].each do |name|
-      value = `git config --get user.#{name}`.chomp
-      vars["git_config_user_#{name}"] = value if value&.length&.positive?
-    end
-
-    ansible.extra_vars = vars
+    ansible.extra_vars = {
+      setup: setup,
+      app: app,
+      proxy: proxy,
+    }.compact
   end
 
   config.vm.provision 'nodokan', type: 'ansible' do |ansible|

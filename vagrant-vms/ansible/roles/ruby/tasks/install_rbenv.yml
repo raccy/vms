@@ -1,37 +1,48 @@
-# TODO
+# rb env
 
 - name: apt install rbenv
   become: yes
   apt:
     name: rbenv
     state: present
+  when: os_type is match("deb")
 
-- name: set rbenv in .bashrc
+- name: git clone
+  git:
+    repo: https://github.com/rbenv/rbenv.git
+    dest: /home/vagrant/.rbenv
+  when: os_type is not match("deb")
+
+- name: set fact rbenv_path
+  set_fact:
+    rbenv_path: '{{os_type is match("deb") | ternary("rbenv", "~/.rbenv/bin/rbenv")}}'
+
+- name: init rbenv in .bashrc
   blockinfile:
     path: /home/vagrant/.bashrc
     marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
     block: |
-      eval "$(rbenv init - bash)"
+      eval "$({{ rbenv_path }} init - bash)"
 
 - name: make dir rbenv plugins
   file:
     path: /home/vagrant/.rbenv/plugins
     state: directory
 
-- name: git ruby-build
+- name: git clone ruby-build
   git:
     repo: https://github.com/rbenv/ruby-build.git
     dest: /home/vagrant/.rbenv/plugins/ruby-build
 
 - name: rbenv install
   shell:
-    cmd: 'rbenv install -s {{ ruby.version }}'
+    cmd: '{{ rbenv_path }} install -s {{ ruby.version }}'
     executable: /bin/bash
     creates: '/home/vagrant/.rbenv/versions/{{ ruby.version }}'
   when: ruby.version is defined
 
 - name: rbenv global
   shell:
-    cmd: 'rbenv global {{ ruby.version }}'
+    cmd: '{{ rbenv_path }} global {{ ruby.version }}'
     executable: /bin/bash
   when: ruby.version is defined
