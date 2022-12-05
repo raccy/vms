@@ -35,45 +35,72 @@ Vagrant.configure('2') do |config|
   # BUG... selinux enforced
   # config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
 
-  proxy_protocols = %w[http https ftp].to_h do |name|
-    env_name = "#{name}_proxy"
-    env_value = ENV[env_name]
-    if env_value
-      [name, {name: env_name, value: env_value}]
+  proxy = get_proxy
+
+  if Vagrant.has_plugin?('vagrant-proxyconf')
+    if proxy
+      config.proxy.enabled = true
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
     else
-      [name, nil]
+      config.proxy.enabled = false
     end
-  end.compact
-
-  proxy_enable = !proxy_protocols.empty?
-
-  if proxy_enable && Vagrant.has_plugin?('vagrant-proxyconf')
-    proxy_protocols.each do |name, env|
-      config.proxy.__send__("#{name}=", env[:value])
-    end
-
-    config.proxy.no_proxy = ENV['no_proxy'] if ENV.has_key?('no_proxy')
   end
 
   config.vm.provision 'ansible' do |ansible|
-    ENV['ANSIBLE_INJECT_FACT_VARS'] = 'False'
-    ansible.playbook = '../../ansible/el8/setup.yml'
+    ansible.playbook = '../../ansible/setup.yml'
+    setup = {
+      pkgs: [
+        'vim',
+        'rsync',
+        '@Development Tools',
+      ],
+    }
     # https://access.redhat.com/support/policy/updates/rhel8-app-streams-life-cycle
-    vars = {
-      ruby_version: '2.7',     # 2023-05
-      nodejs_version: '16',    # 2024-04
-      mariadb_version: '10.5', # 2026-05
-      redis_version: '6',      # 2024-05
+    app = {
+      ds: {
+        user_group: 'account',
+        member_of: true,
+      },
+      git: {
+        config: git_config,
+      },
+      mariadb: {
+        vresion: '10.5', # 2026-05
+        dev: true,
+      },
+      nodejs: {
+        version: '16', # 2024-04
+        npms: [
+          'npm-check-updates',
+          'yarn',
+        ],
+      },
+      redis: {
+        version: '6', # 2024-05
+      },
+      ruby: {
+        version: '2.7', # 2023-05
+        dev: true,
+        pkgs: [
+          'ruby-irb',
+          'rubygem-rake',
+          'rubygem-bundler',
+          'rubygem-mysql2',
+        ],
+        gems: [
+          'rubocop',
+        ],
+      },
     }
 
-    proxy_protocols.each_value { |env| vars[env[:name]] = env[:value] } if proxy_enable
-
-    %w[name email].each do |name|
-      value = `git config --get user.#{name}`.chomp
-      vars["git_config_user_#{name}"] = value if value&.length&.positive?
-    end
-
-    ansible.extra_vars = vars
+    ansible.extra_vars = {
+      setup: setup,
+      app: app,
+      proxy: proxy,
+    }.compact
   end
 
   config.vm.provision 'yuzakan', type: 'ansible' do |ansible|
