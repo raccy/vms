@@ -6,27 +6,42 @@
 
 - name: bundle install
   command:
-    cmd: bundle install
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
     chdir: /home/vagrant/yuzakan
 
 - name: npm install
   command:
-    cmd: npm install
+    argv:
+      - bash
+      - '-lic'
+      - npm install
     chdir: /home/vagrant/yuzakan
 
 - name: bundle exec rake build
   command:
-    cmd: bundle exec rake build
+    argv:
+      - bash
+      - '-lic'
+      - bundle exec rake build
     chdir: /home/vagrant/yuzakan
 
 - name: bundle exec hanami db prepare
   command:
-    cmd: bundle exec hanami db prepare
+    argv:
+      - bash
+      - '-lic'
+      - bundle exec hanami db prepare
     chdir: /home/vagrant/yuzakan
 
 - name: bundle exec hanami db prepare for test
   command:
-    cmd: bundle exec hanami db prepare
+    argv:
+      - bash
+      - '-lic'
+      - bundle exec hanami db prepare
     chdir: /home/vagrant/yuzakan
   environment:
     HANAMI_ENV: test
