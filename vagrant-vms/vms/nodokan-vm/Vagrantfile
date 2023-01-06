@@ -84,7 +84,7 @@ Vagrant.configure('2') do |config|
       },
       ruby: {
         type: 'rbenv',
-        version: '2.7.5',
+        version: '2.7.7',
         gems: [
           'rubocop',
         ],

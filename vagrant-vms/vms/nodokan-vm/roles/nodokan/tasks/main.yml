@@ -38,3 +38,21 @@
       - bin/rails db:setup
     chdir: /home/vagrant/nodokan
   when: rails_db_version_result.rc != 0
+
+- name: rails radius:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails radius:setup
+    chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0
+
+- name: rails kea:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails kea:setup
+    chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0
