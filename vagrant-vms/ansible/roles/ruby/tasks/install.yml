@@ -3,7 +3,7 @@
   dnf:
     state: present
     name: '@ruby:{{ ruby.version }}'
-  when: os_type == "el8" and ruby.type == "dnf" and ruby.version is defined
+  when: and ruby.type == "dnf" and ruby.version is defined
 
 - name: yum install ruby
   become: yes

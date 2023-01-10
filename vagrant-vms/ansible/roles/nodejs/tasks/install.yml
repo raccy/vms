@@ -3,7 +3,7 @@
   dnf:
     state: present
     name: '@nodejs:{{ nodejs.version }}'
-  when: os_type == "el8" and nodejs.type == "dnf" and nodejs.version is defined
+  when: and nodejs.type == "dnf" and nodejs.version is defined
 
 - name: yum install nodejs
   become: yes

@@ -3,7 +3,7 @@
   dnf:
     state: present
     name: '@nginx:{{ nginx.version }}'
-  when: os_type == "el8" and nginx.type == "dnf" and nginx.version is defined
+  when: nginx.type == "dnf" and nginx.version is defined
 
 - name: yum install nginx
   become: yes
