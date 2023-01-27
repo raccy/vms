@@ -3,7 +3,7 @@
   dnf:
     state: present
     name: '@redis:{{ redis.version }}'
-  when: and redis.type == "dnf" and redis.version is defined
+  when: redis.type == "dnf" and redis.version is defined
 
 - name: yum install redis
   become: yes
