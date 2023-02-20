@@ -2,16 +2,6 @@
   set_fact:
     postgresql: '{{ {"type": ansible_pkg_mgr} | combine(postgresql, app.postgresql, recursive=True) }}'
 
-- name: set fact postgresql file for el7
-  set_fact:
-    postgresql: '{{ item | combine(postgresql) }}'
-  vars:
-    item:
-      socket: /run/postgresql/.s.PGSQL.5432
-      datadir: /var/lib/pgsql/data
-  when: os_type == "el7"
-
-
 - name: set fact postgresql file for el
   set_fact:
     postgresql: '{{ item | combine(postgresql) }}'

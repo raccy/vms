@@ -1,30 +1,16 @@
-# - name: yum install python mysql for ansible
-#   become: yes
-#   yum:
-#     state: present
-#     name: python2-PyMySQL
-#   when: ansible_pkg_mgr == "yum"
+- name: dnf install python psycopg2 for ansible
+  become: yes
+  dnf:
+    state: present
+    name: python3-psycopg2
+  when: ansible_pkg_mgr == "dnf"
 
-# - name: dnf install python mysql for ansible
-#   become: yes
-#   dnf:
-#     state: present
-#     name: python3-PyMySQL
-#   when: ansible_pkg_mgr == "dnf"
-
-# - name: apt install python mysql for ansible
-#   become: yes
-#   apt:
-#     state: present
-#     name: python-pymysql
-#   when: ansible_pkg_mgr == "apt" and os_type == "deb10"
-
-# - name: apt install python mysql for ansible
-#   become: yes
-#   apt:
-#     state: present
-#     name: python3-pymysql
-#   when: ansible_pkg_mgr == "apt" and os_type != "deb10"
+- name: apt install python psycopg2 for ansible
+  become: yes
+  apt:
+    state: present
+    name: python3-psycopg2
+  when: ansible_pkg_mgr == "apt"
 
 - name: create admin user
   become: yes
