@@ -1,0 +1,54 @@
+- name: dnf module install postgresql
+  become: yes
+  dnf:
+    state: present
+    name: '@postgresql:{{ postgresql.version }}'
+  when: postgresql.type == "dnf" and postgresql.version is defined
+
+- name: yum install postgresql
+  become: yes
+  yum:
+    state: present
+    name:
+      - postgresql
+      - postgresql-server
+  when: postgresql.type == "yum"
+
+- name: dnf install postgresql
+  become: yes
+  dnf:
+    state: present
+    name:
+      - postgresql
+      - postgresql-server
+  when: postgresql.type == "dnf"
+
+- name: apt install postgresql
+  become: yes
+  apt:
+    state: present
+    name:
+      - postgresql-client
+      - postgresql-server
+  when: postgresql.type == "apt"
+
+- name: yum install postgresql devel
+  become: yes
+  yum:
+    state: present
+    name: libpq-devel
+  when: postgresql.type == "yum" and postgresql.dev
+
+- name: dnf install postgresql devel
+  become: yes
+  dnf:
+    state: present
+    name: libpq-devel
+  when: postgresql.type == "dnf" and postgresql.dev
+
+- name: apt install postgresql devel
+  become: yes
+  apt:
+    state: present
+    name: libpq-dev
+  when: postgresql.type == "apt" and postgresql.dev

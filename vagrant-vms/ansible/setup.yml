@@ -14,6 +14,8 @@
       when: app.nodejs is defined
     - role: openldap
       when: app.openldap is defined
+    - role: postgresql
+      when: app.postgresql is defined
     - role: redis
       when: app.redis is defined
     - role: ruby

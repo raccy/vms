@@ -1,0 +1,9 @@
+- import_tasks: vars.yml
+
+- import_tasks: install.yml
+
+# - import_tasks: cnf.yml
+
+# - import_tasks: restart.yml
+
+# - import_tasks: admin.yml
