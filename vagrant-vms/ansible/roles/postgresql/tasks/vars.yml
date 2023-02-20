@@ -7,9 +7,8 @@
     postgresql: '{{ item | combine(postgresql) }}'
   vars:
     item:
-      socket: /var/lib/mysql/mysql.sock
-      client_cnf: /etc/my.cnf.d/client.cnf
-      server_cnf: /etc/my.cnf.d/server.cnf
+      socket: /run/postgresql/.s.PGSQL.5432
+      datadir: /var/lib/pgsql/data
   when: os_type == "el7"
 
 
@@ -18,9 +17,8 @@
     postgresql: '{{ item | combine(postgresql) }}'
   vars:
     item:
-      socket: /var/lib/mysql/mysql.sock
-      client_cnf: /etc/my.cnf.d/client.cnf
-      server_cnf: /etc/my.cnf.d/postgresql-server.cnf
+      socket: /run/postgresql/.s.PGSQL.5432
+      datadir: /var/lib/pgsql/data
   when: os_type in ["el8", "el9"]
 
 - name: set fact postgresql file for deb
@@ -28,7 +26,6 @@
     postgresql: '{{ item | combine(postgresql) }}'
   vars:
     item:
-      socket: /var/run/mysqld/mysqld.sock
-      client_cnf: /etc/mysql/postgresql.conf.d/50-client.cnf
-      server_cnf: /etc/mysql/postgresql.conf.d/50-server.cnf
+      socket: /run/postgresql/.s.PGSQL.5432
+      datadir: /var/lib/pgsql/data
   when: os_type is match("deb")
