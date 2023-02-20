@@ -1,0 +1,15 @@
+- name: restart samba smb
+  become: yes
+  systemd:
+    name: smb.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+
+# - name: restart samba nmb
+#   become: yes
+#   systemd:
+#     name: nmb.service
+#     daemon_reload: yes
+#     enabled: yes
+#     state: restarted

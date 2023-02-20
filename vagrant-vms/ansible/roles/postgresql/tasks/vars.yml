@@ -7,7 +7,7 @@
     postgresql: '{{ item | combine(postgresql) }}'
   vars:
     item:
-      socket: /run/postgresql/.s.PGSQL.5432
+      socket: /run/postgresql
       datadir: /var/lib/pgsql/data
   when: os_type in ["el8", "el9"]
 
@@ -16,6 +16,6 @@
     postgresql: '{{ item | combine(postgresql) }}'
   vars:
     item:
-      socket: /run/postgresql/.s.PGSQL.5432
+      socket: /run/postgresql
       datadir: /var/lib/pgsql/data
   when: os_type is match("deb")

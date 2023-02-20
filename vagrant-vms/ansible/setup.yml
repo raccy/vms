@@ -20,3 +20,5 @@
       when: app.redis is defined
     - role: ruby
       when: app.ruby is defined
+    - role: samba
+      when: app.samba is defined

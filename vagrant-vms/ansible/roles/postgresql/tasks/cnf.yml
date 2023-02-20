@@ -1,0 +1,14 @@
+# cnf
+
+- name: initdb postgresql
+  become: yes
+  command:
+    cmd: postgresql-setup --initdb
+    creates: /var/lib/pgsql/data
+
+- name: lineinfile pg_hba.cnf host all md5
+  become: yes
+  lineinfile:
+    path: '{{ postgresql.datadir }}/pg_hba.conf'
+    regexp: '^\s*host\s+all\s+all\s+all\s+md5\s*(#.*)?$'
+    line: 'host all all all md5'
