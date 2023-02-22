@@ -69,8 +69,7 @@ Vagrant.configure('2') do |config|
       # mariadb: {
       #   dev: true,
       # },
-      # nginx: {
-      # },
+      nginx: {},
       # nodejs: {
       #   version: '18', # 2025-04
       #   npms: [
@@ -82,9 +81,9 @@ Vagrant.configure('2') do |config|
       #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
-      postgresql: {
-        dev: true,
-      },
+      # postgresql: {
+      #   dev: true,
+      # },
       # reids: {
       #   dev: true,
       # },
@@ -102,7 +101,7 @@ Vagrant.configure('2') do |config|
       #     'nokogiri',
       #   ],
       # },
-      samba: {},
+      # samba: {},
     }
 
     ansible.extra_vars = {
