@@ -10,10 +10,10 @@
 - import_tasks: samba.yml
 
 - import_tasks: user_group_person.yml
-  when: ds.user_group is defined and ds.user_group == "person"
+  when: ds.user_group is defined and (ds.user_group == "person" or "person" in ds.user_group)
 
 - import_tasks: user_group_account.yml
-  when: ds.user_group is defined and ds.user_group == "account"
+  when: ds.user_group is defined and (ds.user_group == "account" or "account" in ds.user_group)
 
 - import_tasks: member_of.yml
   when: ds.member_of
