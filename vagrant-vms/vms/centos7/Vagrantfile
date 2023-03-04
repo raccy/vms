@@ -61,40 +61,40 @@ Vagrant.configure('2') do |config|
       #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
-      git: {
-        config: git_config,
-      },
-      mariadb: {
-        dev: true,
-      },
-      nginx: {
-      },
-      nodejs: {
-        npms: [
-          'coffeescript',
-          'npm-check-updates',
-        ],
-      },
+      # git: {
+      #   config: git_config,
+      # },
+      # mariadb: {
+      #   dev: true,
+      # },
+      # nginx: {
+      # },
+      # nodejs: {
+      #   npms: [
+      #     'coffeescript',
+      #     'npm-check-updates',
+      #   ],
+      # },
       # openldap: {
       #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
-      reids: {
-        dev: true,
-      },
-      ruby: {
-        dev: true,
-        pkgs: [
-          'ruby-irb',
-          'rubygem-rake',
-          'rubygem-bundler',
-          'rubygem-ffi',
-        ],
-        gems: [
-          'parallel@1.13.0',
-          'rubocop@0.50',
-        ],
-      },
+      # reids: {
+      #   dev: true,
+      # },
+      # ruby: {
+      #   dev: true,
+      #   pkgs: [
+      #     'ruby-irb',
+      #     'rubygem-rake',
+      #     'rubygem-bundler',
+      #     'rubygem-ffi',
+      #   ],
+      #   gems: [
+      #     'parallel@1.13.0',
+      #     'rubocop@0.50',
+      #   ],
+      # },
     }
 
     ansible.extra_vars = {
