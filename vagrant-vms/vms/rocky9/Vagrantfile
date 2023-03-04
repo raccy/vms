@@ -60,7 +60,7 @@ Vagrant.configure('2') do |config|
     # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
     app = {
       # ds: {
-      #   user_group: ['account', 'person'],
+      #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
       # git: {
@@ -78,7 +78,7 @@ Vagrant.configure('2') do |config|
       #   ],
       # },
       # openldap: {
-      #   user_group: ['account', 'person'],
+      #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
       # postgresql: {

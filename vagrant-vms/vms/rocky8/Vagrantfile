@@ -60,7 +60,7 @@ Vagrant.configure('2') do |config|
     # EL8 can specify app version
     app = {
       # ds: {
-      #   user_group: ['account', 'person'],
+      #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
       git: {
@@ -81,7 +81,7 @@ Vagrant.configure('2') do |config|
         ],
       },
       # openldap: {
-      #   user_group: ['account', 'person'],
+      #   user_group: 'account', # or 'preson'
       #   member_of: true,
       # },
       reids: {

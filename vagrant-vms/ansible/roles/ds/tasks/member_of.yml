@@ -219,3 +219,40 @@
       description: general user
       description;lang-ja: 一般ユーザー
   args: '{{ ldap_auth }}'
+
+# 大量のユーザーとグループ
+
+- name: ldap entry cn=tset*,ou=User,dc=example,dc=jp
+  ldap_entry:
+    dn: 'cn=test{{ item }},ou=User,dc=example,dc=jp'
+    objectClass:
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+      - nsMemberOf
+    attributes:
+      cn: 'test{{ item }}'
+      mail: 'test{{ item }}@example.jp'
+      userPassword: 'pass0{{ item }}'
+      displayName: Test User
+      displayName;lang-ja: テスト　ユーザー
+      sn: Test
+      sn;lang-ja: テスト
+      givenName: User
+      givenName;lang-ja: ユーザー
+  args: '{{ ldap_auth }}'
+  loop: '{{ range(100, 200) | list }}'
+
+- name: ldap entry cn=test*,ou=Group,dc=example,dc=jp
+  ldap_entry:
+    dn: 'cn=test{{ item }},ou=Group,dc=example,dc=jp'
+    objectClass:
+      - groupOfNames
+      - nsMemberOf
+      - top
+    attributes:
+      description: TestGroup
+      description;lang-ja: テストグループ
+  args: '{{ ldap_auth }}'
+  loop: '{{ range(100, 200) | list }}'

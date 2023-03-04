@@ -1,4 +1,4 @@
-# TODO: 整理がまだ
+# OpenLDAP
 
 - import_tasks: vars.yml
 
@@ -12,10 +12,10 @@
 - import_tasks: restart.yml
 
 - import_tasks: user_group_person.yml
-  when: ds.user_group is defined and (ds.user_group == "person" or "person" in ds.user_group)
+  when: ds.user_group is defined and ds.user_group == "person"
 
 - import_tasks: user_group_account.yml
-  when: ds.user_group is defined and (ds.user_group == "account" or "account" in ds.user_group)
+  when: ds.user_group is defined and ds.user_group == "account"
 
 - import_tasks: member_of.yml
   when: ds.member_of | default(False)
