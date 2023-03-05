@@ -1,8 +1,8 @@
 [general]
 [slapd]
-root_dn = {{ ldap_auth.bind_dn }}
-root_password = {{ ldap_auth.bind_pw }}
+root_dn = {{ ds.root.dn }}
+root_password = {{ ds.root.password }}
 [backend-userroot]
 create_suffix_entry = True
 sample_entries = yes
-suffix = dc=example,dc=jp
+suffix = {{ ds.base }}

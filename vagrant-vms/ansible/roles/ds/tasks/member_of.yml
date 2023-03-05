@@ -3,7 +3,7 @@
 - name: dsconf plugin memberof
   become: yes
   command:
-    cmd: 'dsconf -D "{{ ldap_auth.bind_dn }}" -w "{{ ldap_auth.bind_pw }}" {{ ldap_auth.server_uri }} plugin memberof enable'
+    cmd: 'dsconf -D "{{ ds.root.dn }}" -w "{{ ds.root.password }}" ldap://localhost plugin memberof enable'
 
 - name: dsctl restart
   become: yes

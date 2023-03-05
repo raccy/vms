@@ -8,7 +8,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry groups ou
   ldap_entry:
@@ -16,7 +16,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -28,7 +28,7 @@
       gidNumber: 1
       description: administrator
       description;lang-ja: 管理者
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=staff,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -41,7 +41,7 @@
       description: staff
       description;lang-ja: スタッフ
       memberUid: user01
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=user,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -53,7 +53,7 @@
       gidNumber: 100
       description: general user
       description;lang-ja: 一般ユーザー
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=admin,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -70,7 +70,7 @@
       gidNumber: 1
       homeDirectory: /home/admin
       sambaSID: 'S-1-5-21-0-0-0-1002'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user01,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -87,7 +87,7 @@
       gidNumber: 100
       homeDirectory: /home/user01
       sambaSID: 'S-1-5-21-0-0-0-3002'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user02,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -104,7 +104,7 @@
       gidNumber: 10
       homeDirectory: /home/user02
       sambaSID: 'S-1-5-21-0-0-0-3004'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user03,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -121,7 +121,7 @@
       gidNumber: 100
       homeDirectory: /home/user03
       sambaSID: 'S-1-5-21-0-0-0-3006'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user04,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -138,7 +138,7 @@
       gidNumber: 100
       homeDirectory: /home/user04
       sambaSID: 'S-1-5-21-0-0-0-3008'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user05,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -155,7 +155,7 @@
       gidNumber: 100
       homeDirectory: /home/user05
       sambaSID: 'S-1-5-21-0-0-0-3010'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user06,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -172,4 +172,4 @@
       gidNumber: 100
       homeDirectory: /home/user06
       sambaSID: 'S-1-5-21-0-0-0-3012'
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'

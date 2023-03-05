@@ -1,4 +1,4 @@
-# Sambaスキーマの有効化
+# Samba スキーマの有効化
 
 - name: copy samba schema
   become: yes

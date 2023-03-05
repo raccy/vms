@@ -7,7 +7,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry groups ou
   ldap_entry:
@@ -15,7 +15,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -27,7 +27,7 @@
       gidNumber: 1
       description: administrator
       description;lang-ja: 管理者
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=staff,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -40,7 +40,7 @@
       description: staff
       description;lang-ja: スタッフ
       memberUid: user01
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=user,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -52,7 +52,7 @@
       gidNumber: 100
       description: general user
       description;lang-ja: 一般ユーザー
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=admin,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -76,7 +76,7 @@
       sn;lang-ja: 管理
       givenName: Ichiro
       givenName;lang-ja: 一郎
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user01,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -101,7 +101,7 @@
       givenName: Taro
       givenName;lang-ja: 太郎
 
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user02,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -125,7 +125,7 @@
       sn;lang-ja: 湯座
       givenName: Jiro
       givenName;lang-ja: 次郎
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user03,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -149,7 +149,7 @@
       sn;lang-ja: 湯座
       givenName: Hanako
       givenName;lang-ja: 花子
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user04,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -173,7 +173,7 @@
       sn;lang-ja: 名無し
       givenName: Gonbee
       givenName;lang-ja: 権兵衛
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user05,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -197,7 +197,7 @@
       sn;lang-ja: 鈴木
       givenName: Tsuyoshi
       givenName;lang-ja: 剛
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user06,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -221,4 +221,4 @@
       sn;lang-ja: 鈴木
       givenName: Yoko
       givenName;lang-ja: 陽子
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'

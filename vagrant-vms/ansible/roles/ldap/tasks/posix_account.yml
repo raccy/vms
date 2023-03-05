@@ -7,7 +7,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry groups ou
   ldap_entry:
@@ -15,7 +15,7 @@
     objectClass:
       - organizationalUnit
       - top
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -27,7 +27,7 @@
       gidNumber: 1
       description: administrator
       description;lang-ja: 管理者
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=staff,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -40,7 +40,7 @@
       description: staff
       description;lang-ja: スタッフ
       memberUid: user01
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=user,ou=groups,dc=example,dc=jp
   ldap_entry:
@@ -52,7 +52,7 @@
       gidNumber: 100
       description: general user
       description;lang-ja: 一般ユーザー
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=admin,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -67,7 +67,7 @@
       uidNumber: 1
       gidNumber: 1
       homeDirectory: /home/admin
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user01,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -82,7 +82,7 @@
       uidNumber: 1001
       gidNumber: 100
       homeDirectory: /home/user01
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user02,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -97,7 +97,7 @@
       uidNumber: 1002
       gidNumber: 10
       homeDirectory: /home/user02
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user03,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -112,7 +112,7 @@
       uidNumber: 1003
       gidNumber: 100
       homeDirectory: /home/user03
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user04,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -127,7 +127,7 @@
       uidNumber: 1004
       gidNumber: 100
       homeDirectory: /home/user04
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user05,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -142,7 +142,7 @@
       uidNumber: 1005
       gidNumber: 100
       homeDirectory: /home/user05
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'
 
 - name: ldap entry uid=user06,ou=people,dc=example,dc=jp
   ldap_entry:
@@ -157,4 +157,4 @@
       uidNumber: 1006
       gidNumber: 100
       homeDirectory: /home/user06
-  args: '{{ ldap_auth }}'
+  args: '{{ ldap.connect }}'

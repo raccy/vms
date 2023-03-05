@@ -8,14 +8,10 @@
 - import_tasks: setup.yml
 
 - import_tasks: samba.yml
-
-- import_tasks: ../../posix_person.yml
-  when: ds.posix is defined and ds.posix == "person"
-
-- import_tasks: posix_account.yml
-  when: ds.posix is defined and ds.posix == "account"
+  when: ds.posix is defined and ds.posix == "samba"
 
 - import_tasks: member_of.yml
-  when: ds.member_of
+  when: ds.member
 
-- import_role: ldap
+- import_role:
+    name: ldap
