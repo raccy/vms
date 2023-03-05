@@ -13,7 +13,7 @@
   debconf:
     name: slapd
     question: slapd/domain
-    value: '{{ openldap.base }}'
+    value: '{{ openldap.domain }}'
     vtype: string
 
 - name: debconf slapd/password
