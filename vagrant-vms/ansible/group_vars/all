@@ -1,5 +1,6 @@
 ldap:
   base: dc=example,dc=jp
+  organization: example
   root:
     dn: cn=admin,dc=example,dc=jp
     password: admin_password

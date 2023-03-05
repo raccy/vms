@@ -1,5 +1,5 @@
 # 389 DS
-# os: el8, el9
+# os: el8, el9, ubuntu2004, ubuntu2204
 
 - import_tasks: vars.yml
 

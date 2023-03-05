@@ -5,7 +5,7 @@
   debconf:
     name: slapd
     question: shared/organization
-    value: example
+    value: '{{ openldap.organization }}'
     vtype: string
 
 - name: debconf slapd/domain
@@ -13,7 +13,7 @@
   debconf:
     name: slapd
     question: slapd/domain
-    value: example.jp
+    value: '{{ openldap.base }}'
     vtype: string
 
 - name: debconf slapd/password

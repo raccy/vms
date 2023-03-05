@@ -85,10 +85,10 @@ Vagrant.configure('2') do |config|
       #     'npm-check-updates',
       #   ],
       # },
-      # openldap: {
-      #   user_group: 'account', # or 'preson'
-      #   member_of: true,
-      # },
+      openldap: {
+        # posix: 'samba', # or 'account', 'preson'
+        # member: true,
+      },
       # reids: {
       #   dev: true,
       # },
