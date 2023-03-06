@@ -84,8 +84,8 @@ Vagrant.configure('2') do |config|
       #   ],
       # },
       # openldap: {
-      #   user_group: 'account', # or 'preson'
-      #   member_of: true,
+      #   posix: 'samba', # or 'account', 'preson'
+      #   member: true,
       # },
       # reids: {
       #   dev: true,
