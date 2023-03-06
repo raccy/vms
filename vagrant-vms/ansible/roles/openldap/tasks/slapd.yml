@@ -1,0 +1,4 @@
+# slapd の設定
+#       /usr/sbin/slapadd -F %{_sysconfdir}/openldap/slapd.d/ -n0 -l %{_datadir}/openldap-servers/slapd.ldif
+
+

@@ -1,6 +1,6 @@
 ldap:
   base: dc=example,dc=jp
-  domain: examle.jp
+  domain: example.jp
   organization: example
   root:
     dn: cn=admin,dc=example,dc=jp
