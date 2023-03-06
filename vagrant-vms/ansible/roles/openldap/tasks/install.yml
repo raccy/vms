@@ -15,6 +15,19 @@
       - powertools
   when: openldap.type == "dnf"
 
+
+- name: debconf slapd/password dummy password
+  become: yes
+  debconf:
+    name: slapd
+    question: '{{ item }}'
+    value: 'password'
+    vtype: password
+  loop:
+    - slapd/password1
+    - slapd/password2
+  when: openldap.type == "apt"
+
 - name: apt install slapd
   become: yes
   apt:

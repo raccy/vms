@@ -5,3 +5,13 @@
 - name: set fact ds
   set_fact:
     openldap: '{{ ldap }}'
+
+
+
+openldap_dnf:
+  config_dir: /etc/openldap
+  module_dir: /usr/lib64/openldap
+
+openldap_apt:
+  config_dir: /etc/ldap
+  module_dir: /usr/lib/ldap

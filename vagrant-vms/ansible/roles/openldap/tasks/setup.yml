@@ -1,5 +1,32 @@
-# 設定のサンプル
-# TODO: 未設定
+# セットアップ
+
+# TODO: 作りかけ
+
+- name: stop slapd service
+  become: yes
+  systemd:
+    name: slapd.service
+    state: stopped
+
+- name: delete slapd database
+  become: yes
+  file:
+    path: /var/lib/ldap
+    state: absent
+
+- name: delete slapd config
+  become: yes
+  file:
+    path: /etc/
+    state: absent
+
+- name: stop slapd service
+  become: yes
+  file:
+    path: /var/tmp/389ds-setup
+    state: directory
+
+
 
 - name: copy slapd.conf
   copy:

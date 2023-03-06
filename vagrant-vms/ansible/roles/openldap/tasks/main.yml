@@ -2,8 +2,8 @@
 
 - import_tasks: vars.yml
 
-- import_tasks: debconf.yml
-  when: openldap.type == "apt"
+# - import_tasks: debconf.yml
+#   when: openldap.type == "apt"
 
 - import_tasks: install.yml
 
