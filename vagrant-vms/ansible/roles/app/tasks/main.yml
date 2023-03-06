@@ -1,0 +1,18 @@
+# アプリケーション
+
+# apps:
+#   - ds
+#   - git
+#   - mariadb
+#   - nginx
+#   - nodejs
+#   - openldap
+#   - postgresql
+#   - redis
+#   - ruby
+#   - samba
+
+- name: include role for app
+  include_role:
+    name: '{{ item }}'
+  loop: '{{ app | dict2items | map(attribute="key") | list }}'

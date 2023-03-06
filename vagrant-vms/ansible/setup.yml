@@ -2,23 +2,4 @@
   roles:
     - init
     - setup
-    - role: ds
-      when: app.ds is defined
-    - role: git
-      when: app.git is defined
-    - role: mariadb
-      when: app.mariadb is defined
-    - role: nginx
-      when: app.nginx is defined
-    - role: nodejs
-      when: app.nodejs is defined
-    - role: openldap
-      when: app.openldap is defined
-    - role: postgresql
-      when: app.postgresql is defined
-    - role: redis
-      when: app.redis is defined
-    - role: ruby
-      when: app.ruby is defined
-    - role: samba
-      when: app.samba is defined
+    - app
