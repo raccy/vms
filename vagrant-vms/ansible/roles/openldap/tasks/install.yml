@@ -15,7 +15,6 @@
       - powertools
   when: openldap.type == "dnf"
 
-
 - name: debconf slapd/password dummy password
   become: yes
   debconf:

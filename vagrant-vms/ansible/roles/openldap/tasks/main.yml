@@ -2,18 +2,19 @@
 
 - import_tasks: vars.yml
 
-# - import_tasks: debconf.yml
-#   when: openldap.type == "apt"
-
 - import_tasks: install.yml
 
-- import_tasks: samba.yml
-  when: ds.posix is defined and ds.posix == "samba"
+# - name: check ldap search
+#   ldap_search:
+#     dn: '{{ ldap.base }}'
+#   args: '{{ ldap.connect }}'
+#   ignore_errors: yes
+#   register: ldap_base_dn
+# - debug:
+#     msg: ldap_base_dn
 
-- import_tasks: member_of.yml
-  when: ds.member
-
-- import_tasks: restart.yml
+# TODO: 毎回リセット？
+- import_tasks: setup.yml
 
 - import_role:
     name: ldap

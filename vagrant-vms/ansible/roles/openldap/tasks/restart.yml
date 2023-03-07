@@ -1,7 +1,0 @@
-- name: restart slapd
-  become: yes
-  systemd:
-    name: slapd.service
-    daemon_reload: yes
-    enabled: yes
-    state: restarted

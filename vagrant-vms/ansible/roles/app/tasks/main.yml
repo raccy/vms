@@ -14,5 +14,7 @@
 
 - name: include role for app
   include_role:
-    name: '{{ item }}'
+    name: '{{ app_name }}'
   loop: '{{ app | dict2items | map(attribute="key") | list }}'
+  loop_control:
+    loop_var: app_name

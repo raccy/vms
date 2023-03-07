@@ -1,0 +1,13 @@
+openldap_pkg:
+  dnf:
+    config_dir: /etc/openldap
+    module_dir: /usr/lib64/openldap
+    database_dir: /var/lib/ldap
+    user: ldap
+    group: ldap
+  apt:
+    config_dir: /etc/ldap
+    module_dir: /usr/lib/ldap
+    database_dir: /var/lib/ldap
+    user: openldap
+    group: openldap

@@ -1,70 +1,56 @@
 # セットアップ
 
-# TODO: 作りかけ
-
 - name: stop slapd service
   become: yes
   systemd:
     name: slapd.service
     state: stopped
 
-- name: delete slapd database
+# - name: delete slapd database
+#   become: yes
+#   file:
+#     path: '{{ openldap.database_dir }}'
+#     state: absent
+
+- name: delete slapd config directory
   become: yes
   file:
-    path: /var/lib/ldap
+    path: '{{ openldap.config_dir }}/slapd.d'
     state: absent
-
-- name: delete slapd config
-  become: yes
-  file:
-    path: /etc/
-    state: absent
-
-- name: stop slapd service
-  become: yes
-  file:
-    path: /var/tmp/389ds-setup
-    state: directory
-
-
-
-- name: copy slapd.conf
-  copy:
-    src: ../files/slapd.ldif
-    dest: /etc/openldap/slapd.ldif
 
 - name: copy schema_ext
+  become: yes
   copy:
     src: ../files/schema_ext/
-    dest: /etc/openldap/schema_ext/
+    dest: '{{ openldap.config_dir }}/schema_ext/'
 
-- name: stop slapd
-  systemd:
-    name: slapd.service
-    state: stopped
+- name: copy slapd.ldif
+  become: yes
+  template:
+    src: ../files/slapd.ldif.j2
+    dest: '{{ openldap.config_dir }}/slapd.ldif'
 
-- name: remove slapd.d
+- name: make slapd config directory
+  become: yes
   file:
-    path: /etc/openldap/slapd.d
-    state: absent
-
-- name: makedir slapd.d
-  file:
-    path: /etc/openldap/slapd.d
+    path: '{{ openldap.config_dir }}/slapd.d'
     state: directory
-    owner: ldap
-    group: ldap
-    mode: '0750'
 
-- name: slapadd slapd.conf
-  command: /usr/sbin/slapadd -F /etc/openldap/slapd.d/ -n0 -l /etc/openldap/slapd.ldif
+- name: slapdadd slapd.ldif
+  become: yes
+  command: '/usr/sbin/slapadd -F {{ openldap.config_dir }}/slapd.d -n0 -l {{ openldap.config_dir }}/slapd.ldif'
 
-- name: chewon slapd.d
+- name: chown ldap user slapd.d
+  become: yes
   file:
-    path: /etc/openldap/slapd.d
-    state: directory
-    owner: ldap
-    group: ldap
+    path: '{{ openldap.config_dir }}/slapd.d'
+    owner: '{{ openldap.user }}'
+    group: '{{ openldap.group }}'
     recurse: yes
 
-- name: start slapd
+- name: start slapd service
+  become: yes
+  systemd:
+    name: slapd.service
+    enabled: yes
+    state: started
