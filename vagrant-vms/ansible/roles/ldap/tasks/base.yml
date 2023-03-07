@@ -1,0 +1,17 @@
+# base DN
+
+# FIXME
+# 新しい ansible なら
+# '{{ ldap.base | split(",") | first | split("=") | first }}'
+# が使えるはず
+- name: ldap entry base dn
+  ldap_entry:
+    dn: '{{ ldap.base }}'
+    objectClass:
+      - top
+      - dcObject
+      - organization
+    attributes:
+      dc: '{{ ldap.base | regex_replace("^dc=([^,]*),.*$", "\1") }}'
+      o: '{{ ldap.organization }}'
+  args: '{{ ldap.connect }}'

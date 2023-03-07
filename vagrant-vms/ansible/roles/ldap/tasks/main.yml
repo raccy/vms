@@ -2,6 +2,8 @@
 
 - import_tasks: install.yml
 
+- import_tasks: base.yml
+
 - import_tasks: posix_person.yml
   when: ldap.posix is defined and ldap.posix == "person"
 

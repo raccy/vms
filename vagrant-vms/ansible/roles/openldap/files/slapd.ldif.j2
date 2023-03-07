@@ -3,6 +3,10 @@
 dn: cn=config
 objectClass: olcGlobal
 cn: config
+olcPidFile: {{ openldap.pid_dir }}/slapd.pid
+olcArgsFile: {{ openldap.pid_dir }}/slapd.args
+olcLogLevel: none
+olcToolThreads: 1
 
 dn: cn=module,cn=config
 objectClass: olcModuleList

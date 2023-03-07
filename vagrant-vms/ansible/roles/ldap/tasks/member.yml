@@ -4,16 +4,16 @@
   ldap_entry:
     dn: ou=Group,dc=example,dc=jp
     objectClass:
-      - organizationalunit
       - top
+      - organizationalunit
   args: '{{ ldap.connect }}'
 
 - name: ldap entry ou=User,dc=example,dc=jp
   ldap_entry:
     dn: ou=User,dc=example,dc=jp
     objectClass:
-      - organizationalunit
       - top
+      - organizationalunit
   args: '{{ ldap.connect }}'
 
 - name: ldap entry cn=admin,ou=User,dc=example,dc=jp
