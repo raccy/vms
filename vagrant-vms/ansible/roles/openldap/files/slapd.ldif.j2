@@ -13,37 +13,10 @@ dn: cn=module,cn=config
 objectClass: olcModuleList
 cn: module
 olcModulepath: {{ openldap.module_dir }}
-# olcModuleload: accesslog
-# olcModuleload: auditlog
-# olcModuleload: back_dnssrv
-# olcModuleload: back_ldap
 olcModuleload: back_mdb
-# olcModuleload: back_meta
-# olcModuleload: back_null
-# olcModuleload: back_passwd
-# olcModuleload: back_relay
-# olcModuleload: back_shell
-# olcModuleload: back_sock
-# olcModuleload: collect
-# olcModuleload: constraint
-# olcModuleload: dds
-# olcModuleload: deref
-# olcModuleload: dyngroup
-# olcModuleload: dynlist
+olcModuleload: back_monitor
 olcModuleload: memberof
-# olcModuleload: pcache
-# olcModuleload: ppolicy
 olcModuleload: refint
-# olcModuleload: retcode
-# olcModuleload: rwm
-# olcModuleload: seqmod
-# olcModuleload: smbk5pwd
-# olcModuleload: sssvlv
-# olcModuleload: syncprov
-# olcModuleload: translucent
-# olcModuleload: unique
-# olcModuleload: valsort
-
 
 dn: cn=schema,cn=config
 objectClass: olcSchemaConfig
