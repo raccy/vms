@@ -4,14 +4,14 @@
 
 - import_tasks: base.yml
 
-- import_tasks: posix_person.yml
+- include_tasks: posix_person.yml
   when: ldap.posix is defined and ldap.posix == "person"
 
-- import_tasks: posix_account.yml
+- include_tasks: posix_account.yml
   when: ldap.posix is defined and ldap.posix == "account"
 
-- import_tasks: posix_samba.yml
+- include_tasks: posix_samba.yml
   when: ldap.posix is defined and ldap.posix == "samba"
 
-- import_tasks: member.yml
+- include_tasks: member.yml
   when: ldap.member

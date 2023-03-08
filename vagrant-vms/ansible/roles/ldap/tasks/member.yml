@@ -24,7 +24,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: admin
       mail: admin@example.jp
@@ -45,7 +44,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user01
       mail: user01@example.jp
@@ -66,7 +64,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user02
       mail: user02@example.jp
@@ -87,7 +84,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user03
       mail: user03@example.jp
@@ -108,7 +104,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user04
       mail: user04@example.jp
@@ -129,7 +124,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user05
       mail: user05@example.jp
@@ -150,7 +144,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: user06
       mail: user06@example.jp
@@ -168,7 +161,6 @@
     dn: cn=admin,ou=Group,dc=example,dc=jp
     objectClass:
       - groupOfNames
-      - nsMemberOf
       - top
     attributes:
       member:
@@ -182,7 +174,6 @@
     dn: cn=staff,ou=Group,dc=example,dc=jp
     objectClass:
       - groupOfNames
-      - nsMemberOf
       - top
     attributes:
       member:
@@ -197,7 +188,6 @@
     dn: cn=user,ou=Group,dc=example,dc=jp
     objectClass:
       - groupOfNames
-      - nsMemberOf
       - top
     attributes:
       member:
@@ -220,7 +210,6 @@
       - inetOrgPerson
       - organizationalPerson
       - person
-      - nsMemberOf
     attributes:
       cn: 'test{{ item }}'
       mail: 'test{{ item }}@example.jp'
@@ -239,9 +228,10 @@
     dn: 'cn=test{{ item }},ou=Group,dc=example,dc=jp'
     objectClass:
       - groupOfNames
-      - nsMemberOf
       - top
     attributes:
+      member:
+        - cn=test{{ item }},ou=User,dc=example,dc=jp
       description: TestGroup
       description;lang-ja: テストグループ
   args: '{{ ldap.connect }}'

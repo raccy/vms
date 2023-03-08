@@ -3,14 +3,14 @@ ldap:
   domain: example.jp
   organization: example
   root:
-    dn: cn=admin,dc=example,dc=jp
-    password: admin_password
+    dn: &root_dn cn=admin,dc=example,dc=jp
+    password: &root_password admin_password
   connect:
     server_uri: ldap://localhost
     # start_tls: false
     # validate_certs: true
-    bind_dn: cn=admin,dc=example,dc=jp
-    bind_pw: admin_password
+    bind_dn: *root_dn
+    bind_pw: *root_password
     # sasl_class: external
   posix: 'person'
   member: false
