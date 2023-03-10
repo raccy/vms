@@ -66,11 +66,11 @@ Vagrant.configure('2') do |config|
         config: git_config,
       },
       mariadb: {
-        vresion: '10.3', # 2029-05
+        vresion: '10.5', # 2026-05
         dev: true,
       },
       nodejs: {
-        version: '18', # 2025-04
+        version: '16', # 2024-04
         npms: [
           'npm-check-updates',
           'yarn',
@@ -84,7 +84,7 @@ Vagrant.configure('2') do |config|
         version: '6', # 2024-05
       },
       ruby: {
-        version: '2.5', # 2029-05
+        version: '2.7', # 2023-05
         dev: true,
         pkgs: [
           'ruby-irb',
