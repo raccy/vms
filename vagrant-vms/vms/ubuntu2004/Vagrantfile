@@ -67,7 +67,7 @@ Vagrant.configure('2') do |config|
     }
     app = {
       # ds: {
-      #   posix: 'samba', # or 'account', 'preson'
+      #   posix: 'samba', # or 'account', 'person'
       #   member: true,
       # },
       # git: {
@@ -85,7 +85,7 @@ Vagrant.configure('2') do |config|
       #   ],
       # },
       # openldap: {
-      #   posix: 'samba', # or 'account', 'preson'
+      #   posix: 'samba', # or 'account', 'person'
       #   member: true,
       # },
       # reids: {
