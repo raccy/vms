@@ -12,8 +12,8 @@ if $0 == __FILE__
   # WSL only
   if RUBY_PLATFORM =~ /linux/i && `uname -r` =~ /microsoft/i
     win_host = `hostname.exe`.chomp
-    win_user = `powershell.exe '$env:USERNAME'`.chomp
-    win_home = `powershell.exe '$env:USERPROFILE'`.chomp
+    win_user = `cmd.exe /C "ECHO %USERNAME%"`.chomp
+    win_home = `cmd.exe /C "ECHO %USERPROFILE%"`.chomp
     win_home_wslpath = `wslpath '#{win_home}'`.chomp
 
     win_ssh_config_file = File.join(win_home_wslpath, '.ssh', 'hosts', name)
