@@ -1,20 +1,15 @@
 # memberofの ユーザーとグループ
 
-- name: ldap entry ou=Group,dc=example,dc=jp
+- name: ldap entry ou
   ldap_entry:
-    dn: ou=Group,dc=example,dc=jp
-    objectClass:
-      - top
-      - organizationalunit
+    dn: 'ou={{ item }},{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.ou }}'
+    attributes:
+      ou: '{{ item }}'
   args: '{{ ldap.connect }}'
-
-- name: ldap entry ou=User,dc=example,dc=jp
-  ldap_entry:
-    dn: ou=User,dc=example,dc=jp
-    objectClass:
-      - top
-      - organizationalunit
-  args: '{{ ldap.connect }}'
+  loop:
+    - User
+    - Group
 
 - name: ldap entry cn=admin,ou=User,dc=example,dc=jp
   ldap_entry:
@@ -24,6 +19,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: admin
       mail: admin@example.jp
@@ -44,6 +41,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user01
       mail: user01@example.jp
@@ -64,6 +63,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user02
       mail: user02@example.jp
@@ -84,6 +85,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user03
       mail: user03@example.jp
@@ -104,6 +107,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user04
       mail: user04@example.jp
@@ -124,6 +129,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user05
       mail: user05@example.jp
@@ -144,6 +151,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: user06
       mail: user06@example.jp
@@ -210,6 +219,8 @@
       - inetOrgPerson
       - organizationalPerson
       - person
+      - eduPerson
+      - mozillaAbPersonAlpha
     attributes:
       cn: 'test{{ item }}'
       mail: 'test{{ item }}@example.jp'

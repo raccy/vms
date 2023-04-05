@@ -2,21 +2,16 @@
 # user objectClass: account, posixAccount, sambaSamAccount
 # smabaSID: S-1-5-21-0-0-0-(uidNumber * 2 + 1000)
 
-- name: ldap entry people ou
+- name: ldap entry ou
   ldap_entry:
-    dn: 'ou=people,dc=example,dc=jp'
-    objectClass:
-      - organizationalUnit
-      - top
+    dn: 'ou={{ item }},{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.ou }}'
+    attributes:
+      ou: '{{ item }}'
   args: '{{ ldap.connect }}'
-
-- name: ldap entry groups ou
-  ldap_entry:
-    dn: 'ou=groups,dc=example,dc=jp'
-    objectClass:
-      - organizationalUnit
-      - top
-  args: '{{ ldap.connect }}'
+  loop:
+    - people
+    - groups
 
 - name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
   ldap_entry:
