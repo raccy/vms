@@ -1,7 +1,7 @@
 # Posix users and groups
 # user objectClass: account, posixAccount
 
-- name: ldap entry ou
+- name: posix ldap entry ou
   ldap_entry:
     dn: 'ou={{ item }},{{ ldap.base }}'
     objectClass: '{{ ldap_oc.ou }}'
@@ -12,24 +12,20 @@
     - people
     - groups
 
-- name: ldap entry cn=admin,ou=groups,dc=example,dc=jp
+- name: posix ldap entry group admin
   ldap_entry:
-    dn: cn=admin,ou=groups,dc=example,dc=jp
-    objectClass:
-      - posixGroup
-      - top
+    dn: 'cn=admin,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
       gidNumber: 1
       description: administrator
       description;lang-ja: 管理者
   args: '{{ ldap.connect }}'
 
-- name: ldap entry cn=staff,ou=groups,dc=example,dc=jp
+- name: posix ldap entry group staff
   ldap_entry:
-    dn: cn=staff,ou=groups,dc=example,dc=jp
-    objectClass:
-      - posixGroup
-      - top
+    dn: 'cn=staff,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
       gidNumber: 10
       description: staff
@@ -37,25 +33,20 @@
       memberUid: user01
   args: '{{ ldap.connect }}'
 
-- name: ldap entry cn=user,ou=groups,dc=example,dc=jp
+- name: posix ldap entry group user
   ldap_entry:
-    dn: cn=user,ou=groups,dc=example,dc=jp
-    objectClass:
-      - posixGroup
-      - top
+    dn: 'cn=user,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
       gidNumber: 100
       description: general user
       description;lang-ja: 一般ユーザー
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=admin,ou=people,dc=example,dc=jp
+- name: posix ldap entry user admin
   ldap_entry:
-    dn: uid=admin,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: 'uid=admin,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: admin
       userPassword: pass+admin42
@@ -64,13 +55,10 @@
       homeDirectory: /home/admin
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user01,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user01
   ldap_entry:
-    dn: uid=user01,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user01,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user01
       userPassword: pass0001
@@ -79,13 +67,10 @@
       homeDirectory: /home/user01
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user02,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user02
   ldap_entry:
-    dn: uid=user02,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user02,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user02
       userPassword: pass0002
@@ -94,13 +79,10 @@
       homeDirectory: /home/user02
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user03,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user03
   ldap_entry:
-    dn: uid=user03,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user03,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user03
       userPassword: pass0003
@@ -109,13 +91,10 @@
       homeDirectory: /home/user03
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user04,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user04
   ldap_entry:
-    dn: uid=user04,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user04,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user04
       userPassword: pass0004
@@ -124,13 +103,10 @@
       homeDirectory: /home/user04
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user05,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user05
   ldap_entry:
-    dn: uid=user05,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user05,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user05
       userPassword: pass0005
@@ -139,13 +115,10 @@
       homeDirectory: /home/user05
   args: '{{ ldap.connect }}'
 
-- name: ldap entry uid=user06,ou=people,dc=example,dc=jp
+- name: posix ldap entry user user06
   ldap_entry:
-    dn: uid=user06,ou=people,dc=example,dc=jp
-    objectClass:
-      - account
-      - posixAccount
-      - top
+    dn: uid=user06,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
       cn: user06
       userPassword: pass0006
