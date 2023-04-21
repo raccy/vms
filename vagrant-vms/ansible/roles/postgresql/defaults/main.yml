@@ -3,3 +3,10 @@ postgresql:
   admin:
     name: admin
     password: admin_password
+postgresql_types:
+  dnf:
+    socket: /run/postgresql
+    datadir: /var/lib/pgsql/data
+  apt:
+    socket: /run/postgresql
+    datadir: /var/lib/pgsql/data
