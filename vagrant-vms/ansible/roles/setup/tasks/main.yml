@@ -1,5 +1,5 @@
 - import_tasks: timezone.yml
-  when: os_type in ["el8", "el9"]
+  when: ansible_os_family == "RedHat"
 
 - import_tasks: pkg_conf.yml
 

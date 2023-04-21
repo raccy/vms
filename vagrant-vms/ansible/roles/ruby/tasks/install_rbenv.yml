@@ -5,17 +5,17 @@
   apt:
     name: rbenv
     state: present
-  when: os_type is match("deb")
+  when: ansible_pkg_mgr == "deb"
 
 - name: git clone
   git:
     repo: https://github.com/rbenv/rbenv.git
     dest: /home/vagrant/.rbenv
-  when: os_type is not match("deb")
+  when: ansible_pkg_mgr != "deb"
 
 - name: set fact rbenv_path
   set_fact:
-    rbenv_path: '{{os_type is match("deb") | ternary("rbenv", "~/.rbenv/bin/rbenv")}}'
+    rbenv_path: '{{ansible_pkg_mgr == "deb" | ternary("rbenv", "~/.rbenv/bin/rbenv")}}'
 
 - name: init rbenv in .bashrc
   blockinfile:

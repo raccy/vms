@@ -3,7 +3,7 @@
   become: yes
   command:
     cmd: dnf module enable -y 389-ds
-  when: ds.type == "dnf" and os_type == "el8"
+  when: ds.type == "dnf" and ansible_distribution_major_version | int == 8
 
 - name: yum install 389 Directory Server
   become: yes
