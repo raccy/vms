@@ -1,5 +1,5 @@
 - hosts: all
   roles:
-    - init
+    # - init
     - setup
     - app
