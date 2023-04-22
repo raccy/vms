@@ -4,15 +4,15 @@
   become: yes
   command:
     cmd: postgresql-setup --initdb
-    creates: /var/lib/pgsql/data
+    creates: "{{ postgresql.datadir }}/var/lib/pgsql/data/PG_VERSION"
 
 
 - name: lineinfile pg_hba.cnf loopback md5
   become: yes
   lineinfile:
-    path: '{{ postgresql.datadir }}/pg_hba.conf'
+    path: "{{ postgresql.datadir }}/pg_hba.conf"
     regexp: '^\s*host\s+all\s+all\s+127.0.0.1/32\s.*$'
-    line: 'host all all 127.0.0.1/32 md5'
+    line: "host all all 127.0.0.1/32 md5"
 
 # - name: lineinfile pg_hba.cnf host all md5
 #   become: yes
