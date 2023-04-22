@@ -85,7 +85,7 @@ Vagrant.configure('2') do |config|
       #   posix: 'samba', # or 'account', 'person'
       #   member: true,
       # },
-      # reids: {
+      # redis: {
       #   version: '6',
       #   dev: true,
       # },
