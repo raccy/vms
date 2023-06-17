@@ -18,13 +18,13 @@
 - name: mkdir ~/.npm/lib
   file:
     state: directory
-    recurse: yes
+    recurse: true
     path: /home/vagrant/.npm/lib
 
 - name: install npm packages
   npm:
     state: present
-    global: yes
+    global: true
     name: '{{ item }}'
   loop: '{{ nodejs.npms | default([]) }}'
   when: nodejs.npms is defined

@@ -1,11 +1,11 @@
 # member_of プラグイン
 
 - name: dsconf plugin memberof
-  become: yes
+  become: true
   command:
     cmd: 'dsconf -D "{{ ds.root.dn }}" -w "{{ ds.root.password }}" ldap://localhost plugin memberof enable'
 
 - name: dsctl restart
-  become: yes
+  become: true
   command:
     cmd: 'dsctl slapd-localhost restart'

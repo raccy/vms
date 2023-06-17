@@ -1,19 +1,19 @@
 - name: dnf module install samba
-  become: yes
+  become: true
   dnf:
     state: present
     name: '@samba:{{ samba.version }}'
   when: samba.type == "dnf" and samba.version is defined
 
 - name: dnf install samba
-  become: yes
+  become: true
   dnf:
     state: present
     name: samba
   when: samba.type == "dnf"
 
 - name: apt install samba
-  become: yes
+  become: true
   apt:
     state: present
     name: samba

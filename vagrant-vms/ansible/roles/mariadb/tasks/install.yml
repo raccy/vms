@@ -1,12 +1,12 @@
 - name: dnf module install mariadb
-  become: yes
+  become: true
   dnf:
     state: present
     name: '@mariadb:{{ mariadb.version }}'
   when: mariadb.type == "dnf" and mariadb.version is defined
 
 - name: yum install mariadb
-  become: yes
+  become: true
   yum:
     state: present
     name:
@@ -15,7 +15,7 @@
   when: mariadb.type == "yum"
 
 - name: dnf install maraidb
-  become: yes
+  become: true
   dnf:
     state: present
     name:
@@ -24,7 +24,7 @@
   when: mariadb.type == "dnf"
 
 - name: apt install mariadb
-  become: yes
+  become: true
   apt:
     state: present
     name:
@@ -33,21 +33,21 @@
   when: mariadb.type == "apt"
 
 - name: yum install mariadb devel
-  become: yes
+  become: true
   yum:
     state: present
     name: mariadb-devel
   when: mariadb.type == "yum" and mariadb.dev
 
 - name: dnf install mariadb devel
-  become: yes
+  become: true
   dnf:
     state: present
     name: mariadb-connector-c-devel
   when: mariadb.type == "dnf" and mariadb.dev
 
 - name: apt install mariadb devel
-  become: yes
+  become: true
   apt:
     state: present
     name: libmariadb-dev

@@ -1,66 +1,66 @@
 - name: dnf module install ruby
-  become: yes
+  become: true
   dnf:
     state: present
     name: '@ruby:{{ ruby.version }}'
   when: ruby.type == "dnf" and ruby.version is defined
 
 - name: yum install ruby
-  become: yes
+  become: true
   yum:
     state: present
     name: ruby
   when: ruby.type == "yum"
 
 - name: dnf install ruby
-  become: yes
+  become: true
   dnf:
     state: present
     name: ruby
   when: ruby.type == "dnf"
 
 - name: apt install ruby
-  become: yes
+  become: true
   apt:
     state: present
     name: ruby
   when: ruby.type == "apt"
 
 - name: snap install ruby
-  become: yes
+  become: true
   snap:
     state: present
     name: node
     channel: '{{ ruby.version ~ "/" if ruby.version is defined else "" }}stable'
-    classic: yes
+    classic: true
   when: ruby.type == "snap"
 
 - import_tasks: install_rbenv.yml
   when: ruby.type == "rbenv"
 
 - name: yum install ruby devel
-  become: yes
+  become: true
   yum:
     state: present
     name: ruby-devel
   when: ruby.type == "yum" and ruby.dev
 
 - name: dnf install ruby
-  become: yes
+  become: true
   dnf:
     state: present
     name: ruby-devel
   when: ruby.type == "dnf" and ruby.dev
 
 - name: apt install ruby
-  become: yes
+  become: true
   apt:
     state: present
     name: ruby-dev
   when: ruby.type == "apt" and ruby.dev
 
 - name: yum install ruby packages (gems)
-  become: yes
+  become: true
   yum:
     state: present
     name: '{{ item }}'
@@ -68,7 +68,7 @@
   when: ruby.type == "yum" and ruby.pkgs is defined
 
 - name: dnf install ruby packages (gems)
-  become: yes
+  become: true
   dnf:
     state: present
     name: '{{ item }}'
@@ -76,7 +76,7 @@
   when: ruby.type == "dnf" and ruby.pkgs is defined
 
 - name: apt install ruby packages (gems)
-  become: yes
+  become: true
   apt:
     state: present
     name: '{{ item }}'

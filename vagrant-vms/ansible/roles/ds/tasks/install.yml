@@ -1,26 +1,26 @@
 # EL8 ではmoduleを有効にしないとインストールできない
 - name: dnf module enable 389 Directory Server
-  become: yes
+  become: true
   command:
     cmd: dnf module enable -y 389-ds
   when: ds.type == "dnf" and ansible_distribution_major_version | int == 8
 
 - name: yum install 389 Directory Server
-  become: yes
+  become: true
   yum:
     state: present
     name: 389-ds
   when: ds.type == "yum"
 
 - name: dnf install 389 Directory Server
-  become: yes
+  become: true
   dnf:
     state: present
     name: 389-ds-base
   when: ds.type == "dnf"
 
 - name: apt install 389 Directory Server
-  become: yes
+  become: true
   apt:
     state: present
     name: 389-ds-base

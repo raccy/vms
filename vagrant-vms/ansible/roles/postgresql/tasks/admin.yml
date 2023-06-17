@@ -1,19 +1,19 @@
 - name: dnf install python psycopg2 for ansible
-  become: yes
+  become: true
   dnf:
     state: present
     name: python3-psycopg2
   when: ansible_pkg_mgr == "dnf"
 
 - name: apt install python psycopg2 for ansible
-  become: yes
+  become: true
   apt:
     state: present
     name: python3-psycopg2
   when: ansible_pkg_mgr == "apt"
 
 - name: create admin user
-  become: yes
+  become: true
   become_user: postgres
   postgresql_user:
     login_unix_socket: '{{ postgresql.socket }}'

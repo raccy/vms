@@ -1,26 +1,26 @@
 - name: yum install python mysql for ansible
-  become: yes
+  become: true
   yum:
     state: present
     name: python2-PyMySQL
   when: ansible_pkg_mgr == "yum"
 
 - name: dnf install python mysql for ansible
-  become: yes
+  become: true
   dnf:
     state: present
     name: python3-PyMySQL
   when: ansible_pkg_mgr == "dnf"
 
 - name: apt install python mysql for ansible
-  become: yes
+  become: true
   apt:
     state: present
     name: python3-pymysql
   when: ansible_pkg_mgr == "apt"
 
 - name: create admin user
-  become: yes
+  become: true
   mysql_user:
     login_unix_socket: '{{ mariadb.socket }}'
     login_user: root

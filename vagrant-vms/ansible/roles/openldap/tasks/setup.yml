@@ -1,56 +1,56 @@
 # セットアップ
 
 - name: stop slapd service
-  become: yes
+  become: true
   systemd:
     name: slapd.service
     state: stopped
 
 # - name: delete slapd database
-#   become: yes
+#   become: true
 #   file:
 #     path: '{{ openldap.database_dir }}'
 #     state: absent
 
 - name: delete slapd config directory
-  become: yes
+  become: true
   file:
     path: '{{ openldap.config_dir }}/slapd.d'
     state: absent
 
 - name: copy schema_ext
-  become: yes
+  become: true
   copy:
     src: ../files/schema_ext/
     dest: '{{ openldap.config_dir }}/schema_ext/'
 
 - name: copy slapd.ldif
-  become: yes
+  become: true
   template:
     src: ../files/slapd.ldif.j2
     dest: '{{ openldap.config_dir }}/slapd.ldif'
 
 - name: make slapd config directory
-  become: yes
+  become: true
   file:
     path: '{{ openldap.config_dir }}/slapd.d'
     state: directory
 
 - name: slapdadd slapd.ldif
-  become: yes
+  become: true
   command: '/usr/sbin/slapadd -F {{ openldap.config_dir }}/slapd.d -n0 -l {{ openldap.config_dir }}/slapd.ldif'
 
 - name: chown ldap user slapd.d
-  become: yes
+  become: true
   file:
     path: '{{ openldap.config_dir }}/slapd.d'
     owner: '{{ openldap.user }}'
     group: '{{ openldap.group }}'
-    recurse: yes
+    recurse: true
 
 - name: start slapd service
-  become: yes
+  become: true
   systemd:
     name: slapd.service
-    enabled: yes
+    enabled: true
     state: started

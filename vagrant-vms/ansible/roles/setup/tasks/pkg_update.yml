@@ -1,23 +1,23 @@
 - name: yum update
-  become: yes
+  become: true
   yum:
     name: '*'
     state: latest
-    update_cache: yes
+    update_cache: true
   when: ansible_pkg_mgr == "yum"
 
 - name: dnf update
-  become: yes
+  become: true
   dnf:
     name: '*'
     state: latest
-    update_cache: yes
+    update_cache: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: apt update
-  become: yes
+  become: true
   apt:
     name: '*'
     state: latest
-    update_cache: yes
+    update_cache: true
   when: ansible_pkg_mgr == "apt"

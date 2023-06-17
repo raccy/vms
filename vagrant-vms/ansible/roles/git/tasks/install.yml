@@ -1,19 +1,19 @@
 - name: yum install git
-  become: yes
+  become: true
   yum:
     state: present
     name: git
   when: ansible_pkg_mgr == "yum"
 
 - name: dnf install git
-  become: yes
+  become: true
   dnf:
     state: present
     name: git
   when: ansible_pkg_mgr == "dnf"
 
 - name: apt install git
-  become: yes
+  become: true
   apt:
     name: git
     state: present

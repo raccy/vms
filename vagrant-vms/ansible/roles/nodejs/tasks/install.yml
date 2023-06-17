@@ -1,12 +1,12 @@
 - name: dnf module install nodejs
-  become: yes
+  become: true
   dnf:
     state: present
     name: '@nodejs:{{ nodejs.version }}'
   when: nodejs.type == "dnf" and nodejs.version is defined
 
 - name: yum install nodejs
-  become: yes
+  become: true
   yum:
     state: present
     name:
@@ -15,7 +15,7 @@
   when: nodejs.type == "yum"
 
 - name: dnf install nodejs
-  become: yes
+  become: true
   dnf:
     state: present
     name:
@@ -24,7 +24,7 @@
   when: nodejs.type == "dnf"
 
 - name: apt install nodejs
-  become: yes
+  become: true
   apt:
     state: present
     name:
@@ -33,23 +33,23 @@
   when: nodejs.type == "apt"
 
 - name: snap install nodejs
-  become: yes
+  become: true
   snap:
     state: present
     name: node
     channel: '{{ nodejs.version ~ "/" if nodejs.version is defined else "" }}stable'
-    classic: yes
+    classic: true
   when: nodejs.type == "snap"
 
 # TODO: use 'get_url' or 'uri'
 - name: add nodesource repository
-  become: yes
+  become: true
   shell:
     cmd: 'curl -fsSL https://deb.nodesource.com/setup_{{ nodejs.version if nodejs.version is defined else "lts" }}.x | bash -'
   when: nodejs.type == "nodesource"
 
 - name: apt install nodejs
-  become: yes
+  become: true
   apt:
     name: nodejs
     state: present

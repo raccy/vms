@@ -13,7 +13,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: lineinfile timeout=600
-  become: yes
+  become: true
   lineinfile:
     path: '{{ item }}'
     regexp: '^timeout=.*$'
@@ -21,11 +21,10 @@
   loop: '{{ pkg_confs }}'
 
 - name: lineinfile proxy
-  become: yes
+  become: true
   lineinfile:
     path: '{{ item }}'
     regexp: '^proxy=.*$'
     line: 'proxy={{ proxy.http }}'
   loop: '{{ pkg_confs }}'
   when: proxy.http is defined
-

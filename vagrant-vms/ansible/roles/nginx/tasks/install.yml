@@ -1,26 +1,26 @@
 - name: dnf module install nginx
-  become: yes
+  become: true
   dnf:
     state: present
     name: '@nginx:{{ nginx.version }}'
   when: nginx.type == "dnf" and nginx.version is defined
 
 - name: yum install nginx
-  become: yes
+  become: true
   yum:
     state: present
     name: nginx
   when: nginx.type == "yum"
 
 - name: dnf install nginx
-  become: yes
+  become: true
   dnf:
     state: present
     name: nginx
   when: nginx.type == "dnf"
 
 - name: apt install nginx
-  become: yes
+  become: true
   apt:
     state: present
     name: nginx

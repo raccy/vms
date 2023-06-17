@@ -1,21 +1,21 @@
 # ldap 操作のための python-ldap
 
 - name: yum install python-ldap
-  become: yes
+  become: true
   yum:
     state: present
     name: python3-ldap
   when: ansible_pkg_mgr == "yum"
 
 - name: dnf install python-ldap
-  become: yes
+  become: true
   dnf:
     state: present
     name: python3-ldap
   when: ansible_pkg_mgr == "dnf"
 
 - name: apt install python-ldap
-  become: yes
+  become: true
   apt:
     state: present
     name: python3-ldap

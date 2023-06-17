@@ -1,5 +1,5 @@
 - name: yum install other packages
-  become: yes
+  become: true
   yum:
     state: present
     name: '{{ item }}'
@@ -7,7 +7,7 @@
   when: ansible_pkg_mgr == "yum" and setup.pkgs is defined
 
 - name: dnf install other packages
-  become: yes
+  become: true
   dnf:
     state: present
     name: '{{ item }}'
@@ -15,7 +15,7 @@
   when: ansible_pkg_mgr == "dnf" and setup.pkgs is defined
 
 - name: apt install other packages
-  become: yes
+  become: true
   apt:
     state: present
     name: '{{ item }}'

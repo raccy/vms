@@ -1,7 +1,7 @@
 # cnf
 
 - name: lineinfile client.cnf default-character-set
-  become: yes
+  become: true
   lineinfile:
     path: '{{ mariadb.client_cnf }}'
     insertafter: '\[client\]'
@@ -9,7 +9,7 @@
     line: 'default-character-set = utf8mb4'
 
 - name: lineinfile server.scnf character-set-server
-  become: yes
+  become: true
   lineinfile:
     path: '{{ mariadb.server_cnf }}'
     insertafter: '\[server\]'
@@ -17,7 +17,7 @@
     line: 'character-set-server = utf8mb4'
 
 - name: lineinfile server.cnf cllation-server
-  become: yes
+  become: true
   lineinfile:
     path: '{{ mariadb.server_cnf }}'
     insertafter: '\[server\]'

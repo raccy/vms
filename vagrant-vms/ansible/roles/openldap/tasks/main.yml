@@ -8,7 +8,7 @@
 #   ldap_search:
 #     dn: '{{ ldap.base }}'
 #   args: '{{ ldap.connect }}'
-#   ignore_errors: yes
+#   ignore_errors: true
 #   register: ldap_base_dn
 # - debug:
 #     msg: ldap_base_dn

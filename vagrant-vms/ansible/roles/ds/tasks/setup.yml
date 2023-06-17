@@ -1,19 +1,19 @@
 # セットアップ
 
 - name: mkdir 389 DS setup directory
-  become: yes
+  become: true
   file:
     path: /var/tmp/389ds-setup
     state: directory
 
 - name: copy 389 DS setup file
-  become: yes
+  become: true
   template:
     src: ../files/389ds.inf.j2
     dest: /var/tmp/389ds-setup/389ds.inf
 
 - name: dscreate
-  become: yes
+  become: true
   command:
     cmd: dscreate from-file /var/tmp/389ds-setup/389ds.inf
     creates: /etc/dirsrv/slapd-localhost

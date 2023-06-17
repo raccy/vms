@@ -1,12 +1,12 @@
 # Samba スキーマの有効化
 
 - name: copy samba schema
-  become: yes
+  become: true
   copy:
     src: ../files/samba-schema-FDS.ldif
     dest: /etc/dirsrv/slapd-localhost/schema/60samba.ldif
 
 - name: dsctl restart
-  become: yes
+  become: true
   command:
     cmd: 'dsctl slapd-localhost restart'

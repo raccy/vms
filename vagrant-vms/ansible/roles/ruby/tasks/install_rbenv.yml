@@ -1,7 +1,7 @@
 # rb env
 
 - name: apt install rbenv
-  become: yes
+  become: true
   apt:
     name: rbenv
     state: present

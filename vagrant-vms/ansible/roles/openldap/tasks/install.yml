@@ -1,12 +1,12 @@
 - name: yum install openldap-servers
-  become: yes
+  become: true
   yum:
     state: present
     name: openldap-servers
   when: openldap.type == "yum"
 
 - name: dnf install openldap-servers
-  become: yes
+  become: true
   dnf:
     state: present
     name: openldap-servers
@@ -16,7 +16,7 @@
   when: openldap.type == "dnf"
 
 - name: debconf slapd/password dummy password
-  become: yes
+  become: true
   debconf:
     name: slapd
     question: '{{ item }}'
@@ -28,7 +28,7 @@
   when: openldap.type == "apt"
 
 - name: apt install slapd
-  become: yes
+  become: true
   apt:
     state: present
     name: slapd

@@ -1,7 +1,7 @@
 - name: restart mariadb
-  become: yes
+  become: true
   systemd:
     name: mariadb.service
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true
     state: restarted
