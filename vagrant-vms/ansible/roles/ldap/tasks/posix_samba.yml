@@ -140,3 +140,34 @@
       homeDirectory: /home/user06
       sambaSID: 'S-1-5-21-0-0-0-3012'
   args: '{{ ldap.connect }}'
+
+# 大量のユーザーとグループ
+
+- name: posix ldap entry many users
+  ldap_entry:
+    dn: 'uid=test{{ item }},ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_samba }}'
+    attributes:
+      cn: 'test{{ item }}'
+      userPassword: 'pass0{{ item }}'
+      uidNumber: '{{ 1000 + item }}'
+      gidNumber: 100
+      homeDirectory: '/home/test{{ item }}'
+      sambaSID: 'S-1-5-21-0-0-0-{{3000 + item * 2}}'
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'
+
+- name: posix ldap entry many groups
+  ldap_entry:
+    dn: 'cn=test{{ item }},ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_samba }}'
+    attributes:
+      gidNumber: '{{ 1000 + item }}'
+      memberUid:
+        - 'test{{ item }}'
+      description: TestGroup
+      description;lang-ja: テストグループ
+      sambaGroupType: 2
+      sambaSID: 'S-1-5-21-0-0-0-{{ 3001 + item * 2 }}'
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'

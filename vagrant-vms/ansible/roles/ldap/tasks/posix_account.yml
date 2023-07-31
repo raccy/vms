@@ -126,3 +126,31 @@
       gidNumber: 100
       homeDirectory: /home/user06
   args: '{{ ldap.connect }}'
+
+# 大量のユーザーとグループ
+
+- name: posix ldap entry many users
+  ldap_entry:
+    dn: 'uid=test{{ item }},ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: 'test{{ item }}'
+      userPassword: 'pass0{{ item }}'
+      uidNumber: '{{ 1000 + item }}'
+      gidNumber: 100
+      homeDirectory: '/home/test{{ item }}'
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'
+
+- name: posix ldap entry many groups
+  ldap_entry:
+    dn: 'cn=test{{ item }},ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: '{{ 1000 + item }}'
+      memberUid:
+        - 'test{{ item }}'
+      description: TestGroup
+      description;lang-ja: テストグループ
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'

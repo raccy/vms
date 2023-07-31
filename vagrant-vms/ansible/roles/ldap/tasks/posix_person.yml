@@ -176,3 +176,38 @@
       givenName: Yoko
       givenName;lang-ja: 陽子
   args: '{{ ldap.connect }}'
+
+# 大量のユーザーとグループ
+
+- name: posix ldap entry many users
+  ldap_entry:
+    dn: 'uid=test{{ item }},ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_person }}'
+    attributes:
+      cn: 'test{{ item }}'
+      mail: 'test{{ item }}@example.jp'
+      userPassword: 'pass0{{ item }}'
+      uidNumber: '{{ 1000 + item }}'
+      gidNumber: 100
+      homeDirectory: '/home/test{{ item }}'
+      displayName: Test User
+      displayName;lang-ja: テスト　ユーザー
+      sn: Test
+      sn;lang-ja: テスト
+      givenName: User
+      givenName;lang-ja: ユーザー
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'
+
+- name: posix ldap entry many groups
+  ldap_entry:
+    dn: 'cn=test{{ item }},ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_person }}'
+    attributes:
+      gidNumber: '{{ 1000 + item }}'
+      memberUid:
+        - 'test{{ item }}'
+      description: TestGroup
+      description;lang-ja: テストグループ
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'
