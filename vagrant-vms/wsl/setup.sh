@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Setup Ansible and Vagrant
+
 if [ "$(sudo whoami)" != "root" ]; then
   echo no root
   exit 1
@@ -35,8 +37,31 @@ if [ -n "$https_proxy" ]; then
   fi
 fi
 
-sudo dnf check-update -y
-sudo dnf update -y
-sudo dnf install -y python3 python3-pip
+sudo dnf -y check-update
+sudo dnf -y update
 
+# Ansible
+sudo dnf -y install python3 python3-pip
 python3 -m pip install --user ansible
+
+# Vagrant
+
+if [ -z "$(sudo dnf repolist hashicorp)" ]; then
+  sudo dnf -y install yum-utils
+  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+fi
+sudo dnf -y install vagrant
+
+grep VAGRANT_WSL_ENABLE_WINDOWS_ACCESS ~/.bashrc > /dev/null
+if [ $? -ne 0 ]; then
+  echo 'export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS=1' >> ~/.bashrc
+fi
+
+grep VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH ~/.bashrc > /dev/null
+if [ $? -ne 0 ]; then
+  vagrant_home_win_path=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %VAGRANT_HOME%" | sed 's/\s*$//')
+  if [ -n "$vagrant_home_win_path" ]; then
+    vagrant_home_path=$(wslpath -u "${vagrant_home_win_path}")
+    echo "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=\"${vagrant_home_path}\"" >> ~/.bashrc
+  fi
+fi
