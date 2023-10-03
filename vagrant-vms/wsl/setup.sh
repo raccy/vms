@@ -52,16 +52,20 @@ if [ -z "$(sudo dnf repolist hashicorp)" ]; then
 fi
 sudo dnf -y install vagrant
 
+export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS=1
 grep VAGRANT_WSL_ENABLE_WINDOWS_ACCESS ~/.bashrc > /dev/null
 if [ $? -ne 0 ]; then
   echo 'export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS=1' >> ~/.bashrc
 fi
 
-grep VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH ~/.bashrc > /dev/null
-if [ $? -ne 0 ]; then
-  vagrant_home_win_path=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %VAGRANT_HOME%" | sed 's/\s*$//')
-  if [ -n "$vagrant_home_win_path" ]; then
-    vagrant_home_path=$(wslpath -u "${vagrant_home_win_path}")
-    echo "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=\"${vagrant_home_path}\"" >> ~/.bashrc
-  fi
+vagrant_home_win_path=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %VAGRANT_HOME%" | sed 's/\s*$//')
+if [ -n "$vagrant_home_win_path" ]; then
+  vagrant_home_path=$(wslpath -u "${vagrant_home_win_path}")
+  export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH="${vagrant_home_path}"
+  grep VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH ~/.bashrc > /dev/null
+  if [ $? -ne 0 ]; then
+      echo "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=\"${vagrant_home_path}\"" >> ~/.bashrc
+    fi
 fi
+
+vagrant plugin install vagrant-proxyconf vagrant-timezone vagrant-vbguest
