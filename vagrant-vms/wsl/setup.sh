@@ -69,7 +69,7 @@ fi
 
 # Git
 
-sudo dnf install git
+sudo dnf -y install git
 git_user_name=$("/mnt/c/Program Files/Git/bin/git.exe" config --get user.name | sed 's/\s*$//')
 git_user_email=$("/mnt/c/Program Files/Git/bin/git.exe" config --get user.email | sed 's/\s*$//')
 git_pull_rebase=$("/mnt/c/Program Files/Git/bin/git.exe" config --get pull.rebase | sed 's/\s*$//')
@@ -80,4 +80,4 @@ git config --global --get pull.rebase || git config --global --add pull.rebase "
 
 # Ruby
 
-sudo dnf install ruby
+sudo dnf -y install ruby
