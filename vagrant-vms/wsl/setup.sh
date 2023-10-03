@@ -11,6 +11,8 @@ if [ ! -e /etc/wsl.conf ]; then
   sudo tee /etc/wsl.conf << EOF
 [automount]
 options = "metadata"
+[network]
+hostname = vms
 EOF
 fi
 
