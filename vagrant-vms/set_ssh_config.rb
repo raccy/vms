@@ -5,9 +5,9 @@
 if $0 == __FILE__
   Dir.chdir(ARGV[0]) if ARGV[0]
   name = File.basename(Dir.pwd).gsub('_', '-')
-  ssh_config_file = File.join(ENV['HOME'], '.ssh', 'hosts', name)
   vagrant_ssh_config = `vagrant ssh-config --host #{name}`
-  File.write(ssh_config_file, vagrant_ssh_config)
+  # ssh_config_file = File.join(ENV['HOME'], '.ssh', 'hosts', name)
+  # File.write(ssh_config_file, vagrant_ssh_config)
 
   # WSL only
   if RUBY_PLATFORM =~ /linux/i && `uname -r` =~ /microsoft/i
