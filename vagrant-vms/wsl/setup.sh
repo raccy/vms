@@ -63,7 +63,7 @@ if [ -n "$vagrant_home_win_path" ]; then
     || echo "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=\"${vagrant_home_path}\"" >> ~/.bashrc
 fi
 
-vagrant plugin install vagrant-proxyconf vagrant-timezone vagrant-vbguest
+# vagrant plugin install vagrant-proxyconf vagrant-timezone vagrant-vbguest
 
 # Git
 
@@ -71,9 +71,10 @@ sudo dnf install git
 git_user_name=$("/mnt/c/Program Files/Git/bin/git.exe" config --get user.name | sed 's/\s*$//')
 git_user_email=$("/mnt/c/Program Files/Git/bin/git.exe" config --get user.email | sed 's/\s*$//')
 git_pull_rebase=$("/mnt/c/Program Files/Git/bin/git.exe" config --get pull.rebase | sed 's/\s*$//')
-git config --get user.name  || git config --add user.name "$git_user_name"
-git config --get user.email || git config --add user.email "$git_user_email"
-git config --get pull.rebase || git config --add pull.rebase "$git_pull_rebase"
+
+git config --global --get user.name   || git config --global --add user.name "$git_user_name"
+git config --global --get user.email  || git config --global --add user.email "$git_user_email"
+git config --global --get pull.rebase || git config --global --add pull.rebase "$git_pull_rebase"
 
 # Ruby
 
