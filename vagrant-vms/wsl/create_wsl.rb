@@ -1,28 +1,32 @@
 # create wsl
 
 require 'open3'
-require 'expect'
 
 def install_wsl(distro, user:, password:, version: 2)
   wsl_list = `wsl --list --verbose`
   m = /^\*?\s+#{distro}\s+(\w+)\s+(\d)$/.match(wsl_list)
   if m.nil?
     Open3.popen2('wsl', '--install', distro) do |stdin, stdout, thr|
-      stdout.expect('Enter new UNIX username:')
-      stdin.puts(user)
-      stdin.flush
-      stdout.expect('New password:')
-      stdin.puts(password)
-      stdin.flush
-      stdout.expect('Retype new password:')
-      stdin.puts(password)
-      stdin.flush
-      stdout.expect(/\[[^\]]*\]\$/)
-      stdin.puts('exit')
-      stdin.flush
-      stdout.expect('logout')
-      stdin.close
-      stdout.close
+      while (line = stdout.gets)
+        case line
+        when /Enter new UNIX username:/
+          stdin.puts(user)
+          stdin.flush
+        when /New password:/
+          stdin.puts(password)
+          stdin.flush
+        when /Retype new password:/
+          stdin.puts(password)
+          stdin.flush
+        when /\[[^\]]*\]\$/
+          stdin.puts('exit')
+          stdin.flush
+        when /logout/
+          stdin.close
+          stdout.close
+          break
+        end
+      end
     end
   end
 end
