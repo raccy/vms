@@ -1,16 +1,36 @@
 # create wsl
 
-require 'popen'
+require 'open3'
+require 'expect'
 
-def install_wsl(distro, version: 2)
+def install_wsl(distro, user:, password:, version: 2)
   wsl_list = `wsl --list --verbose`
   m = /^\*?\s+#{distro}\s+(\w+)\s+(\d)$/.match(wsl_list)
   if m.nil?
-    IO.popen('wsl', '--install', distro) do |io|
+    Open3.popen2('wsl', '--install', distro) do |stdin, stdout, thr|
+      stdout.expect('Enter new UNIX username:')
+      stdin.puts(user)
+      stdin.flush
+      stdout.expect('New password:')
+      stdin.puts(password)
+      stdin.flush
+      stdout.expect('Retype new password:')
+      stdin.puts(password)
+      stdin.flush
+      stdout.expect(/\[[^\]]*\]\$/)
+      stdin.puts('exit')
+      stdin.flush
+      stdout.expect('logout')
+      stdin.close
+      stdout.close
     end
   end
 end
 
+distro = 'OracleLinux_9_1'
+install_wsl(distro, user: 'whs', password: 'whs')
+
+__END__
 
 @ECHO OFF
 SETLOCAL
