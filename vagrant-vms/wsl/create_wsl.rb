@@ -2,43 +2,40 @@
 
 require 'open3'
 
-def install_wsl(distro, user:, password:, version: 2)
+def install_wsl(distro, user:, password:, version: 2, timeout: 9999999)
   wsl_list = `wsl --list --verbose`
   m = /^\*?\s+#{distro}\s+(\w+)\s+(\d)$/.match(wsl_list)
   if m.nil?
     Open3.popen2('wsl', '--install', distro) do |stdin, stdout, _thr|
-      stdin.puts user
-      stdin.puts password
-      stdin.puts password
-      stdin.puts 'exit'
-      stdin.close
-      print stdout.read
-      # puts 'wsl...'
-      # buff = String.new
-      # loop do
-      #   pp 'loop'
-      #   pp stdout.getc
-      #   stdout.readpartial(1024, buff)
-      #   pp buff
-      #   case buff
-      #   when /Enter new UNIX username:/
-      #     buff.clear
-      #     stdin.puts(user)
-      #     stdin.flush
-      #   when /New password:/, /Retype new password:/
-      #     buff.clear
-      #     stdin.puts(password)
-      #     stdin.flush
-      #   when /\[[^\]]*\]\$/
-      #     buff.clear
-      #     stdin.puts('exit')
-      #     stdin.flush
-      #   when /logout/
-      #     stdin.close
-      #     stdout.close
-      #     break
-      #   end
-      # end
+      sleep 10
+      puts 'wsl...'
+      buff = String.new
+      loop do
+        unless stdout.read_nonblock(1, buff)
+          puts 'wait...'
+          sleep 1
+          next
+        end
+        pp buff
+        case buff
+        when /Enter new UNIX username:/
+          buff.clear
+          stdin.puts(user)
+          stdin.flush
+        when /New password:/, /Retype new password:/
+          buff.clear
+          stdin.puts(password)
+          stdin.flush
+        when /\[[^\]]*\]\$/
+          buff.clear
+          stdin.puts('exit')
+          stdin.flush
+        when /logout/
+          stdin.close
+          stdout.close
+          break
+        end
+      end
     end
   end
 end
