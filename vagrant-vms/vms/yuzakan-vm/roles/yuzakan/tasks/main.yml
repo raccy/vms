@@ -2,7 +2,7 @@
   git:
     repo: https://github.com/kue-ipc/yuzakan.git
     dest: /home/vagrant/yuzakan
-    version: dev
+    version: main
 
 - name: bundle install
   command:

@@ -2,7 +2,7 @@
   git:
     repo: https://github.com/kue-ipc/ikamail.git
     dest: /home/vagrant/ikamail
-    version: ror7
+    version: main
 
 - name: bundle install
   command:

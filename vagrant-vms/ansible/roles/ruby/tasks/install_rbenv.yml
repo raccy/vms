@@ -15,7 +15,7 @@
 
 - name: set fact rbenv_path
   set_fact:
-    rbenv_path: '{{ansible_pkg_mgr == "apt" | ternary("rbenv", "~/.rbenv/bin/rbenv")}}'
+    rbenv_path: '{{(ansible_pkg_mgr == "apt") | ternary("rbenv", "~/.rbenv/bin/rbenv")}}'
 
 - name: init rbenv in .bashrc
   blockinfile:

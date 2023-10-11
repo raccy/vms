@@ -2,7 +2,7 @@
   git:
     repo: https://github.com/kue-ipc/nodokan.git
     dest: /home/vagrant/nodokan
-    version: dev
+    version: main
 
 - name: bundle install
   command:
