@@ -14,7 +14,6 @@ WSL上のvagrantを使うことを前提に、Win側と連携するように工�
 ```
 vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-proxyconf
-vagrant plugin install vagrant-timezone
 ```
 
 ## WSL2での設定

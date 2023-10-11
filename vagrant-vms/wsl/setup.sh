@@ -65,7 +65,7 @@ if [ -n "$vagrant_home_win_path" ]; then
     || echo "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=\"${vagrant_home_path}\"" >> ~/.bashrc
 fi
 
-# vagrant plugin install vagrant-proxyconf vagrant-timezone vagrant-vbguest
+vagrant plugin install vagrant-proxyconf vagrant-vbguest
 
 # Git
 

@@ -1,11 +1,11 @@
 # タイムゾーン設定
-# EL8/EL9ではバグのため、SE Linuxが有効だとtimezoneが変更できない
 
 - name: permissive mode SE Linux
   become: true
   selinux:
     policy: targeted
     state: permissive
+  when: ansible_os_family == "RedHat"
 
 - name: set timezone
   become: true
@@ -17,3 +17,4 @@
   selinux:
     policy: targeted
     state: enforcing
+  when: ansible_os_family == "RedHat"

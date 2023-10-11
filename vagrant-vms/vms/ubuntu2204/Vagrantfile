@@ -32,8 +32,6 @@ Vagrant.configure('2') do |config|
   # do manual 'vagrant vbguest --do install'
   config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
 
-  config.timezone.value = 'Asia/Tokyo' if Vagrant.has_plugin?('vagrant-timezone')
-
   proxy = get_proxy
 
   if Vagrant.has_plugin?('vagrant-proxyconf')
