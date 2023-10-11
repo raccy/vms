@@ -1,0 +1,58 @@
+- name: git clone nodokan
+  git:
+    repo: https://github.com/kue-ipc/nodokan.git
+    dest: /home/vagrant/nodokan
+    version: dev
+
+- name: bundle install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
+    chdir: /home/vagrant/nodokan
+
+- name: rails yarn:install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails yarn:install
+    chdir: /home/vagrant/nodokan
+
+- name: check rails db version
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:version
+    chdir: /home/vagrant/nodokan
+  ignore_errors: yes
+  register: rails_db_version_result
+
+- name: rails db:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:setup
+    chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0
+
+- name: rails radius:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails radius:setup
+    chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0
+
+- name: rails kea:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails kea:setup
+    chdir: /home/vagrant/nodokan
+  when: rails_db_version_result.rc != 0

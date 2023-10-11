@@ -1,0 +1,39 @@
+- name: install freeradius
+  become: yes
+  apt:
+    pkg:
+      - freeradius
+      - freeradius-mysql
+      - freeradius-ldap
+
+- name: check mysql db
+  become: yes
+  mysql_info:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    filter: databases
+  register: mysql_info_result
+
+- debug:
+    msg: mysql_info_result
+
+- name: create radius db
+  become: yes
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    state: present
+    name: radius
+  when: '"radius" not in mysql_info_result.databases'
+
+- name: mysql setup.sql
+  become: yes
+  shell:
+    cmd: 'mysql -u root < /etc/freeradius/3.0/mods-config/sql/main/mysql/setup.sql'
+  when: '"radius" not in mysql_info_result.databases'
+
+- name: mysql scheme.sql
+  become: yes
+  shell:
+    cmd: 'mysql -u root radius < /etc/freeradius/3.0/mods-config/sql/main/mysql/schema.sql'
+  when: '"radius" not in mysql_info_result.databases'
