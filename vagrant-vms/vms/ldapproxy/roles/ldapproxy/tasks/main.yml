@@ -75,3 +75,12 @@
     name: slapd.service
     enabled: true
     state: started
+
+- name: firewalld public add ldap
+  become: true
+  firewalld:
+    zone: public
+    state: enabled
+    service: ldap
+    immediate: true
+    permanent: true
