@@ -1,0 +1,77 @@
+# ローカルLDAPプロキシサーバー
+# SSL/TLS接続ができない場合に、ローカルのLDAPプロキシサーバーを経由することで、
+# 安全な経路でのLDAP接続を可能にする。
+
+# EL9のみテスト実施済み
+
+- name: dnf install openldap-servers
+  become: true
+  dnf:
+    state: present
+    name: openldap-servers
+    enablerepo:
+      - plus
+      - powertools
+
+# - name: dnf install epel-release
+#   dnf:
+#     state: present
+#     name: epel-release
+
+# - name: dnf install openldap-servers
+#   dnf:
+#     state: present
+#     name: openldap-servers
+
+- name: copy slapd.conf
+  become: true
+  copy:
+    src: ../files/slapd.ldif
+    dest: /etc/openldap/slapd.ldif
+
+- name: copy schema_ext
+  become: true
+  copy:
+    src: ../files/schema_ext/
+    dest: /etc/openldap/schema_ext/
+
+- name: stop slapd
+  become: true
+  systemd:
+    name: slapd.service
+    state: stopped
+
+- name: remove slapd.d
+  become: true
+  file:
+    path: /etc/openldap/slapd.d
+    state: absent
+
+- name: makedir slapd.d
+  become: true
+  file:
+    path: /etc/openldap/slapd.d
+    state: directory
+    owner: ldap
+    group: ldap
+    mode: '0750'
+
+- name: slapadd slapd.conf
+  become: true
+  command: /usr/sbin/slapadd -F /etc/openldap/slapd.d/ -n0 -l /etc/openldap/slapd.ldif
+
+- name: chewon slapd.d
+  become: true
+  file:
+    path: /etc/openldap/slapd.d
+    state: directory
+    owner: ldap
+    group: ldap
+    recurse: true
+
+- name: start slapd
+  become: true
+  systemd:
+    name: slapd.service
+    enabled: true
+    state: started
