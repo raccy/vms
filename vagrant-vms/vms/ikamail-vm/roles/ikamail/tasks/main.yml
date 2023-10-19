@@ -1,3 +1,11 @@
+# 新しいpsychをコンパイルすためにlibyamlが必要
+# レポジトリ自体を有効にすべき？
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    enablerepo: crb
+    name: libyaml-devel
+
 - name: git clone ikamail
   git:
     repo: https://github.com/kue-ipc/ikamail.git
