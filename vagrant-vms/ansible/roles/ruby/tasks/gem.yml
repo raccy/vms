@@ -2,6 +2,7 @@
   copy:
     src: ../files/.gemrc
     dest: /home/vagrant/.gemrc
+  when: ruby.type != "rbenv"
 
 - name: set PATH and GEM_HOME in .bashrc
   blockinfile:
