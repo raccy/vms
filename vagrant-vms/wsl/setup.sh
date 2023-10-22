@@ -21,21 +21,21 @@ https_proxy=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %https_proxy%" | sed 's/\
 ftp_proxy=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %ftp_proxy%" | sed 's/\s*$//')
 no_proxy=$(/mnt/c/Windows/System32/cmd.exe /C "ECHO %no_proxy%" | sed 's/\s*$//')
 
-[ -n "$http_proxy"  ] && export http_proxy
-[ -n "$https_proxy" ] && export https_proxy
-[ -n "$ftp_proxy"   ] && export ftp_proxy
-[ -n "$no_proxy"    ] && export no_proxy
+[ "$http_proxy"  != "%http_proxy%"  ] && export http_proxy
+[ "$https_proxy" != "%https_proxy%" ] && export https_proxy
+[ "$ftp_proxy"   != "%ftp_proxy%"   ] && export ftp_proxy
+[ "$no_proxy"    != "%no_proxy%"    ] && export no_proxy
 
-if [ -n "$https_proxy" ]; then
+if [ "$http_proxy" != "%http_proxy%" ]; then
   grep proxy /etc/dnf/dnf.conf > /dev/null   || echo proxy=${https_proxy} | sudo tee -a /etc/dnf/dnf.conf
   grep timeout /etc/dnf/dnf.conf > /dev/null || echo timeout=600          | sudo tee -a /etc/dnf/dnf.conf
 
   if [ ! -e /etc/profile.d/proxy.sh ]; then
     echo '# proxy env' | sudo tee /etc/profile.d/proxy.sh
-    [ -n "$http_proxy"  ] && echo export http_proxy=${http_proxy}   | sudo tee -a /etc/profile.d/proxy.sh
-    [ -n "$https_proxy" ] && echo export https_proxy=${https_proxy} | sudo tee -a /etc/profile.d/proxy.sh
-    [ -n "$ftp_proxy"   ] && echo export ftp_proxy=${ftp_proxy}     | sudo tee -a /etc/profile.d/proxy.sh
-    [ -n "$no_proxy"    ] && echo export no_proxy=${no_proxy}       | sudo tee -a /etc/profile.d/proxy.sh
+    [ "$http_proxy"  != "%http_proxy%"  ] && echo export http_proxy=${http_proxy}   | sudo tee -a /etc/profile.d/proxy.sh
+    [ "$https_proxy" != "%https_proxy%" ] && echo export https_proxy=${https_proxy} | sudo tee -a /etc/profile.d/proxy.sh
+    [ "$ftp_proxy"   != "%ftp_proxy%"   ] && echo export ftp_proxy=${ftp_proxy}     | sudo tee -a /etc/profile.d/proxy.sh
+    [ "$no_proxy"    != "%no_proxy%"    ] && echo export no_proxy=${no_proxy}       | sudo tee -a /etc/profile.d/proxy.sh
   fi
 fi
 
