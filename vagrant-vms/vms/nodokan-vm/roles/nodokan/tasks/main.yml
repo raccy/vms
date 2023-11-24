@@ -1,3 +1,10 @@
+# 新しいpsychのために必要
+# crbは有効化済み
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    name: libyaml-devel
+
 - name: git clone nodokan
   git:
     repo: https://github.com/kue-ipc/nodokan.git

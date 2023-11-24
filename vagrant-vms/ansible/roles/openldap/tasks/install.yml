@@ -5,14 +5,18 @@
     name: openldap-servers
   when: openldap.type == "yum"
 
+# plus
+- name: def config-manager set enabled plus
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled plus
+  when: openldap.type == "dnf"
+
 - name: dnf install openldap-servers
   become: true
   dnf:
     state: present
     name: openldap-servers
-    enablerepo:
-      - plus
-      - powertools
   when: openldap.type == "dnf"
 
 - name: debconf slapd/password dummy password

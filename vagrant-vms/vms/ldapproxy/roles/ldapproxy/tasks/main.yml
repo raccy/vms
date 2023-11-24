@@ -4,24 +4,18 @@
 
 # EL9のみテスト実施済み
 
+# plus
+- name: def config-manager set enabled plus
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled plus
+  changed_when: true
+
 - name: dnf install openldap-servers
   become: true
   dnf:
     state: present
     name: openldap-servers
-    enablerepo:
-      - plus
-      - powertools
-
-# - name: dnf install epel-release
-#   dnf:
-#     state: present
-#     name: epel-release
-
-# - name: dnf install openldap-servers
-#   dnf:
-#     state: present
-#     name: openldap-servers
 
 - name: copy slapd.conf
   become: true

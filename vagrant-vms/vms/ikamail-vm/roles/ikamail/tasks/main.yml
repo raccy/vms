@@ -1,9 +1,14 @@
+# for libmyal-devel
+- name: def config-manager set enabled crb
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled crb
+  changed_when: true
+
 # 新しいpsychをコンパイルすためにlibyamlが必要
-# レポジトリ自体を有効にすべき？
 - name: Install libyaml-devel
   become: yes
   dnf:
-    enablerepo: crb
     name: libyaml-devel
 
 - name: git clone ikamail
