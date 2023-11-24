@@ -1,16 +1,14 @@
-- name: install freeradius
+# epel
+- name: install kea
   become: yes
-  apt:
+  dnf:
     pkg:
-      - kea-admin
-      - kea-dhcp4-server
-      - kea-dhcp6-server
-      - kea-ctrl-agent
+      - kea
 
 - name: check mysql db
   become: yes
   mysql_info:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     filter: databases
   register: mysql_info_result
@@ -18,7 +16,7 @@
 - name: create kea db
   become: yes
   mysql_db:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
     name: kea
@@ -27,7 +25,7 @@
 - name: create kea user
   become: yes
   mysql_user:
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
     name: kea
