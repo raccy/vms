@@ -1,18 +1,18 @@
 # タイムゾーン設定
 
-- name: permissive mode SE Linux
+- name: Permissive mode SE Linux
   become: true
   selinux:
     policy: targeted
     state: permissive
   when: ansible_os_family == "RedHat"
 
-- name: set timezone
+- name: Set timezone
   become: true
   timezone:
     name: Asia/Tokyo
 
-- name: erforcing mode SE Linux
+- name: Enforce SELinux
   become: true
   selinux:
     policy: targeted
