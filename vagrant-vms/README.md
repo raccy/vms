@@ -7,6 +7,12 @@ WSL上のvagrantを使うことを前提に、Win側と連携するように工�
 
 - [ ] snapのrubyでは問題が起きるので、Ubuntuはrbenvにするしかないと思われる。
 
+## 必要なもの
+
+- vagrant
+- git
+- ansible
+
 ## vagrant plugin
 
 プラグインは必要であれば。
