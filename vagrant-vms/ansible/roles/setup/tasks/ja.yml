@@ -1,6 +1,6 @@
 # 日本語化
 
-- name: dnf install japanese packages
+- name: 日本語パッケージインストール dnf
   become: true
   dnf:
     state: present
@@ -9,7 +9,7 @@
       - glibc-langpack-ja
   when: ansible_pkg_mgr == "dnf"
 
-- name: apt install japanese packages
+- name: 日本語パッケージインストール apt
   become: true
   apt:
     state: present
@@ -20,6 +20,6 @@
 #   become: true
 #   command: update-locale LANG=ja_JP.UTF-8 LANGUAGE=ja_JP
 
-- name: set locale ja_JP.UTF-8
+- name: ロケールを日本語に設定
   become: true
   command: localectl set-locale LANG=ja_JP.UTF-8
