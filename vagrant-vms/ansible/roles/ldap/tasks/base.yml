@@ -5,7 +5,7 @@
 # '{{ ldap.base | split(",") | first | split("=") | first }}'
 # が使えるはず
 - name: ldap entry base dn
-  ldap_entry:
+  community.general.ldap_entry:
     dn: '{{ ldap.base }}'
     objectClass:
       - top

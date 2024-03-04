@@ -8,7 +8,7 @@
 
 - name: check mysql db
   become: yes
-  mysql_info:
+  community.mysql.mysql_info:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     login_user: root
     filter: databases
@@ -19,7 +19,7 @@
 
 - name: create radius db
   become: yes
-  mysql_db:
+  community.mysql.mysql_db:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     login_user: root
     state: present

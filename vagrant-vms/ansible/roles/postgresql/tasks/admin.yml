@@ -15,7 +15,7 @@
 - name: create admin user
   become: true
   become_user: postgres
-  postgresql_user:
+  community.postgresql.postgresql_user:
     login_unix_socket: '{{ postgresql.socket }}'
     login_user: postgres
     state: present

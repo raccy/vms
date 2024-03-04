@@ -2,7 +2,7 @@
 # user objectClass: account, posixAccount
 
 - name: posix ldap entry ou
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'ou={{ item }},{{ ldap.base }}'
     objectClass: '{{ ldap_oc.ou }}'
     attributes:
@@ -13,7 +13,7 @@
     - groups
 
 - name: posix ldap entry group admin
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=admin,ou=groups,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
@@ -23,7 +23,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry group staff
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=staff,ou=groups,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
@@ -34,7 +34,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry group user
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user,ou=groups,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:
@@ -44,7 +44,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user admin
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'uid=admin,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -56,7 +56,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user01
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user01,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -68,7 +68,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user02
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user02,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -80,7 +80,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user03
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user03,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -92,7 +92,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user04
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user04,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -104,7 +104,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user05
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user05,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -116,7 +116,7 @@
   args: '{{ ldap.connect }}'
 
 - name: posix ldap entry user user06
-  ldap_entry:
+  community.general.ldap_entry:
     dn: uid=user06,ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -130,7 +130,7 @@
 # 大量のユーザーとグループ
 
 - name: posix ldap entry many users
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'uid=test{{ item }},ou=people,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.posix_account }}'
     attributes:
@@ -143,7 +143,7 @@
   loop: '{{ range(100, 200) | list }}'
 
 - name: posix ldap entry many groups
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=test{{ item }},ou=groups,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.posix_account }}'
     attributes:

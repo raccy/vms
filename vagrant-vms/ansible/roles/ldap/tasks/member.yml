@@ -1,7 +1,7 @@
 # memberofの ユーザーとグループ
 
 - name: member ldap entry ou
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'ou={{ item }},{{ ldap.base }}'
     objectClass: '{{ ldap_oc.ou }}'
     attributes:
@@ -12,7 +12,7 @@
     - Group
 
 - name: member ldap entry user admin
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=admin,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -28,7 +28,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user01
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user01,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -44,7 +44,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user02
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user02,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -60,7 +60,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user03
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user03,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -76,7 +76,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user04
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user04,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -92,7 +92,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user05
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user05,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -108,7 +108,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry user user06
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user06,ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -124,7 +124,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry group admin
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=admin,ou=Group,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.member }}'
     attributes:
@@ -135,7 +135,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry gorup staff
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=staff,ou=Group,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.member }}'
     attributes:
@@ -147,7 +147,7 @@
   args: '{{ ldap.connect }}'
 
 - name: member ldap entry group user
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=user,ou=Group,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.member }}'
     attributes:
@@ -164,7 +164,7 @@
 # 大量のユーザーとグループ
 
 - name: member ldap entry many users
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=test{{ item }},ou=User,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.user.member }}'
     attributes:
@@ -181,7 +181,7 @@
   loop: '{{ range(100, 200) | list }}'
 
 - name: member ldap entry many groups
-  ldap_entry:
+  community.general.ldap_entry:
     dn: 'cn=test{{ item }},ou=Group,{{ ldap.base }}'
     objectClass: '{{ ldap_oc.group.member }}'
     attributes:
