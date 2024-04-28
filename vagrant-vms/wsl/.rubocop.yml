@@ -1,0 +1,18 @@
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 80
+
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma

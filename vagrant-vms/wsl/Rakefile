@@ -1,0 +1,176 @@
+# setup wsl for vagrnt
+
+require "open3"
+include Open3
+
+DIST = -"vms"
+HOSTNAME = -"vms"
+USERNAME = -"admin"
+
+ORIGIN_DIST = -"OracleLinux_9_1"
+ORIGIN_DIST_PKG_ID = -"3810OracleAmericaInc.62074632F71C9_dm28ctvqnhe9g"
+ORIGIN_DIST_PKG_EXEC = -"OracleLinux91.exe"
+ORIGIN_DIST_TAR = -"#{ORIGIN_DIST}.tar"
+
+def wsl_run(cmd, dist: DIST, user: nil, binmode: true, **opts)
+  wsl_cmd = "wsl -d #{dist}"
+  wsl_cmd << " -u #{user}" if user
+  wsl_cmd << " -- " << cmd
+  puts cmd
+  stdout, status = capture2(wsl_cmd, binmode:, **opts)
+  raise "Failed to command in wsl: #{cmd}" unless status.success?
+
+  stdout
+end
+
+def wsl_file_read(path, **opts)
+  wsl_run("cat -- #{path}", **opts)
+end
+
+def wsl_file_write(path, data, **opts)
+  wsl_run("tee -- #{path}", stdin_data: data, **opts)
+end
+
+def wsl_file_append(path, data, **opts)
+  wsl_run("tee -a -- #{path}", stdin_data: data, **opts)
+end
+
+task default: :setup
+
+task setup: %i[wsl proxy vagrant git ansible ruby]
+
+file "#{DIST}/rootfs" => ORIGIN_DIST_TAR do
+  sh "wsl --import #{DIST} #{DIST} #{ORIGIN_DIST_TAR} --version 1"
+end
+
+file ORIGIN_DIST_TAR do
+  sh "wsl --install #{ORIGIN_DIST} --no-launch"
+  pkg_exec = File.join(ENV.fetch("LOCALAPPDATA", nil), "Microsoft",
+                       "WindowsApps", ORIGIN_DIST_PKG_ID, ORIGIN_DIST_PKG_EXEC)
+  sh "#{pkg_exec} install --root"
+  sh "wsl -t #{ORIGIN_DIST}"
+  sh "wsl --export #{ORIGIN_DIST} #{ORIGIN_DIST_TAR}"
+  sh "wsl --unregister #{ORIGIN_DIST}"
+end
+
+task wsl: ["#{DIST}/rootfs", "#{DIST}/rootfs/home/#{USERNAME}",
+           "#{DIST}/rootfs/etc/wsl.conf", :sudoers]
+
+file "#{DIST}/rootfs/etc/wsl.conf" do
+  wsl_conf = <<~WSL_CONF
+    [automount]
+    options = "metadata"
+    [network]
+    hostname = #{HOSTNAME}
+    [user]
+    default = #{USERNAME}
+  WSL_CONF
+
+  wsl_file_write("/etc/wsl.conf", wsl_conf, user: "root")
+  sh "wsl -t #{DIST}"
+end
+
+file "#{DIST}/rootfs/home/#{USERNAME}" do
+  wsl_run("useradd #{USERNAME}", user: "root")
+  wsl_run("usermod #{USERNAME} -aG adm,cdrom,wheel", user: "root")
+end
+
+task :sudoers do
+  sudoers = wsl_file_read("/etc/sudoers", user: "root")
+  r1 = sudoers.gsub!(/^(%wheel\s+ALL=\(ALL\)\s+ALL\s*)$/, '# \1')
+  r2 = sudoers.gsub!(/^#\s*(%wheel\s+ALL=\(ALL\)\s+NOPASSWD:\s*ALL\s*)$/, '\1')
+  if r1 || r2
+    wsl_run("SUDO_EDITOR=tee visudo", user: "root", stdin_data: sudoers)
+  end
+end
+
+task dnf: %i[wsl proxy] do
+  wsl_run("dnf update -y", user: "root")
+end
+
+task proxy: :wsl do
+  bashrc = wsl_file_read("~/.bashrc")
+  dnf_conf = wsl_file_read("/etc/dnf/dnf.conf")
+  %w[http_proxy https_proxy ftp_proxy no_proxy].each do |name|
+    next unless ENV[name]
+
+    unless bashrc.include?(name)
+      wsl_file_append("~/.bashrc", "export #{name}=#{ENV.fetch(name, nil)}\n")
+    end
+    next if name != "https_proxy"
+
+    unless dnf_conf.include?("proxy=")
+      wsl_file_append("/etc/dnf/dnf.conf", "proxy=#{ENV.fetch(name, nil)}\n",
+                      user: "root")
+    end
+    unless dnf_conf.include?("timeout=")
+      wsl_file_append("/etc/dnf/dnf.conf", "timeout=600\n", user: "root")
+    end
+  end
+end
+
+task dnf_hashicorp: :dnf do
+  url = "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
+  repolist = wsl_run("dnf repolist", user: "root")
+  unless repolist.include?("hashicorp")
+    wsl_run("dnf config-manager --add-repo #{url}", user: "root")
+    wsl_run("dnf update -y", user: "root")
+  end
+end
+
+task vagrant: %i[vagrant_install vagrant_bashrc vagrant_plugin]
+
+task vagrant_install: [:dnf_hashicorp] do
+  wsl_run("dnf install vagrant -y", user: "root")
+end
+
+task vagrant_bashrc: [:wsl] do
+  bashrc = wsl_file_read("~/.bashrc")
+  unless bashrc.include?("VAGRANT_WSL_ENABLE_WINDOWS_ACCESS")
+    wsl_file_append("~/.bashrc",
+                    "export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS=1\n")
+  end
+  if ENV["VAGRANT_HOME"] &&
+     !bashrc.include?("VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH")
+    vagrant_home = wsl_run("wslpath -u \"#{ENV['VAGRANT_HOME']}\"")
+    vagrant_home_path = File.dirname(vagrant_home)
+    wsl_file_append("~/.bashrc",
+                    "export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH=" \
+                    "#{vagrant_home_path}\n")
+  end
+end
+
+task vagrant_plugin: %i[vagrant_install vagrant_bashrc] do
+  plugin_list = wsl_run("vagrant plugin list")
+  %w[vagrant-vbguest vagrant-proxyconf].each do |name|
+    wsl_run("vagrant plugin install #{name}") unless plugin_list.include?(name)
+  end
+end
+
+task git: %i[wsl proxy] do
+  wsl_run("dnf install git -y", user: "root")
+  git_config_list = wsl_run("git config --list")
+  ["user.name", "user.email", "pull.rebase"].each do |name|
+    next if git_config_list.include?(name)
+
+    value = `git config --get #{name}`.strip
+    unless value.empty?
+      wsl_run("git config --global --add #{name} \"#{value}\"")
+    end
+  end
+end
+
+task ansible: %i[dnf] do
+  wsl_run("dnf install ansible-core -y", user: "root")
+  galaxy_list = wsl_run("ansible-galaxy collection list") rescue ""
+  ["ansible.posix", "community.general", "community.mysql",
+   "community.postgresql"].each do |name|
+    unless galaxy_list.include?(name)
+      wsl_run("ansible-galaxy collection install #{name}")
+    end
+  end
+end
+
+task ruby: %i[dnf] do
+  wsl_run("dnf install ruby -y", user: "root")
+end
