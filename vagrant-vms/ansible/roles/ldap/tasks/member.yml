@@ -155,11 +155,23 @@
         - cn=user01,ou=User,{{ ldap.base }}
         - cn=user03,ou=User,{{ ldap.base }}
         - cn=user04,ou=User,{{ ldap.base }}
-        - cn=user05,ou=User,{{ ldap.base }}
         - cn=user06,ou=User,{{ ldap.base }}
       description: general user
       description;lang-ja: 一般ユーザー
   args: '{{ ldap.connect }}'
+
+- name: member ldap entry group other
+  community.general.ldap_entry:
+    dn: 'cn=other,ou=Group,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.member }}'
+    attributes:
+      member:
+        - cn=user04,ou=User,{{ ldap.base }}
+        - cn=user05,ou=User,{{ ldap.base }}
+      description: other
+      description;lang-ja: その他
+  args: '{{ ldap.connect }}'
+
 
 # 大量のユーザーとグループ
 

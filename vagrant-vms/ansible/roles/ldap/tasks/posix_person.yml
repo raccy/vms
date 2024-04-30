@@ -43,6 +43,17 @@
       description;lang-ja: 一般ユーザー
   args: '{{ ldap.connect }}'
 
+- name: posix ldap entry group other
+  community.general.ldap_entry:
+    dn: 'cn=other,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_person }}'
+    attributes:
+      gidNumber: 1001
+      description: other
+      description;lang-ja: その他
+      memberUid: user04
+  args: '{{ ldap.connect }}'
+
 - name: posix ldap entry user admin
   community.general.ldap_entry:
     dn: 'uid=admin,ou=people,{{ ldap.base }}'
@@ -148,7 +159,7 @@
       mail: user05@example.jp
       userPassword: pass0005
       uidNumber: 1005
-      gidNumber: 100
+      gidNumber: 1001
       homeDirectory: /home/user05
       displayName: Suzuki Tsuyoshi
       displayName;lang-ja: 鈴木　剛
