@@ -3,24 +3,6 @@
     src: ../files/.npmrc
     dest: /home/vagrant/.npmrc
 
-- name: set PATH for npm in .bashrc
-  blockinfile:
-    path: /home/vagrant/.bashrc
-    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
-    block: |
-      if ! [[ "$PATH" =~ "$HOME/.npm/bin:" ]]
-      then
-          PATH="$HOME/.npm/bin:$PATH"
-      fi
-      export PATH
-
-# あからじめ lib が作成されていないと ansible の npm が失敗する。
-- name: mkdir ~/.npm/lib
-  file:
-    state: directory
-    recurse: true
-    path: /home/vagrant/.npm/lib
-
 - name: install npm packages
   npm:
     state: present
@@ -28,3 +10,24 @@
     name: '{{ item }}'
   loop: '{{ nodejs.npms | default([]) }}'
   when: nodejs.npms is defined
+
+- name: install npm corepack package
+  npm:
+    state: present
+    global: true
+    name: corepack
+  loop: '{{ nodejs.npms | default([]) }}'
+  when: nodejs.yarn | default(false)
+
+- name: Run corepack enable on shell
+  ansible.builtin.shell:
+    cmd: . ~/.bashrc && corepack enable
+    executable: /bin/bash
+  when: nodejs.yarn | default(false)
+
+- name: Run yarn version on shell once again
+  ansible.builtin.shell:
+    cmd: . ~/.bashrc && yarn --version
+    executable: /bin/bash
+    stdin: "y\n"
+  when: nodejs.yarn | default(false)
