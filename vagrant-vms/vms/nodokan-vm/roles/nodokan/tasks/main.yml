@@ -11,6 +11,13 @@
     dest: /home/vagrant/nodokan
     version: main
 
+- name: copy settings.local.yml
+  copy:
+    src: settings.local.yml
+    dest: /home/vagrant/nodokan/config/settings.local.yml
+    mode: '0644'
+    force: false
+
 - name: bundle install
   command:
     argv:
