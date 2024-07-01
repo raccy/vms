@@ -1,3 +1,39 @@
 database:
   username: admin
   password: admin_password
+  development_use_production_database: true
+ldap:
+  username: cn=admin,dc=example,dc=jp
+  password: admin_password
+  user:
+    dn: uid
+    ou: ou=people
+    classes:
+      - posixAccount
+    attribute:
+      mail: mail
+      display_name: displayName
+  group:
+    dn: cn
+    ou: ou=groups
+    classes:
+      - posixGroup
+  restrict:
+    auth:
+      groups:
+        - admin
+        - staff
+        - user
+user_initial_configs:
+  - group: cn=staff,ou=groups,dc=example,dc=jp
+    auth_network: v102
+    networks:
+      - v101
+      - v102
+  - group: cn=user,ou=groups,dc=example,dc=jp
+    auth_network: free
+    networks:
+      - auth
+    limit: 1
+    role: guest
+

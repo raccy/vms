@@ -5,18 +5,22 @@
   dnf:
     name: libyaml-devel
 
-- name: git clone nodokan
-  git:
-    repo: https://github.com/kue-ipc/nodokan.git
-    dest: /home/vagrant/nodokan
-    version: main
+# - name: git clone nodokan
+#   git:
+#     repo: https://github.com/kue-ipc/nodokan.git
+#     dest: /home/vagrant/nodokan
+#     version: main
 
+# testにもコピーする
 - name: copy settings.local.yml
   copy:
     src: settings.local.yml
-    dest: /home/vagrant/nodokan/config/settings.local.yml
+    dest: '/home/vagrant/nodokan/config/{{ item }}'
     mode: '0644'
     force: false
+  loop:
+    - settings.local.yml
+    - settings/test.local.yml
 
 - name: bundle install
   command:
@@ -60,7 +64,6 @@
       - '-lic'
       - bin/rails radius:setup
     chdir: /home/vagrant/nodokan
-  when: rails_db_version_result.rc != 0
 
 - name: rails kea:setup
   command:
@@ -69,4 +72,47 @@
       - '-lic'
       - bin/rails kea:setup
     chdir: /home/vagrant/nodokan
-  when: rails_db_version_result.rc != 0
+
+# for test
+
+- name: dump db
+  mysql_db:
+    login_user: admin
+    login_password: admin_password
+    state: dump
+    name: '{{ item }}'
+    target: '/tmp/{{ item }}.sql'
+  loop:
+    - kea
+    - radius
+
+- name: import db
+  mysql_db:
+    login_user: admin
+    login_password: admin_password
+    state: import
+    name: '{{ item }}_test'
+    target: '/tmp/{{ item }}.sql'
+  loop:
+    - kea
+    - radius
+
+- name: rails radius:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails radius:setup
+    chdir: /home/vagrant/nodokan
+  environment:
+    RAILS_ENV: test
+
+- name: rails kea:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails kea:setup
+    chdir: /home/vagrant/nodokan
+  environment:
+    RAILS_ENV: test
