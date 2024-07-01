@@ -5,11 +5,11 @@
   dnf:
     name: libyaml-devel
 
-# - name: git clone nodokan
-#   git:
-#     repo: https://github.com/kue-ipc/nodokan.git
-#     dest: /home/vagrant/nodokan
-#     version: main
+- name: git clone nodokan
+  git:
+    repo: https://github.com/kue-ipc/nodokan.git
+    dest: /home/vagrant/nodokan
+    version: dev
 
 # testにもコピーする
 - name: copy settings.local.yml
@@ -17,7 +17,6 @@
     src: settings.local.yml
     dest: '/home/vagrant/nodokan/config/{{ item }}'
     mode: '0644'
-    force: false
   loop:
     - settings.local.yml
     - settings/test.local.yml

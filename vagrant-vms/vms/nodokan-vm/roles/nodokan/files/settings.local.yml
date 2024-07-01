@@ -5,6 +5,7 @@ database:
 ldap:
   username: cn=admin,dc=example,dc=jp
   password: admin_password
+  base: dc=example,dc=jp
   user:
     dn: uid
     ou: ou=people
@@ -36,4 +37,12 @@ user_initial_configs:
       - auth
     limit: 1
     role: guest
-
+mailer:
+  options:
+    from: no-reply@example.jp
+  url_options:
+    host: nodokan.example.jp
+admin:
+  username: admin
+  fullname: 管理者
+  email: admin@example.jp
