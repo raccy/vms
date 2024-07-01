@@ -26,12 +26,12 @@ ldap:
         - staff
         - user
 user_initial_configs:
-  - group: cn=staff,ou=groups,dc=example,dc=jp
+  - group: staff
     auth_network: v102
     networks:
       - v101
       - v102
-  - group: cn=user,ou=groups,dc=example,dc=jp
+  - group: user
     auth_network: free
     networks:
       - auth
