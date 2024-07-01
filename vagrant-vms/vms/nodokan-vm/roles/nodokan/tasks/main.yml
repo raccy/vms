@@ -81,6 +81,7 @@
     state: dump
     name: '{{ item }}'
     target: '/tmp/{{ item }}.sql'
+    dump_extra_args: '--routines'
   loop:
     - kea
     - radius
@@ -95,6 +96,17 @@
   loop:
     - kea
     - radius
+
+- name: create kea user for kea_test
+  become: yes
+  mysql_user:
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_user: root
+    state: present
+    name: kea
+    host: localhost
+    append_privs: true
+    priv: 'kea_test.*:ALL'
 
 - name: rails radius:setup
   command:
