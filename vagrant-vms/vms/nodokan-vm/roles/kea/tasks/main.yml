@@ -1,9 +1,33 @@
 # epel
+- name: Install epel repository
+  become: true
+  ansible.builtin.dnf:
+    state: present
+    name: epel-release
+
+# cloudsmith
+
+- name: Check dnf repolist
+  ansible.builtin.command:
+    cmd: dnf repolist
+  changed_when: false
+  register: kea_dnf_repolist
+
+- name: Install isc-kea repository
+  ansible.builtin.shell:
+    cmd: |
+      curl -1sLf \
+        'https://dl.cloudsmith.io/public/isc/kea-2-6/setup.rpm.sh' \
+       | sudo -E bash
+  changed_when: true
+  when: kea_dnf_repolist.stdout_lines | select("match", "isc-kea") | length == 0
+
 - name: install kea
   become: yes
   dnf:
     pkg:
-      - kea
+      - isc-kea
+      - isc-kea-hooks
 
 - name: check mysql db
   become: yes
@@ -34,8 +58,14 @@
     priv: 'kea.*:ALL'
   when: '"kea" not in mysql_info_result.databases'
 
-- name: kea-admin
+- name: kea-admin init
   become: yes
   command:
     cmd: 'kea-admin db-init mysql -u kea -p keapass -n kea'
   when: '"kea" not in mysql_info_result.databases'
+
+- name: kea-admin upgrade
+  become: yes
+  command:
+    cmd: 'kea-admin db-upgrade mysql -u kea -p keapass -n kea'
+  when: '"kea" in mysql_info_result.databases'
