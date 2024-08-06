@@ -1,5 +1,9 @@
 # タイムゾーン設定
 
+- name: RTCをlocalではなくUTCにする。
+  become: true
+  ansible.builtin.command: timedatectl set-local-rtc 0
+
 - name: SELinuxを許可モードに変更
   become: true
   ansible.posix.selinux:
