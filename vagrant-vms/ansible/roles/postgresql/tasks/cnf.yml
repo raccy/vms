@@ -4,7 +4,7 @@
   become: true
   command:
     cmd: postgresql-setup --initdb
-    creates: "{{ postgresql.datadir }}/var/lib/pgsql/data/PG_VERSION"
+    creates: "{{ postgresql.datadir }}/PG_VERSION"
 
 
 - name: lineinfile pg_hba.cnf loopback md5
