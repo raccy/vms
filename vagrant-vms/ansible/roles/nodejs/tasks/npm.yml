@@ -1,9 +1,8 @@
-- name: copy .npmrc
-  copy:
-    src: ../files/.npmrc
-    dest: /home/vagrant/.npmrc
+- name: Set npm config prefix
+  command:
+    cmd: npm config set prefix=~/.local
 
-- name: install npm packages
+- name: Install npm packages
   npm:
     state: present
     global: true
@@ -11,7 +10,7 @@
   loop: '{{ nodejs.npms | default([]) }}'
   when: nodejs.npms is defined
 
-- name: install npm corepack package
+- name: Install npm corepack package
   npm:
     state: present
     global: true

@@ -1,9 +1,34 @@
+# gemrcを設定した古い方法
+---
+
+- name: copy .gemrc
+  copy:
+    src: ../files/.gemrc
+    dest: /home/vagrant/.gemrc
+  when: ruby.type != "rbenv"
+
+- name: set PATH and GEM_HOME in .bashrc
+  blockinfile:
+    path: /home/vagrant/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ruby'
+    block: |
+      GEM_HOME="$HOME/.gem/ruby"
+      export GEM_HOME
+      if ! [[ "$PATH" =~ "$GEM_HOME/bin:" ]]
+      then
+          PATH="$GEM_HOME/bin:$PATH"
+      fi
+      export PATH
+  when: ruby.type != "rbenv"
+
 - name: gem install packages
   gem:
     name: '{{ item.split("@") | first }}'
     version: '{{ item.split("@") | last if "@" in item else None }}'
     state: present
   loop: '{{ ruby.gems | default([]) }}'
+  environment:
+    GEM_HOME: /home/vagrant/.gem
   when: ruby.gems is defined and ruby.type != "rbenv"
 
 - name: gem install packages
