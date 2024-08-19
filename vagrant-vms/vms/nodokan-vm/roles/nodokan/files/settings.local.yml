@@ -1,7 +1,7 @@
 database:
   username: admin
   password: admin_password
-  development_use_production_database: true
+  # development_use_production_database: true
 ldap:
   username: cn=admin,dc=example,dc=jp
   password: admin_password

@@ -13,31 +13,40 @@
       - freeradius-mysql
       - freeradius-ldap
 
-- name: check mysql db
-  become: yes
-  community.mysql.mysql_info:
-    login_unix_socket: /var/lib/mysql/mysql.sock
-    login_user: root
-    filter: databases
-  register: mysql_info_result
-
 - name: create radius db
   become: yes
   community.mysql.mysql_db:
     login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
-    name: radius
-  when: '"radius" not in mysql_info_result.databases'
+    name: '{{ item }}'
+  loop:
+    - radius
+    - radius_development
+    - radius_test
 
-- name: mysql setup.sql
+- name: create radius user
   become: yes
-  shell:
-    cmd: 'mysql -u root < /etc/raddb/mods-config/sql/main/mysql/setup.sql'
-  when: '"radius" not in mysql_info_result.databases'
+  mysql_user:
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_user: root
+    state: present
+    name: radius
+    host: localhost
+    password: radpass
+    priv: 'radius.*:ALL/radius_development.*:ALL/radius_test.*:ALL'
+
+# - name: mysql setup.sql
+#   become: yes
+#   shell:
+#     cmd: 'mysql -u root < /etc/raddb/mods-config/sql/main/mysql/setup.sql'
+#   when: '"radius" not in mysql_info_result.databases'
 
 - name: mysql scheme.sql
   become: yes
   shell:
-    cmd: 'mysql -u root radius < /etc/raddb/mods-config/sql/main/mysql/schema.sql'
-  when: '"radius" not in mysql_info_result.databases'
+    cmd: 'mysql -u root {{ item }} < /etc/raddb/mods-config/sql/main/mysql/schema.sql'
+  loop:
+    - radius
+    - radius_development
+    - radius_test

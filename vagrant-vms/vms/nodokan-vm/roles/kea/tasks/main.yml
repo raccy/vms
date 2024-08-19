@@ -43,8 +43,11 @@
     login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
-    name: kea
-  when: '"kea" not in mysql_info_result.databases'
+    name: '{{ item }}'
+  loop:
+    - kea
+    - kea_development
+    - kea_test
 
 - name: create kea user
   become: yes
@@ -55,17 +58,10 @@
     name: kea
     host: localhost
     password: keapass
-    priv: 'kea.*:ALL'
-  when: '"kea" not in mysql_info_result.databases'
+    priv: 'kea.*:ALL/kea_development.*:ALL/kea_test.*:ALL'
 
-- name: kea-admin init
-  become: yes
-  command:
-    cmd: 'kea-admin db-init mysql -u kea -p keapass -n kea'
-  when: '"kea" not in mysql_info_result.databases'
-
-- name: kea-admin upgrade
-  become: yes
-  command:
-    cmd: 'kea-admin db-upgrade mysql -u kea -p keapass -n kea'
-  when: '"kea" in mysql_info_result.databases'
+- include_tasks: kea_admin.yml
+  loop:
+    - kea
+    - kea_development
+    - kea_test

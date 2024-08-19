@@ -1,0 +1,13 @@
+- name: bundle config
+  command:
+    argv:
+      - bundle
+      - config
+      - set
+      - --global
+      - '{{ item.name }}'
+      - '{{ item.value }}'
+    chdir: /home/vagrant/nodokan
+  loop:
+    - {name: path, value: ~/.local/share/bundle}
+    - {name: bin, value: ~/.local/bin}

@@ -1,0 +1,11 @@
+- name: 'kea-admin init {{ item }}'
+  become: yes
+  command:
+    cmd: 'kea-admin db-init mysql -u kea -p keapass -n {{ item }}'
+  when: 'item not in mysql_info_result.databases'
+
+- name: 'kea-admin upgrade {{ item }}'
+  become: yes
+  command:
+    cmd: 'kea-admin db-upgrade mysql -u kea -p keapass -n {{ item }}'
+  when: 'item in mysql_info_result.databases'
