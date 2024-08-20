@@ -2,7 +2,7 @@
   git:
     repo: https://github.com/raccy/my_hanami_app.git
     dest: /home/vagrant/my_hanami_app
-    version: dev
+    version: main
 
 - name: bundle install
   command:
