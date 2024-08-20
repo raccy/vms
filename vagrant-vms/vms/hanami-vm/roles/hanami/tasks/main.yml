@@ -1,0 +1,37 @@
+- name: git clone 
+  git:
+    repo: https://github.com/raccy/my_hanami_app.git
+    dest: /home/vagrant/my_hanami_app
+    version: dev
+
+- name: bundle install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
+    chdir: /home/vagrant/my_hanami_app
+
+- name: npm install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - npm install
+    chdir: /home/vagrant/my_hanami_app
+
+- name: hanami assets compile
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle exec hanami assets compile
+    chdir: /home/vagrant/my_hanami_app
+
+- name: hanami db migrate
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle exce hanami db migrate
+    chdir: /home/vagrant/my_hanami_app
