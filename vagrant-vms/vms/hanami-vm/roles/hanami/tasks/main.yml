@@ -33,5 +33,5 @@
     argv:
       - bash
       - '-lic'
-      - bundle exce hanami db migrate
+      - bundle exec hanami db migrate
     chdir: /home/vagrant/my_hanami_app
