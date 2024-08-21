@@ -1,3 +1,8 @@
+- name: install sqlite
+  become: yes
+  dnf:
+    name: sqlite
+
 - name: git clone 
   git:
     repo: https://github.com/raccy/my_hanami_app.git

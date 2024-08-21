@@ -64,10 +64,20 @@
       - bin/rails radius:setup
     chdir: /home/vagrant/nodokan
 
-- name: rails kea:setup
+- name: rails radius:setup
   command:
     argv:
       - bash
       - '-lic'
-      - bin/rails kea:setup
+      - bin/rails radius:setup
     chdir: /home/vagrant/nodokan
+  environment:
+    RAILS_ENV: test
+
+# - name: rails kea:setup
+#   command:
+#     argv:
+#       - bash
+#       - '-lic'
+#       - bin/rails kea:setup
+#     chdir: /home/vagrant/nodokan
