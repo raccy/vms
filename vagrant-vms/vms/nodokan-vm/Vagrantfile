@@ -65,7 +65,7 @@ Vagrant.configure('2') do |config|
         dev: true,
       },
       nodejs: {
-        version: '18',
+        version: '20', # 2026-04
         yarn: true,
         npms: [
           'npm-check-updates',
@@ -75,6 +75,7 @@ Vagrant.configure('2') do |config|
         dev: true,
       },
       ruby: {
+        version: '3.3', # 2027-03
         dev: true,
         pkgs: [
           'rubygem-irb',
