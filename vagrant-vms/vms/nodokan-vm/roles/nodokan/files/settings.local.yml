@@ -26,17 +26,24 @@ ldap:
         - staff
         - user
 user_initial_configs:
-  - group: staff
-    auth_network: v102
-    networks:
-      - v101
-      - v102
-  - group: user
+  - group: '*'
     auth_network: free
     networks:
       - auth
     limit: 1
     role: guest
+  - group: staff
+    auth_network: v102
+    networks:
+      - v101
+      - v102
+    limit: null
+    role: user
+  - group: admin
+    auth_network: null
+    networks: []
+    limit: null
+    role: admin
 mailer:
   options:
     from: no-reply@example.jp
