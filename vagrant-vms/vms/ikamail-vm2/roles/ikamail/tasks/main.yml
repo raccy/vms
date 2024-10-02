@@ -1,0 +1,53 @@
+# for libmyal-devel
+- name: def config-manager set enabled crb
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled crb
+  changed_when: true
+
+# 新しいpsychをコンパイルすためにlibyamlが必要
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    name: libyaml-devel
+
+- name: git clone ikamail
+  git:
+    repo: https://github.com/kue-ipc/ikamail.git
+    dest: /home/vagrant/ikamail
+    version: dev
+
+- name: bundle install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
+    chdir: /home/vagrant/ikamail
+
+- name: rails yarn:install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails yarn:install
+    chdir: /home/vagrant/ikamail
+
+- name: check rails db version
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:version
+    chdir: /home/vagrant/ikamail
+  ignore_errors: yes
+  register: rails_db_version_result
+
+- name: rails db:setup
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bin/rails db:setup
+    chdir: /home/vagrant/ikamail
+  when: rails_db_version_result.rc != 0
