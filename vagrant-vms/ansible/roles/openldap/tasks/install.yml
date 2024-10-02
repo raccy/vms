@@ -12,6 +12,15 @@
     cmd: dnf config-manager --set-enabled plus
   when: openldap.type == "dnf"
 
+# TODO: RHEL9系からはpowertoolsはない
+# powertools
+- name: def config-manager set enabled powertools
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled powertools
+  ignore_errors: true
+  when: openldap.type == "dnf"
+
 - name: dnf install openldap-servers
   become: true
   dnf:
