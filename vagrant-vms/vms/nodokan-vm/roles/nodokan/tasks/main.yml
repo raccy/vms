@@ -9,7 +9,7 @@
   git:
     repo: https://github.com/kue-ipc/nodokan.git
     dest: /home/vagrant/nodokan
-    version: dev
+    version: main
 
 # testにもコピーする
 - name: copy settings.local.yml
