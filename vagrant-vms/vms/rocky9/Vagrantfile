@@ -1,7 +1,11 @@
 require_relative '../common'
 
 Vagrant.configure('2') do |config|
-  config.vm.box = 'generic/rocky9'
+  # config.vm.box = 'generic/rocky9' # not active
+  # config.vm.box = 'rockylinux/9' # small size
+  config.vm.box = 'eurolinux-vagrant/rocky-9'
+  # config.vm.box = 'bento/rockylinux-9' # with chef
+  # config.vm.box = 'openlogic/rockylinux-9' # not active
 
   # rockylinux/9 is 10GB disk, so must resize, but cannot resize on bug.
   # config.vm.box = 'rockylinux/9'

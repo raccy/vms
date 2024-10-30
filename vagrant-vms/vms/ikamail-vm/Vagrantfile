@@ -1,7 +1,8 @@
 require_relative '../common'
 
 Vagrant.configure('2') do |config|
-  config.vm.box = 'generic/rocky9'
+  config.vm.box = 'eurolinux-vagrant/rocky-9'
+
   config.vm.box_check_update = true
 
   hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
