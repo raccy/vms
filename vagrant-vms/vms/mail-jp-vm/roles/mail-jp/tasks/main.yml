@@ -1,3 +1,44 @@
+# for libmyal-devel
+- name: def config-manager set enabled crb
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled crb
+  changed_when: true
+
+# 新しいpsychをコンパイルすためにlibyamlが必要
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    name: libyaml-devel
+
+# rbenv
+
+- name: Install versions
+  command:
+    cmd: 'rbenv install {{ item }}'
+    creates: '/home/vagrant/.rbenv/versions/{{ item }}/bin/ruby'
+  loop:
+    - '3.1.6'
+    - '3.2.6'
+    - '3.3.5'
+
+# chruby
+
+- name: git clone chruby
+  git:
+    repo: https://github.com/postmodern/chruby.git
+    dest: /home/vagrant/chruby
+    version: 'v0.3.9'
+
+- name: Install
+  become: yes
+  command:
+    cmd: 'make install'
+    chdir: /home/vagrant/chruby
+    creates: /usr/local/share/chruby/chruby.sh
+
+# mail-iso-2022-jp
+
 - name: git clone mail-iso-2022-jp
   git:
     repo: https://github.com/kue-ipc/mail-iso-2022-jp.git
