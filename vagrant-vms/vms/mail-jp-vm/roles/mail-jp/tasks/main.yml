@@ -1,0 +1,4 @@
+- name: git clone mail-iso-2022-jp
+  git:
+    repo: https://github.com/kue-ipc/mail-iso-2022-jp.git
+    dest: /home/vagrant/mail-iso-2022-jp
