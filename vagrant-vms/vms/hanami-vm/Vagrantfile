@@ -69,8 +69,7 @@ Vagrant.configure('2') do |config|
       # },
       # nginx: {},
       nodejs: {
-        version: '20', # 2026-04
-        yarn: true,
+        version: '22', # 2027-04
         npms: [
           'npm-check-updates',
         ],
