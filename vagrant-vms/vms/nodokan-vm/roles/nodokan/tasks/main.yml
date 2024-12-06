@@ -21,6 +21,18 @@
     - settings.local.yml
     - settings/test.local.yml
 
+- name: bundle config
+  command:
+    argv:
+      - bundle
+      - config
+      - set
+      - '{{ item.name }}'
+      - '{{ item.value }}'
+    chdir: /home/vagrant/nodokan
+  loop:
+    - {name: path, value: vendor/bundle}
+
 - name: bundle install
   command:
     argv:
