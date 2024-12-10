@@ -4,17 +4,17 @@
     dest: /home/vagrant/yuzakan
     version: main
 
-- name: bundle config
-  command:
-    argv:
-      - bundle
-      - config
-      - set
-      - '{{ item.name }}'
-      - '{{ item.value }}'
-    chdir: /home/vagrant/yuzakan
-  loop:
-    - {name: path, value: vendor/bundle}
+# - name: bundle config
+#   command:
+#     argv:
+#       - bundle
+#       - config
+#       - set
+#       - '{{ item.name }}'
+#       - '{{ item.value }}'
+#     chdir: /home/vagrant/yuzakan
+#   loop:
+#     - {name: path, value: vendor/bundle}
 
 - name: bundle install
   command:
