@@ -1,3 +1,16 @@
+# for libmyal-devel
+- name: def config-manager set enabled crb
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled crb
+  changed_when: true
+
+# 新しいpsychをコンパイルすためにlibyamlが必要
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    name: libyaml-devel
+
 - name: git clone yuzakan
   git:
     repo: https://github.com/kue-ipc/yuzakan.git
