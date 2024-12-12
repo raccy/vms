@@ -11,8 +11,19 @@
   become: true
   lineinfile:
     path: "{{ postgresql.datadir }}/pg_hba.conf"
+    regexp: '^\s*host\s+all\s+all\s+{{ item }}\s.*$'
+    line: "host all all {{ item }} md5"
+  loop:
+    - "127.0.0.1/32"
+    - "::1/128"
+
+- name: lineinfile pg_hba.cnf loopback md5
+  become: true
+  lineinfile:
+    path: "{{ postgresql.datadir }}/pg_hba.conf"
     regexp: '^\s*host\s+all\s+all\s+127.0.0.1/32\s.*$'
     line: "host all all 127.0.0.1/32 md5"
+
 
 # - name: lineinfile pg_hba.cnf host all md5
 #   become: true
