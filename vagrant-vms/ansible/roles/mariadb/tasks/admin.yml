@@ -29,3 +29,13 @@
     host: localhost
     password: '{{ mariadb.admin.password }}'
     priv: '*.*:ALL'
+
+- name: create vagrant user
+  become: true
+  community.mysql.mysql_user:
+    login_unix_socket: '{{ mariadb.socket }}'
+    login_user: root
+    state: present
+    name: vagrant
+    host: localhost
+    priv: '*.*:ALL'
