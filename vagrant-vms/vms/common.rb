@@ -7,7 +7,7 @@ require "etc"
 if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   # DOSISH
   class << File
-    alias _dirname dirname unless defined? File._dirname
+    alias_method :_dirname, :dirname unless defined? File._dirname
     def dirname(filename, ...)
       filename = filename.to_s
       if filename.include?("\\")
@@ -17,7 +17,7 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
       end
     end
 
-    alias _basename basename unless defined? File._basename
+    alias_method :_basename, :basename unless defined? File._basename
     def basename(filename, ...)
       filename = filename.to_s
       if filename.include?("\\")
@@ -27,7 +27,7 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
       end
     end
 
-    alias _join join unless defined? File._join
+    alias_method :_join, :join unless defined? File._join
     def join(*item)
       item = item.map(&:to_s)
       if item.any? { |path| path.include?("\\") }
@@ -54,34 +54,34 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
       end
     end
 
-    module_function method_alias(:_touch, :touch) unless defined? FileUtils._touch
+    module_function alias_method(:_touch, :touch) unless defined? FileUtils._touch
     module_function def touch(list, ...)
       FileUtils._touch(path_on_wsl(list), ...)
     end
 
-    module_function method_alias(:_cp, :cp) unless defined? FileUtils._cp
+    module_function alias_method(:_cp, :cp) unless defined? FileUtils._cp
     module_function def cp(src, dest, ...)
       FileUtils._cp(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function method_alias(:copy, :cp)
+    module_function alias_method(:copy, :cp)
 
-    module_function method_alias(:_mv, :mv) unless defined? FileUtils._mv
+    module_function alias_method(:_mv, :mv) unless defined? FileUtils._mv
     module_function def mv(src, dest, ...)
       FileUtils._mv(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function method_alias(:move, :mv)
+    module_function alias_method(:move, :mv)
 
-    module_function method_alias(:_rm, :rm) unless defined? FileUtils._rm
+    module_function alias_method(:_rm, :rm) unless defined? FileUtils._rm
     module_function def rm(list, ...)
       FileUtils_rm(path_on_wsl(list), ...)
     end
-    module_function method_alias(:remvoe, :rm)
+    module_function alias_method(:remvoe, :rm)
 
-    module_function method_alias(:_rm_rf, :rm_rf) unless defined? FileUtils._rm_rf
+    module_function alias_method(:_rm_rf, :rm_rf) unless defined? FileUtils._rm_rf
     module_function def rm_rf(list, ...)
       FileUtils._rm_rf(path_on_wsl(list), ...)
     end
-    module_function method_alias(:rmtree, :rm_rf)
+    module_function alias_method(:rmtree, :rm_rf)
   end
 end
 

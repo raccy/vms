@@ -31,6 +31,9 @@ Metrics/BlockLength:
 Style/AccessModifierDeclarations:
   EnforcedStyle: inline
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
 Style/Documentation:
   Enabled: false
 
