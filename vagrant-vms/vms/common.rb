@@ -4,6 +4,87 @@ require 'digest/md5'
 require 'uri'
 require 'etc'
 
+if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
+  # DOSISH
+  class << File
+    alias _dirname dirname unless defined? File._dirname
+    def dirname(filename, ...)
+      filename = filename.to_s
+      if filename.include?("\\")
+        _dirname(filename.gsub("\\", "/"), ...).gsub("/", "\\")
+      else
+        _dirname(filename, ...)
+      end
+    end
+
+    alias _basename basename unless defined? File._basename
+    def basename(filename, ...)
+      filename = filename.to_s
+      if filename.include?("\\")
+        _basename(filename.gsub("\\", "/"), ...).gsub("/", "\\")
+      else
+        _basename(filename, ...)
+      end
+    end
+
+    alias _join join unless defined? File._join
+    def join(*item)
+      item = item.map(&:to_s)
+      if item.any? { |path| path.include?("\\") }
+        _join(*item.map { |path| path.gsub("\\", "/")}).gsub("/", "\\")
+      else
+        _join(*item)
+      end
+    end
+  end
+
+  # WSL
+  module FileUtils
+    module_function def wslpath(path)
+      `wslpath "#{path}"`.strip
+    end
+
+    module_function def path_on_wsl(list)
+      if list.is_a?(Array)
+        list.map { |path| path_on_wsl(path) }
+      elsif list.to_s.include?("\\")
+        wslpath(list)
+      else
+        list
+      end
+    end
+
+    module_function alias_method(:_touch, :touch) unless defined? FileUtils._touch
+    module_function def touch(list, ...)
+      FileUtils._touch(path_on_wsl(list), ...)
+    end
+
+    module_function alias_method(:_cp, :cp) unless defined? FileUtils._cp
+    module_function def cp(src, dest, ...)
+      FileUtils._cp(path_on_wsl(src), path_on_wsl(dest), ...)
+    end
+    module_function alias_method(:copy, :cp)
+
+    module_function alias_method(:_mv, :mv) unless defined? FileUtils._mv
+    module_function def mv(src, dest, ...)
+      FileUtils._mv(path_on_wsl(src), path_on_wsl(dest), ...)
+    end
+    module_function alias_method(:move, :mv)
+
+    module_function alias_method(:_rm, :rm) unless defined? FileUtils._rm
+    module_function def rm(list, ...)
+      FileUtils_rm(path_on_wsl(list), ...)
+    end
+    module_function alias_method(:remvoe, :rm)
+
+    module_function alias_method(:_rm_rf, :rm_rf) unless defined? FileUtils._rm_rf
+    module_function def rm_rf(list, ...)
+      FileUtils._rm_rf(path_on_wsl(list), ...)
+    end
+    module_function alias_method(:rmtree, :rm_rf)
+  end
+end
+
 def calc_port(name, range: (10_000..30_000))
   range.begin + (Digest::MD5.digest(name).unpack1('L') % range.size)
 end
@@ -64,5 +145,15 @@ def recommended_cpus
 end
 
 def recommended_memory
-  4096
+  begin
+    File.read("/proc/meminfo") =~ /^MemTotal:\s*(\d+) kB$/
+    mem_total = $1.to_i / 1024 / 1024
+    if mem_total.positive?
+      [[1, (mem_total - 8) / 2].max, 8].min * 1024
+    else
+      4 * 1024
+    end
+  rescue
+    4 * 1024
+  end
 end
