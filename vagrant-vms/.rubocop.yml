@@ -28,6 +28,9 @@ Metrics/BlockLength:
     - refine
     - configure
 
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
 Style/Documentation:
   Enabled: false
 
@@ -38,7 +41,7 @@ Style/PerlBackrefs:
   Enabled: false
 
 Style/SpecialGlobalVars:
-  EnforcedStyle: use_builtin_english_names
+  EnforcedStyle: use_perl_names
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -51,3 +54,6 @@ Style/TrailingCommaInHashLiteral:
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Naming/AccessorMethodName:
+  Enabled: false

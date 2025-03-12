@@ -54,34 +54,34 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
       end
     end
 
-    module_function alias :_touch :touch unless defined? FileUtils._touch
+    module_function method_alias(:_touch, :touch) unless defined? FileUtils._touch
     module_function def touch(list, ...)
       FileUtils._touch(path_on_wsl(list), ...)
     end
 
-    module_function alias :_cp :cp unless defined? FileUtils._cp
+    module_function method_alias(:_cp, :cp) unless defined? FileUtils._cp
     module_function def cp(src, dest, ...)
       FileUtils._cp(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function alias :copy :cp
+    module_function method_alias(:copy, :cp)
 
-    module_function alias :_mv :mv unless defined? FileUtils._mv
+    module_function method_alias(:_mv, :mv) unless defined? FileUtils._mv
     module_function def mv(src, dest, ...)
       FileUtils._mv(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function alias :move :mv
+    module_function method_alias(:move, :mv)
 
-    module_function alias :_rm :rm unless defined? FileUtils._rm
+    module_function method_alias(:_rm, :rm) unless defined? FileUtils._rm
     module_function def rm(list, ...)
       FileUtils_rm(path_on_wsl(list), ...)
     end
-    module_function alias :remvoe :rm
+    module_function method_alias(:remvoe, :rm)
 
-    module_function alias :_rm_rf :rm_rf unless defined? FileUtils._rm_rf
+    module_function method_alias(:_rm_rf, :rm_rf) unless defined? FileUtils._rm_rf
     module_function def rm_rf(list, ...)
       FileUtils._rm_rf(path_on_wsl(list), ...)
     end
-    module_function alias :rmtree :rm_rf
+    module_function method_alias(:rmtree, :rm_rf)
   end
 end
 
@@ -98,7 +98,8 @@ def get_proxy
   all_proxy = %i[all http https ftp].map { |name| protocols[name] }.find(&:itself)
   return if all_proxy.nil?
 
-  no_proxy = ['VAGRANT_NO_PROXY', 'NO_PROXY', 'no_proxy'].map { |key| ENV.fetch(key, nil) }.find(&:itself)
+  no_proxy = ["VAGRANT_NO_PROXY", "NO_PROXY", "no_proxy"]
+             .map { |key| ENV.fetch(key, nil) }.find(&:itself)
 
   proxy_env = {
     ALL_PROXY: all_proxy,
@@ -148,7 +149,7 @@ def recommended_memory
   File.read("/proc/meminfo") =~ /^MemTotal:\s*(\d+) kB$/
   mem_total = $1.to_i / 1024 / 1024
   if mem_total.positive?
-    [[1, (mem_total - 8) / 2].max, 8].min * 1024
+    ((mem_total - 8) / 2).clam(2, 8)
   else
     4 * 1024
   end
