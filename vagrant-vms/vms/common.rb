@@ -2,6 +2,7 @@
 
 require 'digest/md5'
 require 'uri'
+require 'etc'
 
 def calc_port(name, range: (10_000..30_000))
   range.begin + (Digest::MD5.digest(name).unpack1('L') % range.size)
@@ -50,4 +51,18 @@ def git_config
     user[name] = value if value && !value.empty?
   end
   {user: user}
+end
+
+def recommended_cpus
+  if Etc.nprocessors < 4
+    1
+  elsif Etc.nprocessors < 8
+    2
+  else
+    4
+  end
+end
+
+def recommended_memory
+  4096
 end
