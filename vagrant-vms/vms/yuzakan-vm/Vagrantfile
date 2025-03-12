@@ -1,39 +1,39 @@
-require_relative '../common'
+require_relative "../common"
 
-Vagrant.configure('2') do |config|
-  config.vm.box = 'eurolinux-vagrant/rocky-9'
+Vagrant.configure("2") do |config|
+  config.vm.box = "eurolinux-vagrant/rocky-9"
 
   config.vm.box_check_update = true
 
-  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
   ssh_port = calc_port(hostname)
 
   config.vm.hostname = hostname
 
-  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
 
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  config.vm.provider 'virtualbox' do |vb|
+  config.vm.provider "virtualbox" do |vb|
     vb.cpus = recommended_cpus
     vb.memory = recommended_memory
   end
 
-  config.vm.provider 'hyperv' do |hv|
+  config.vm.provider "hyperv" do |hv|
     hv.cpus = recommended_cpus
     hv.maxmemory = recommended_memory
   end
 
   # enable env
-  config.env.enable if Vagrant.has_plugin?('vagrant-env')
+  config.env.enable if Vagrant.has_plugin?("vagrant-env")
 
-  # do manual 'vagrant vbguest --do install'
-  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
   proxy = get_proxy
 
-  if Vagrant.has_plugin?('vagrant-proxyconf')
+  if Vagrant.has_plugin?("vagrant-proxyconf")
     if proxy
       config.proxy.enabled = true
       %i[http https ftp].each do |name|
@@ -45,54 +45,54 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision 'ansible' do |ansible|
-    ansible.compatibility_mode = '2.0'
-    ansible.playbook = '../../ansible/setup.yml'
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "../../ansible/setup.yml"
     setup = {
       pkgs: [
-        '@Development Tools',
+        "@Development Tools",
       ],
     }
     # https://access.redhat.com/support/policy/updates/rhel8-app-streams-life-cycle
     app = {
       # ds: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       git: {
         config: git_config,
       },
       mariadb: {
-        # vresion: '10.5', # 2026-05
+        # vresion: "10.5", # 2026-05
         dev: true,
       },
       nodejs: {
-        version: '22', # 2027-04
+        version: "22", # 2027-04
         npms: [
-          'npm-check-updates',
+          "npm-check-updates",
         ],
       },
       openldap: {
-        posix: 'samba', # or 'account', 'person'
+        posix: "samba", # or "account", "person"
         member: true,
       },
       postgresql: {
-        # version: '16', # 2029-05
+        # version: "16", # 2029-05
         dev: true,
       },
       redis: {
-        # version: '7', # 2026-11
+        # version: "7", # 2026-11
         dev: true,
       },
       ruby: {
-        version: '3.3', # 2027-03
+        version: "3.3", # 2027-03
         dev: true,
         pkgs: [
-          'ruby-bundled-gems',
-          'rubygem-rake',
+          "ruby-bundled-gems",
+          "rubygem-rake",
         ],
         gems: [
-          'rubocop',
+          "rubocop",
         ],
       },
     }
@@ -104,7 +104,7 @@ Vagrant.configure('2') do |config|
     }.compact
   end
 
-  config.vm.provision 'yuzakan', type: 'ansible' do |ansible|
-    ansible.playbook = 'yuzakan.yml'
+  config.vm.provision "yuzakan", type: "ansible" do |ansible|
+    ansible.playbook = "yuzakan.yml"
   end
 end

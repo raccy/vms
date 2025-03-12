@@ -1,47 +1,47 @@
-require_relative '../common'
+require_relative "../common"
 
-Vagrant.configure('2') do |config|
-  # config.vm.box = 'generic/rocky9' # not active
-  # config.vm.box = 'rockylinux/9' # small size
-  # config.vm.box = 'eurolinux-vagrant/rocky-9'
-  # config.vm.box = 'bento/rockylinux-9' # with chef
-  # config.vm.box = 'openlogic/rockylinux-9' # not active
+Vagrant.configure("2") do |config|
+  # config.vm.box = "generic/rocky9" # not active
+  # config.vm.box = "rockylinux/9" # small size
+  # config.vm.box = "eurolinux-vagrant/rocky-9"
+  # config.vm.box = "bento/rockylinux-9" # with chef
+  # config.vm.box = "openlogic/rockylinux-9" # not active
 
   # rockylinux/9 is 10GB disk, so must resize, but cannot resize on bug.
-  config.vm.box = 'rockylinux/9'
+  config.vm.box = "rockylinux/9"
   config.vm.disk :disk, size: "100GB", primary: true
 
   config.vm.box_check_update = true
 
-  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
   ssh_port = calc_port(hostname)
 
   config.vm.hostname = hostname
 
-  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
 
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  config.vm.provider 'virtualbox' do |vb|
+  config.vm.provider "virtualbox" do |vb|
     vb.cpus = recommended_cpus
     vb.memory = recommended_memory
   end
 
-  config.vm.provider 'hyperv' do |hv|
+  config.vm.provider "hyperv" do |hv|
     hv.cpus = recommended_cpus
     hv.maxmemory = recommended_memory
   end
 
   # enable env
-  config.env.enable if Vagrant.has_plugin?('vagrant-env')
+  config.env.enable if Vagrant.has_plugin?("vagrant-env")
 
-  # do manual 'vagrant vbguest --do install'
-  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
   proxy = get_proxy
 
-  if Vagrant.has_plugin?('vagrant-proxyconf')
+  if Vagrant.has_plugin?("vagrant-proxyconf")
     if proxy
       config.proxy.enabled = true
       %i[http https ftp].each do |name|
@@ -53,20 +53,20 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision 'ansible' do |ansible|
-    ansible.compatibility_mode = '2.0'
-    ansible.playbook = '../../ansible/setup.yml'
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "../../ansible/setup.yml"
     setup = {
       pkgs: [
-        # 'vim',
-        # 'rsync',
-        # '@Development Tools',
+        # "vim",
+        # "rsync",
+        # "@Development Tools",
       ],
     }
     # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
     app = {
       # ds: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # git: {
@@ -77,14 +77,14 @@ Vagrant.configure('2') do |config|
       # },
       # nginx: {},
       # nodejs: {
-      #   version: '18', # 2025-04
+      #   version: "18", # 2025-04
       #   yarn: true,
       #   npms: [
-      #     'npm-check-updates',
+      #     "npm-check-updates",
       #   ],
       # },
       # openldap: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # postgresql: {
@@ -96,12 +96,12 @@ Vagrant.configure('2') do |config|
       # ruby: {
       #   dev: true,
       #   pkgs: [
-      #     'rubygem-irb',
-      #     'rubygem-rake',
-      #     'rubygem-bundler',
+      #     "rubygem-irb",
+      #     "rubygem-rake",
+      #     "rubygem-bundler",
       #   ],
       #   gems: [
-      #     'rubocop',
+      #     "rubocop",
       #   ],
       # },
       # samba: {},

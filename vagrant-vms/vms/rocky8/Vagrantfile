@@ -1,43 +1,43 @@
-require_relative '../common'
+require_relative "../common"
 
-Vagrant.configure('2') do |config|
-  # config.vm.box = 'generic/rocky8' # not active
-  # config.vm.box = 'rockylinux/8' # small size
-  config.vm.box = 'eurolinux-vagrant/rocky-8'
-  # config.vm.box = 'bento/rockylinux-8' # with chef
-  # config.vm.box = 'openlogic/rockylinux-8' # not active
+Vagrant.configure("2") do |config|
+  # config.vm.box = "generic/rocky8" # not active
+  # config.vm.box = "rockylinux/8" # small size
+  config.vm.box = "eurolinux-vagrant/rocky-8"
+  # config.vm.box = "bento/rockylinux-8" # with chef
+  # config.vm.box = "openlogic/rockylinux-8" # not active
 
   config.vm.box_check_update = true
 
-  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
   ssh_port = calc_port(hostname)
 
   config.vm.hostname = hostname
 
-  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
 
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  config.vm.provider 'virtualbox' do |vb|
+  config.vm.provider "virtualbox" do |vb|
     vb.cpus = 2
     vb.memory = 4096
   end
 
-  config.vm.provider 'hyperv' do |hv|
+  config.vm.provider "hyperv" do |hv|
     hv.cpus = 2
     hv.maxmemory = 4096
   end
 
   # enable env
-  config.env.enable if Vagrant.has_plugin?('vagrant-env')
+  config.env.enable if Vagrant.has_plugin?("vagrant-env")
 
-  # do manual 'vagrant vbguest --do install'
-  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
   proxy = get_proxy
 
-  if Vagrant.has_plugin?('vagrant-proxyconf')
+  if Vagrant.has_plugin?("vagrant-proxyconf")
     if proxy
       config.proxy.enabled = true
       %i[http https ftp].each do |name|
@@ -49,59 +49,59 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision 'ansible' do |ansible|
-    ansible.compatibility_mode = '2.0'
-    ansible.playbook = '../../ansible/setup.yml'
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "../../ansible/setup.yml"
     setup = {
       pkgs: [
-        # 'vim',
-        # 'rsync',
-        # '@Development Tools',
+        # "vim",
+        # "rsync",
+        # "@Development Tools",
       ],
     }
     # EL8 can specify app version
     app = {
       # ds: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # git: {
       #   config: git_config,
       # },
       # mariadb: {
-      #   vresion: '10.3',
+      #   vresion: "10.3",
       #   dev: true,
       # },
       # nginx: {
-      #   version: '1.20',
+      #   version: "1.20",
       # },
       # nodejs: {
-      #   version: '18',
+      #   version: "18",
       #   npms: [
-      #     'coffeescript',
-      #     'npm-check-updates',
+      #     "coffeescript",
+      #     "npm-check-updates",
       #   ],
       # },
       # openldap: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # redis: {
-      #   version: '6',
+      #   version: "6",
       #   dev: true,
       # },
       # ruby: {
-      #   version: '2.5',
+      #   version: "2.5",
       #   dev: true,
       #   pkgs: [
-      #     'ruby-irb',
-      #     'rubygem-rake',
-      #     'rubygem-bundler',
-      #     'rubygem-mysql2',
+      #     "ruby-irb",
+      #     "rubygem-rake",
+      #     "rubygem-bundler",
+      #     "rubygem-mysql2",
       #   ],
       #   gems: [
-      #     'rubocop-ast@1.17.0',
-      #     'rubocop@1.28.2',
+      #     "rubocop-ast@1.17.0",
+      #     "rubocop@1.28.2",
       #   ],
       # },
     }

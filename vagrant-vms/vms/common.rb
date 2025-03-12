@@ -1,8 +1,8 @@
 # common for Vagrantfile
 
-require 'digest/md5'
-require 'uri'
-require 'etc'
+require "digest/md5"
+require "uri"
+require "etc"
 
 if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   # DOSISH
@@ -31,7 +31,7 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
     def join(*item)
       item = item.map(&:to_s)
       if item.any? { |path| path.include?("\\") }
-        _join(*item.map { |path| path.gsub("\\", "/")}).gsub("/", "\\")
+        _join(*item.map { |path| path.gsub("\\", "/") }).gsub("/", "\\")
       else
         _join(*item)
       end
@@ -54,51 +54,51 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
       end
     end
 
-    module_function alias_method(:_touch, :touch) unless defined? FileUtils._touch
+    module_function alias :_touch :touch unless defined? FileUtils._touch
     module_function def touch(list, ...)
       FileUtils._touch(path_on_wsl(list), ...)
     end
 
-    module_function alias_method(:_cp, :cp) unless defined? FileUtils._cp
+    module_function alias :_cp :cp unless defined? FileUtils._cp
     module_function def cp(src, dest, ...)
       FileUtils._cp(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function alias_method(:copy, :cp)
+    module_function alias :copy :cp
 
-    module_function alias_method(:_mv, :mv) unless defined? FileUtils._mv
+    module_function alias :_mv :mv unless defined? FileUtils._mv
     module_function def mv(src, dest, ...)
       FileUtils._mv(path_on_wsl(src), path_on_wsl(dest), ...)
     end
-    module_function alias_method(:move, :mv)
+    module_function alias :move :mv
 
-    module_function alias_method(:_rm, :rm) unless defined? FileUtils._rm
+    module_function alias :_rm :rm unless defined? FileUtils._rm
     module_function def rm(list, ...)
       FileUtils_rm(path_on_wsl(list), ...)
     end
-    module_function alias_method(:remvoe, :rm)
+    module_function alias :remvoe :rm
 
-    module_function alias_method(:_rm_rf, :rm_rf) unless defined? FileUtils._rm_rf
+    module_function alias :_rm_rf :rm_rf unless defined? FileUtils._rm_rf
     module_function def rm_rf(list, ...)
       FileUtils._rm_rf(path_on_wsl(list), ...)
     end
-    module_function alias_method(:rmtree, :rm_rf)
+    module_function alias :rmtree :rm_rf
   end
 end
 
 def calc_port(name, range: (10_000..30_000))
-  range.begin + (Digest::MD5.digest(name).unpack1('L') % range.size)
+  range.begin + (Digest::MD5.digest(name).unpack1("L") % range.size)
 end
 
 def get_proxy
   protocols = %i[all http https ftp].to_h do |name|
     value = ["VAGRANT_#{name.upcase}_PROXY", "#{name.upcase}_PROXY", "#{name}_proxy"]
-            .map { |key| ENV[key] }.find(&:itself)
+            .map { |key| ENV.fetch(key, nil) }.find(&:itself)
     [name, value]
   end.compact
   all_proxy = %i[all http https ftp].map { |name| protocols[name] }.find(&:itself)
   return if all_proxy.nil?
 
-  no_proxy = %w[VAGRANT_NO_PROXY NO_PROXY no_proxy].map { |key| ENV[key] }.find(&:itself)
+  no_proxy = ['VAGRANT_NO_PROXY', 'NO_PROXY', 'no_proxy'].map { |key| ENV.fetch(key, nil) }.find(&:itself)
 
   proxy_env = {
     ALL_PROXY: all_proxy,
@@ -117,7 +117,7 @@ def get_proxy
     port: proxy_uri.port,
     user: proxy_uri.user,
     password: proxy_uri.password,
-    excludes: no_proxy.to_s.split(',').map(&:strip),
+    excludes: no_proxy.to_s.split(",").map(&:strip),
     no_proxy: no_proxy,
     env: proxy_env,
     **protocols,
@@ -145,15 +145,13 @@ def recommended_cpus
 end
 
 def recommended_memory
-  begin
-    File.read("/proc/meminfo") =~ /^MemTotal:\s*(\d+) kB$/
-    mem_total = $1.to_i / 1024 / 1024
-    if mem_total.positive?
-      [[1, (mem_total - 8) / 2].max, 8].min * 1024
-    else
-      4 * 1024
-    end
-  rescue
+  File.read("/proc/meminfo") =~ /^MemTotal:\s*(\d+) kB$/
+  mem_total = $1.to_i / 1024 / 1024
+  if mem_total.positive?
+    [[1, (mem_total - 8) / 2].max, 8].min * 1024
+  else
     4 * 1024
   end
+rescue StandardError
+  4 * 1024
 end

@@ -10,7 +10,7 @@
 # See https://docs.rubocop.org/rubocop/configuration
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.3
   NewCops: enable
 
 Layout/EndOfLine:
@@ -20,19 +20,28 @@ Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
 Metrics/BlockLength:
-  Enabled: false
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+  AllowedMethods:
+    - refine
+    - configure
 
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
-  Enabled: false
+  EnforcedStyle: never
 
 Style/PerlBackrefs:
   Enabled: false
 
 Style/SpecialGlobalVars:
-  Enabled: false
+  EnforcedStyle: use_builtin_english_names
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
 
 Style/WordArray:
   EnforcedStyle: brackets

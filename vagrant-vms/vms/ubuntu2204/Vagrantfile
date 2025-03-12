@@ -1,41 +1,41 @@
-require_relative '../common'
+require_relative "../common"
 
-Vagrant.configure('2') do |config|
-  # config.vm.box = 'generic/ubuntu2204' # not active
-  config.vm.box = 'ubuntu/jammy64'
-  # config.vm.box = 'bento/ubuntu-24.04'
+Vagrant.configure("2") do |config|
+  # config.vm.box = "generic/ubuntu2204" # not active
+  config.vm.box = "ubuntu/jammy64"
+  # config.vm.box = "bento/ubuntu-24.04"
 
   config.vm.box_check_update = true
 
-  hostname = File.basename(File.absolute_path(__dir__)).gsub('_', '-')
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
   ssh_port = calc_port(hostname)
 
   config.vm.hostname = hostname
 
-  config.vm.network 'forwarded_port', guest: 22, host: ssh_port, host_ip: '127.0.0.1', id: 'ssh'
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
 
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  # config.vm.synced_folder '.', '/vagrant', type: 'rsync'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  config.vm.provider 'virtualbox' do |vb|
+  config.vm.provider "virtualbox" do |vb|
     vb.cpus = 2
     vb.memory = 4096
   end
 
-  config.vm.provider 'hyperv' do |hv|
+  config.vm.provider "hyperv" do |hv|
     hv.cpus = 2
     hv.maxmemory = 4096
   end
 
   # enable env
-  config.env.enable if Vagrant.has_plugin?('vagrant-env')
+  config.env.enable if Vagrant.has_plugin?("vagrant-env")
 
-  # do manual 'vagrant vbguest --do install'
-  config.vbguest.auto_update = false if Vagrant.has_plugin?('vagrant-vbguest')
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
   proxy = get_proxy
 
-  if Vagrant.has_plugin?('vagrant-proxyconf')
+  if Vagrant.has_plugin?("vagrant-proxyconf")
     if proxy
       # cannot write snap npm, so disable
       config.proxy.enabled = {npm: false}
@@ -48,28 +48,28 @@ Vagrant.configure('2') do |config|
     end
   end
 
-  config.vm.provision 'fix-dns', type: 'shell', before: :all do |script|
+  config.vm.provision "fix-dns", type: "shell", before: :all do |script|
     script.inline = <<-SHELL
-      sudo sed -i -e '/nameservers:/d' -e '/addresses:/d' /etc/netplan/01-netcfg.yaml
+      sudo sed -i -e "/nameservers:/d" -e "/addresses:/d" /etc/netplan/01-netcfg.yaml
       sudo netplan generate && sudo netplan apply
-      sudo sed -i 's/^[[:alpha:]]/#&/' /etc/systemd/resolved.conf
+      sudo sed -i "s/^[[:alpha:]]/#&/" /etc/systemd/resolved.conf
       sudo systemctl restart systemd-resolved.service
     SHELL
   end
 
-  config.vm.provision 'ansible' do |ansible|
-    ansible.compatibility_mode = '2.0'
-    ansible.playbook = '../../ansible/setup.yml'
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "../../ansible/setup.yml"
     setup = {
       pkgs: [
-        # 'vim',
-        # 'rsync',
-        # 'build-essential',
+        # "vim",
+        # "rsync",
+        # "build-essential",
       ],
     }
     app = {
       # ds: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # git: {
@@ -81,12 +81,12 @@ Vagrant.configure('2') do |config|
       # nginx: {},
       # nodejs: {
       #   npms: [
-      #     'coffeescript',
-      #     'npm-check-updates',
+      #     "coffeescript",
+      #     "npm-check-updates",
       #   ],
       # },
       # openldap: {
-      #   posix: 'samba', # or 'account', 'person'
+      #   posix: "samba", # or "account", "person"
       #   member: true,
       # },
       # redis: {
@@ -95,13 +95,13 @@ Vagrant.configure('2') do |config|
       # ruby: {
       #   dev: true,
       #   pkgs: [
-      #     'ruby-bundler',
-      #     'ruby-ffi',
-      #     'ruby-mysql2',
+      #     "ruby-bundler",
+      #     "ruby-ffi",
+      #     "ruby-mysql2",
       #   ],
       #   gems: [
-      #     'rubocop',
-      #     'nokogiri',
+      #     "rubocop",
+      #     "nokogiri",
       #   ],
       # },
     }

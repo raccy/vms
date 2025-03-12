@@ -162,7 +162,11 @@ end
 
 task ansible: %i[dnf] do
   wsl_run("dnf install ansible-core -y", user: "root")
-  galaxy_list = wsl_run("ansible-galaxy collection list") rescue ""
+  galaxy_list = begin
+    wsl_run("ansible-galaxy collection list")
+  rescue StandardError
+    ""
+  end
   ["ansible.posix", "community.general", "community.mysql",
    "community.postgresql"].each do |name|
     unless galaxy_list.include?(name)
