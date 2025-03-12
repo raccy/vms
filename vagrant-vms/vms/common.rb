@@ -149,7 +149,7 @@ def recommended_memory
   File.read("/proc/meminfo") =~ /^MemTotal:\s*(\d+) kB$/
   mem_total = $1.to_i / 1024 / 1024
   if mem_total.positive?
-    ((mem_total - 8) / 2).clam(2, 8)
+    ((mem_total - 8) / 2).clamp(2, 8) * 1024
   else
     4 * 1024
   end
