@@ -78,6 +78,7 @@ Vagrant.configure("2") do |config|
         version: "3.3", # 2027-03
         dev: true,
         pkgs: [
+          "ruby-bundled-gems",
           "rubygem-irb",
           "rubygem-rake",
           "rubygem-bundler",
