@@ -1,7 +1,9 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "eurolinux-vagrant/rocky-9"
+  # config.vm.box = "eurolinux-vagrant/rocky-9"
+  config.vm.box = "almalinux/9" # 20GB
+  config.vm.disk :disk, size: "100GB", primary: true
 
   config.vm.box_check_update = true
 
@@ -55,10 +57,10 @@ Vagrant.configure("2") do |config|
     }
     # https://access.redhat.com/support/policy/updates/rhel8-app-streams-life-cycle
     app = {
-      # ds: {
-      #   posix: "samba", # or "account", "person"
-      #   member: true,
-      # },
+      ds: {
+        posix: "samba", # or "account", "person"
+        member: true,
+      },
       git: {
         config: git_config,
       },
@@ -67,25 +69,25 @@ Vagrant.configure("2") do |config|
         dev: true,
       },
       nodejs: {
-        version: "22", # 2027-04
+        version: "22", # 2027-04, full of el10
         npms: [
           "npm-check-updates",
         ],
       },
-      openldap: {
-        posix: "samba", # or "account", "person"
-        member: true,
-      },
+      # openldap: {
+      #   posix: "samba", # or "account", "person"
+      #   member: true,
+      # },
       postgresql: {
-        # version: "16", # 2029-05
+        version: "16", # 2029-05, full of el10
         dev: true,
       },
       redis: {
-        # version: "7", # 2026-11
+        version: "7", # 2026-11, el10 use valkey
         dev: true,
       },
       ruby: {
-        version: "3.3", # 2027-03
+        version: "3.3", # 2027-03, full of el10
         dev: true,
         pkgs: [
           "ruby-bundled-gems",
