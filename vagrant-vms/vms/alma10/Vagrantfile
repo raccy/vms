@@ -1,0 +1,115 @@
+require_relative "../common"
+
+Vagrant.configure("2") do |config|
+  # config.vm.box = "generic/alma10" # not available
+  config.vm.box = "almalinux/10" # 20GB
+  # config.vm.box = "eurolinux-vagrant/almalinux-10" # not available
+  # config.vm.box = "bento/almalinux-9" # with chef, not available
+  # config.vm.box = "openlogic/almalinux-9" # not available
+
+  # if you want to expand disk size, you can use:
+  # config.vm.disk :disk, size: "64GB", primary: true
+
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
+  ssh_port = calc_port(hostname)
+
+  config.vm.hostname = hostname
+
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = recommended_cpus
+    vb.memory = recommended_memory
+  end
+
+  config.vm.provider "hyperv" do |hv|
+    hv.cpus = recommended_cpus
+    hv.maxmemory = recommended_memory
+  end
+
+  # enable env
+  config.env.enable if Vagrant.has_plugin?("vagrant-env")
+
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+
+  proxy = get_proxy
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    if proxy
+      config.proxy.enabled = true
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
+    else
+      config.proxy.enabled = false
+    end
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "../../ansible/setup.yml"
+    setup = {
+      pkgs: [
+        # "vim",
+        # "rsync",
+        # "@Development Tools",
+      ],
+    }
+    # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
+    app = {
+      # ds: {
+      #   posix: "samba", # or "account", "person"
+      #   member: true,
+      # },
+      # git: {
+      #   config: git_config,
+      # },
+      # mariadb: {
+      #   dev: true,
+      # },
+      # nginx: {},
+      # nodejs: {
+      #   version: "22", # 2027-04
+      #   yarn: true,
+      #   npms: [
+      #     "npm-check-updates",
+      #   ],
+      # },
+      # openldap: {
+      #   posix: "samba", # or "account", "person"
+      #   member: true,
+      # },
+      # postgresql: {
+      #   dev: true,
+      # },
+      # redis: {
+      #   dev: true,
+      # },
+      # ruby: {
+      #   dev: true,
+      #   pkgs: [
+      #     "rubygem-irb",
+      #     "rubygem-rake",
+      #     "rubygem-bundler",
+      #   ],
+      #   gems: [
+      #     "rubocop",
+      #   ],
+      # },
+      # samba: {},
+    }
+
+    ansible.extra_vars = {
+      setup: setup,
+      app: app,
+      proxy: proxy,
+    }.compact
+  end
+end
