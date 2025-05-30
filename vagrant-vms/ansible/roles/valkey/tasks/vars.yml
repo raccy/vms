@@ -1,0 +1,3 @@
+- name: set fact valkey
+  set_fact:
+    valkey: '{{ {"type": ansible_pkg_mgr} | combine(valkey, app.valkey, recursive=True) }}'

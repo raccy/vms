@@ -1,0 +1,49 @@
+- name: dnf module install valkey
+  become: true
+  dnf:
+    state: present
+    name: '@valkey:{{ valkey.version }}'
+  when: valkey.type == "dnf" and valkey.version is defined
+
+- name: yum install valkey
+  become: true
+  yum:
+    state: present
+    name: valkey
+  when: valkey.type == "yum"
+
+- name: dnf install valkey
+  become: true
+  dnf:
+    state: present
+    name: valkey
+  when: valkey.type == "dnf"
+
+- name: apt install valkey
+  become: true
+  apt:
+    state: present
+    name: valkey
+  when: valkey.type == "apt"
+
+- name: yum install valkey devel
+  become: true
+  yum:
+    state: present
+    name: valkey-devel
+  when: valkey.type == "yum" and valkey.dev
+
+- name: dnf install valkey devel
+  become: true
+  dnf:
+    state: present
+    name: valkey-devel
+  when: valkey.type == "dnf" and valkey.dev
+
+# no available
+# - name: apt install valkey devel
+#   become: true
+#   apt:
+#     state: present
+#     name: ...
+#   when: valkey.type == "apt" and valkey.dev
