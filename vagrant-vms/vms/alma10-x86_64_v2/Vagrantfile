@@ -4,7 +4,13 @@ Vagrant.configure("2") do |config|
   config.vm.box = "almalinux/10-x86_64_v2" # 20GB
 
   # if you want to expand disk size, you can use:
-  # config.vm.disk :disk, size: "64GB", primary: true
+  config.vm.disk :disk, size: "32GB", primary: true
+  # You shuld use parted and xfs_growfs to expand the filesystem
+  # ```
+  # sudo parted -s -f /dev/sda print
+  # sudo parted /dev/sda resizepart 4 100%
+  # sudo xfs_growfs /
+  # ````
 
   config.vm.box_check_update = true
 

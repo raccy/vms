@@ -1,0 +1,29 @@
+# FIXME: rootパーティションは使われているので、イナラクティブモードになって、拡張できないっぽい。
+
+- name: Read device information
+  become: true
+  community.general.parted:
+    device: /dev/sda
+    unit: s
+  register: sda_info
+
+- name: Set last partition
+  ansible.builtin.set_fact:
+    sda_last: '{{ sda_info.partitions | last }}'
+
+- name: Extend an existing partitionto fill all available space
+  become: true
+  community.general.parted:
+    device: /dev/sda
+    label: '{{ sda_info.disk.table }}'
+    number: '{{ sda_last.num }}'
+    part_end: '100%'
+    resize: true
+    state: present
+
+- name: Resize filesystem
+  become: true
+  community.general.filesystem:
+    fstype: '{{ sda_last.fstype }}'
+    dev: '/dev/sda{{ sda_last.num }}'
+    resizefs: true
