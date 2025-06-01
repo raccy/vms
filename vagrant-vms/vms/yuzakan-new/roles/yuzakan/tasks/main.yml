@@ -1,0 +1,72 @@
+# for libmyal-devel
+- name: def config-manager set enabled crb
+  become: yes
+  command:
+    cmd: dnf config-manager --set-enabled crb
+  changed_when: true
+
+# 新しいpsychをコンパイルすためにlibyamlが必要
+- name: Install libyaml-devel
+  become: yes
+  dnf:
+    name: libyaml-devel
+
+- name: git clone yuzakan
+  git:
+    repo: https://github.com/kue-ipc/yuzakan.git
+    dest: /home/vagrant/yuzakan
+    version: dev
+
+# - name: bundle config
+#   command:
+#     argv:
+#       - bundle
+#       - config
+#       - set
+#       - '{{ item.name }}'
+#       - '{{ item.value }}'
+#     chdir: /home/vagrant/yuzakan
+#   loop:
+#     - {name: path, value: vendor/bundle}
+
+- name: bundle install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - bundle install
+    chdir: /home/vagrant/yuzakan
+
+- name: npm install
+  command:
+    argv:
+      - bash
+      - '-lic'
+      - npm install
+    chdir: /home/vagrant/yuzakan
+
+# - name: bundle exec rake build
+#   command:
+#     argv:
+#       - bash
+#       - '-lic'
+#       - bundle exec rake build
+#     chdir: /home/vagrant/yuzakan
+
+# - name: bundle exec hanami db prepare
+#   command:
+#     argv:
+#       - bash
+#       - '-lic'
+#       - bundle exec hanami db prepare
+#     chdir: /home/vagrant/yuzakan
+
+# - name: bundle exec hanami db prepare for test
+#   command:
+#     argv:
+#       - bash
+#       - '-lic'
+#       - bundle exec hanami db prepare
+#     chdir: /home/vagrant/yuzakan
+#   environment:
+#     HANAMI_ENV: test
