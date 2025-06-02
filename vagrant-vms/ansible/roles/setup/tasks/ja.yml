@@ -14,8 +14,20 @@
   apt:
     state: present
     name: language-pack-ja
-  when: ansible_pkg_mgr == "apt"
+  when:
+    - ansible_pkg_mgr == "apt"
+    - ansible_distribution == "Ubuntu"
 
+- name: 全言語のロケールインストール apt
+  become: true
+  apt:
+    state: present
+    name: locales-all
+  when:
+    - ansible_pkg_mgr == "apt"
+    - ansible_distribution == "Debian"
+
+# FIXME: 古い方法
 # - name: set locale ja_JP.UTF-8
 #   become: true
 #   command: update-locale LANG=ja_JP.UTF-8 LANGUAGE=ja_JP

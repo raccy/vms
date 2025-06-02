@@ -17,13 +17,13 @@ Vagrant.configure("2") do |config|
   # config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
   config.vm.provider "virtualbox" do |vb|
-    vb.cpus = 2
-    vb.memory = 4096
+    vb.cpus = recommended_cpus
+    vb.memory = recommended_memory
   end
 
   config.vm.provider "hyperv" do |hv|
-    hv.cpus = 2
-    hv.maxmemory = 4096
+    hv.cpus = recommended_cpus
+    hv.maxmemory = recommended_memory
   end
 
   # enable env
@@ -47,14 +47,15 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.provision "fix-dns", type: "shell", before: :all do |script|
-    script.inline = <<-SHELL
-      sudo sed -i -e "/nameservers:/d" -e "/addresses:/d" /etc/netplan/01-netcfg.yaml
-      sudo netplan generate && sudo netplan apply
-      sudo sed -i "s/^[[:alpha:]]/#&/" /etc/systemd/resolved.conf
-      sudo systemctl restart systemd-resolved.service
-    SHELL
-  end
+  # FIXME: must hack dns for generic/debian12 only
+  # config.vm.provision "fix-dns", type: "shell", before: :all do |script|
+  #   script.inline = <<-SHELL
+  #     sudo sed -i -e "/nameservers:/d" -e "/addresses:/d" /etc/netplan/01-netcfg.yaml
+  #     sudo netplan generate && sudo netplan apply
+  #     sudo sed -i "s/^[[:alpha:]]/#&/" /etc/systemd/resolved.conf
+  #     sudo systemctl restart systemd-resolved.service
+  #   SHELL
+  # end
 
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
