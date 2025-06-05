@@ -1,16 +1,25 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  # config.vm.box = "generic/rocky9" # not active
-  # config.vm.box = "rockylinux/9" # small size and not boot in 2nd
+  # config.vm.box = "rockylinux/9" # 10GB, broken not booting 2nd time
   config.vm.box = "eurolinux-vagrant/rocky-9"
   # config.vm.box = "bento/rockylinux-9" # with chef
+  # config.vm.box = "generic/rocky9" # not active
   # config.vm.box = "openlogic/rockylinux-9" # not active
 
-  # rockylinux/9 is 10GB disk, so must resize
-  # rockylinux/9 cannot run on second... why?
-  # config.vm.box = "rockylinux/9"
-  # config.vm.disk :disk, size: "100GB", primary: true
+  # if you want to extend disk size, you can use:
+  config.vm.disk :disk, size: "32GB", primary: true
+  config.vm.provision "extend_disk", type: "shell" do |shell|
+    shell.inline = <<-SHELL
+      if [ `df -k --output=size / | sed -n '$p'` -lt 20000000 ]; then
+        echo "Disk size is less than 20GB, resizing..."
+        sudo parted -s -f /dev/sda print
+        echo Yes | sudo parted /dev/sda ---pretend-input-tty resizepart 4 100%
+        sudo xfs_growfs /
+        df -h /
+      fi
+    SHELL
+  end
 
   config.vm.box_check_update = true
 

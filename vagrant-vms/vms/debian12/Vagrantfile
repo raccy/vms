@@ -62,9 +62,9 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "../../ansible/setup.yml"
     setup = {
       pkgs: [
-        # "vim",
-        # "rsync",
-        # "build-essential",
+        "vim",
+        "rsync",
+        "build-essential",
       ],
     }
     app = {
@@ -82,7 +82,6 @@ Vagrant.configure("2") do |config|
       # },
       # nodejs: {
       #   npms: [
-      #     "coffeescript",
       #     "npm-check-updates",
       #   ],
       # },
