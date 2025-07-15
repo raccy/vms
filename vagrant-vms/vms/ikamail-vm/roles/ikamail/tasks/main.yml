@@ -14,7 +14,7 @@
 - name: git clone ikamail
   git:
     repo: https://github.com/kue-ipc/ikamail.git
-    dest: /home/vagrant/ikamail
+    dest: ~/ikamail
     version: main
 
 # - name: bundle config
@@ -25,7 +25,7 @@
 #       - set
 #       - '{{ item.name }}'
 #       - '{{ item.value }}'
-#     chdir: /home/vagrant/ikamail
+#     chdir: ~/ikamail
 #   loop:
 #     - {name: path, value: vendor/bundle}
 
@@ -35,7 +35,7 @@
       - bash
       - '-lic'
       - bundle install
-    chdir: /home/vagrant/ikamail
+    chdir: ~/ikamail
 
 - name: rails yarn:install
   command:
@@ -43,7 +43,7 @@
       - bash
       - '-lic'
       - bin/rails yarn:install
-    chdir: /home/vagrant/ikamail
+    chdir: ~/ikamail
 
 - name: check rails db version
   command:
@@ -51,7 +51,7 @@
       - bash
       - '-lic'
       - bin/rails db:version
-    chdir: /home/vagrant/ikamail
+    chdir: ~/ikamail
   ignore_errors: yes
   register: rails_db_version_result
 
@@ -61,5 +61,5 @@
       - bash
       - '-lic'
       - bin/rails db:setup
-    chdir: /home/vagrant/ikamail
+    chdir: ~/ikamail
   when: rails_db_version_result.rc != 0

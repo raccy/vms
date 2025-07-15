@@ -8,14 +8,14 @@
 - name: git clone nodokan
   git:
     repo: https://github.com/kue-ipc/nodokan.git
-    dest: /home/vagrant/nodokan
+    dest: ~/nodokan
     version: main
 
 # testにもコピーする
 - name: copy settings.local.yml
   copy:
     src: settings.local.yml
-    dest: '/home/vagrant/nodokan/config/{{ item }}'
+    dest: '~/nodokan/config/{{ item }}'
     mode: '0644'
   loop:
     - settings.local.yml
@@ -29,7 +29,7 @@
 #       - set
 #       - '{{ item.name }}'
 #       - '{{ item.value }}'
-#     chdir: /home/vagrant/nodokan
+#     chdir: ~/nodokan
 #   loop:
 #     - {name: path, value: vendor/bundle}
 
@@ -39,7 +39,7 @@
       - bash
       - '-lic'
       - bundle install
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
 
 - name: rails yarn:install
   command:
@@ -47,7 +47,7 @@
       - bash
       - '-lic'
       - bin/rails yarn:install
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
 
 - name: check rails db version
   command:
@@ -55,7 +55,7 @@
       - bash
       - '-lic'
       - bin/rails db:version
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
   ignore_errors: yes
   register: rails_db_version_result
 
@@ -65,7 +65,7 @@
       - bash
       - '-lic'
       - bin/rails db:setup
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
   when: rails_db_version_result.rc != 0
 
 - name: rails radius:setup
@@ -74,7 +74,7 @@
       - bash
       - '-lic'
       - bin/rails radius:setup
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
 
 - name: rails radius:setup
   command:
@@ -82,7 +82,7 @@
       - bash
       - '-lic'
       - bin/rails radius:setup
-    chdir: /home/vagrant/nodokan
+    chdir: ~/nodokan
   environment:
     RAILS_ENV: test
 
@@ -92,4 +92,4 @@
 #       - bash
 #       - '-lic'
 #       - bin/rails kea:setup
-#     chdir: /home/vagrant/nodokan
+#     chdir: ~/nodokan
