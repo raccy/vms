@@ -13,6 +13,6 @@
     state: present
   loop: '{{ ruby.gems | default([]) }}'
   environment:
-    PATH: '/home/vagrant/.rbenv/shims:/home/vagrant/.rbenv/bin:{{ ansible_env.PATH }}'
+    PATH: '~/.rbenv/shims:~/.rbenv/bin:{{ ansible_env.PATH }}'
     RBENV_VERSION: '{{ ruby.version }}'
   when: ruby.gems is defined and ruby.type == "rbenv"

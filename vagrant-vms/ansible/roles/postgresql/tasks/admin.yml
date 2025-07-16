@@ -23,21 +23,21 @@
     password: '{{ postgresql.admin.password }}'
     role_attr_flags: SUPERUSER
 
-- name: create vagrant user
+- name: create ansible user
   become: true
   become_user: postgres
   community.postgresql.postgresql_user:
     login_unix_socket: '{{ postgresql.socket }}'
     login_user: postgres
     state: present
-    name: vagrant
+    name: '{{ ansible_user }}'
     role_attr_flags: SUPERUSER
 
-- name: create database for vagrant user
+- name: create database for ansible user
   become: true
   become_user: postgres
   community.postgresql.postgresql_db:
     login_unix_socket: '{{ postgresql.socket }}'
     login_user: postgres
     state: present
-    name: vagrant
+    name: '{{ ansible_user }}'

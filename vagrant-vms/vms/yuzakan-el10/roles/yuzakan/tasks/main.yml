@@ -14,8 +14,8 @@
 - name: git clone yuzakan
   git:
     repo: https://github.com/kue-ipc/yuzakan.git
-    dest: /home/vagrant/yuzakan
-    version: dev
+    dest: ~/yuzakan
+    version: main
 
 # - name: bundle config
 #   command:
@@ -25,7 +25,7 @@
 #       - set
 #       - '{{ item.name }}'
 #       - '{{ item.value }}'
-#     chdir: /home/vagrant/yuzakan
+#     chdir: ~/yuzakan
 #   loop:
 #     - {name: path, value: vendor/bundle}
 
@@ -35,7 +35,7 @@
       - bash
       - '-lic'
       - bundle install
-    chdir: /home/vagrant/yuzakan
+    chdir: ~/yuzakan
 
 - name: npm install
   command:
@@ -43,7 +43,7 @@
       - bash
       - '-lic'
       - npm install
-    chdir: /home/vagrant/yuzakan
+    chdir: ~/yuzakan
 
 # - name: bundle exec rake build
 #   command:
@@ -51,7 +51,7 @@
 #       - bash
 #       - '-lic'
 #       - bundle exec rake build
-#     chdir: /home/vagrant/yuzakan
+#     chdir: ~/yuzakan
 
 # - name: bundle exec hanami db prepare
 #   command:
@@ -59,7 +59,7 @@
 #       - bash
 #       - '-lic'
 #       - bundle exec hanami db prepare
-#     chdir: /home/vagrant/yuzakan
+#     chdir: ~/yuzakan
 
 # - name: bundle exec hanami db prepare for test
 #   command:
@@ -67,6 +67,6 @@
 #       - bash
 #       - '-lic'
 #       - bundle exec hanami db prepare
-#     chdir: /home/vagrant/yuzakan
+#     chdir: ~/yuzakan
 #   environment:
 #     HANAMI_ENV: test
