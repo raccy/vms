@@ -60,6 +60,7 @@ boxの違い
 - generic: vboxでは遅いときがある。hyper-vあり。SE Linuxは`enforecing`。
 - eurolinux-vagrant: SE Linuxは`permissive`。
 - boxomatic: SE Linuxが`disabled`。
+- bento: chef付き
 
 下は書きかけ
 
