@@ -8,18 +8,18 @@ Vagrant.configure("2") do |config|
   # config.vm.box = "openlogic/almalinux-8" # not active
 
   # if you want to extend disk size, you can use:
-  config.vm.disk :disk, size: "32GB", primary: true
-  config.vm.provision "extend_disk", type: "shell" do |shell|
-    shell.inline = <<-SHELL
-      if [ `df -k --output=size / | sed -n '$p'` -lt 20000000 ]; then
-        echo "Disk size is less than 20GB, resizing..."
-        sudo parted -s -f /dev/sda print
-        echo Yes | sudo parted /dev/sda ---pretend-input-tty resizepart 4 100%
-        sudo xfs_growfs /
-        df -h /
-      fi
-    SHELL
-  end
+  # config.vm.disk :disk, size: "32GB", primary: true
+  # config.vm.provision "extend_disk", type: "shell" do |shell|
+  #   shell.inline = <<-SHELL
+  #     if [ `df -k --output=size / | sed -n '$p'` -lt 20000000 ]; then
+  #       echo "Disk size is less than 20GB, resizing..."
+  #       sudo parted -s -f /dev/sda print
+  #       echo Yes | sudo parted /dev/sda ---pretend-input-tty resizepart 4 100%
+  #       sudo xfs_growfs /
+  #       df -h /
+  #     fi
+  #   SHELL
+  # end
 
   config.vm.box_check_update = true
 
@@ -42,9 +42,6 @@ Vagrant.configure("2") do |config|
     hv.cpus = 2
     hv.maxmemory = 4096
   end
-
-  # enable env
-  config.env.enable if Vagrant.has_plugin?("vagrant-env")
 
   # do manual "vagrant vbguest --do install"
   config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")

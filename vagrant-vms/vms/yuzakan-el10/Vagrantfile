@@ -39,9 +39,6 @@ Vagrant.configure("2") do |config|
     hv.maxmemory = recommended_memory
   end
 
-  # enable env
-  config.env.enable if Vagrant.has_plugin?("vagrant-env")
-
   # do manual "vagrant vbguest --do install"
   config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
