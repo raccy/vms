@@ -1,7 +1,8 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "freebsd/FreeBSD-13.4-STABLE"
+  # config.vm.box = "freebsd/FreeBSD-13.4-STABLE"
+  config.vm.box = "bento/freebsd-13" # with chef
 
   config.vm.box_check_update = true
 
