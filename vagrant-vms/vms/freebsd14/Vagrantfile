@@ -1,0 +1,111 @@
+require_relative "../common"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "freebsd/FreeBSD-14.1-STABLE"
+
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
+  ssh_port = calc_port(hostname)
+
+  config.vm.hostname = hostname
+
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = recommended_cpus
+    vb.memory = recommended_memory
+  end
+
+  config.vm.provider "hyperv" do |hv|
+    hv.cpus = recommended_cpus
+    hv.maxmemory = recommended_memory
+  end
+
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+
+  proxy = get_proxy
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    if proxy
+      # cannot write snap npm, so disable
+      config.proxy.enabled = {npm: false}
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
+    else
+      config.proxy.enabled = false
+    end
+  end
+
+  # FIXME: must hack dns for generic/debian12 only
+  # config.vm.provision "fix-dns", type: "shell", before: :all do |script|
+  #   script.inline = <<-SHELL
+  #     sudo sed -i -e "/nameservers:/d" -e "/addresses:/d" /etc/netplan/01-netcfg.yaml
+  #     sudo netplan generate && sudo netplan apply
+  #     sudo sed -i "s/^[[:alpha:]]/#&/" /etc/systemd/resolved.conf
+  #     sudo systemctl restart systemd-resolved.service
+  #   SHELL
+  # end
+
+  # config.vm.provision "ansible" do |ansible|
+  #   ansible.compatibility_mode = "2.0"
+  #   ansible.playbook = "../../ansible/setup.yml"
+  #   setup = {
+  #     pkgs: [
+  #       # "vim",
+  #       # "rsync",
+  #       # "build-essential",
+  #     ],
+  #   }
+  #   app = {
+  #     # ds: {
+  #     #   posix: "samba", # or "account", "person"
+  #     #   member: true,
+  #     # },
+  #     # git: {
+  #     #   config: git_config,
+  #     # },
+  #     # mariadb: {
+  #     #   dev: true,
+  #     # },
+  #     # nginx: {
+  #     # },
+  #     # nodejs: {
+  #     #   npms: [
+  #     #     "npm-check-updates",
+  #     #   ],
+  #     # },
+  #     # openldap: {
+  #     #   posix: "samba", # or "account", "person"
+  #     #   member: true,
+  #     # },
+  #     # redis: {
+  #     #   dev: true,
+  #     # },
+  #     # ruby: {
+  #     #   dev: true,
+  #     #   pkgs: [
+  #     #     "ruby-bundler",
+  #     #     "ruby-ffi",
+  #     #     "ruby-mysql2",
+  #     #   ],
+  #     #   gems: [
+  #     #     "rubocop",
+  #     #     "nokogiri",
+  #     #   ],
+  #     # },
+  #   }
+
+  #   ansible.extra_vars = {
+  #     setup: setup,
+  #     app: app,
+  #     proxy: proxy,
+  #   }.compact
+  # end
+end
