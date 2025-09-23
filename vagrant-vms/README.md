@@ -22,6 +22,13 @@ vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-proxyconf
 ```
 
+## ansible galaxy
+
+- community.general
+- community.mysql
+- community.postgresql
+- ansible.posix
+
 ## WSL2での設定
 
 metadataは有効にする。
