@@ -305,7 +305,7 @@ end
 task ansible_playbook: %i[ansible ansible_playbook_root] do
   pkg_mgr = wsl_pkg_mgr
   if pkg_mgr == "dnf"
-    %w[community.general community.mysql community.postgresql]
+    %w[community.general community.mysql community.postgresql ansible.posix]
       .each do |collection|
       wsl_run("ansible-galaxy collection install #{collection}",
         env: proxy_env)
