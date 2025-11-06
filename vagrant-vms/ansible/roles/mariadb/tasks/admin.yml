@@ -19,6 +19,15 @@
     name: python3-pymysql
   when: ansible_pkg_mgr == "apt"
 
+- name: set no password for root user
+  become: true
+  community.mysql.mysql_query:
+    login_unix_socket: '{{ mariadb.socket }}'
+    login_user: root
+    query:
+      - ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+      - FLUSH PRIVILEGES;
+
 - name: create admin user
   become: true
   community.mysql.mysql_user:
