@@ -202,7 +202,7 @@ def expand_disk(config, size: 32)
   end
 end
 
-def common_config(config, dir = Dir.pwd)
+def common_config(config, dir: Dir.pwd)
   config.vm.box_check_update = true
 
   hostname = File.basename(File.absolute_path(dir)).gsub("_", "-")

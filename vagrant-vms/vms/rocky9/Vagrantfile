@@ -1,7 +1,7 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "rockylinux/9" # 10GB, broken not booting 2nd time
+  config.vm.box = "rockylinux/9" # 10GB
   # config.vm.box = "eurolinux-vagrant/rocky-9"
   # config.vm.box = "bento/rockylinux-9" # with chef
   # config.vm.box = "generic/rocky9" # not active
@@ -10,5 +10,5 @@ Vagrant.configure("2") do |config|
   # if you want to extend disk size, you can use (defaut size 32GB):
   expand_disk(config)
 
-  common_config(config, __dir__)
+  common_config(config)
 end
