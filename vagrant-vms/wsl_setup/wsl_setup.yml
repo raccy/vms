@@ -3,6 +3,7 @@ wsl_setup:
   name: vms
   distro: "AlmaLinux-9"
   version: 1
+  playbooks: "../playbooks"
 # general (default: true)
 user_name: vms
 system_hostname: vms
