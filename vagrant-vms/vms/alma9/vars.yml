@@ -1,0 +1,41 @@
+# https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
+---
+setup:
+  pkgs:
+    - "vim"
+    # - "rsync"
+    # - "@Development Tools"
+# app:
+#   # ds:
+#   #   posix: "samba" # or "account", "person"
+#   #   member: true
+#   git:
+#     copy_config: 
+#       - user.name
+#       - user.email
+#   mariadb:
+#     verison: "10.11" # 2028-03
+#     dev: true
+#   nginx: {}
+#   nodejs:
+#     version: "22" # 2027-04
+#     yarn: true
+#     npms:
+#       "npm-check-updates"
+#   # openldap:
+#   #   posix: "samba" # or "account", "person"
+#   #   member: true
+#   postgresql:
+#     dev: true
+#   redis:
+#     dev: true
+#   ruby:
+#     version: "3.3" # 2027-03
+#     dev: true
+#     pkgs:
+#       - "rubygem-irb"
+#       - "rubygem-rake"
+#       - "rubygem-bundler"
+#     gems:
+#       "rubocop"
+#   samba: {}

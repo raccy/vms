@@ -5,6 +5,8 @@ require "uri"
 require "etc"
 require "yaml"
 
+ANSIBLE_DIR = File.expand_path("../ansible", __dir__)
+
 if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   # DOSISH
   class << File
@@ -162,4 +164,95 @@ def load_vars(file)
   return {} unless File.exist?(file)
 
   YAML.load_file(file) || {}
+end
+
+# size in GiB
+def expand_disk(config, size: 32)
+  # resize disk
+  config.vm.disk :disk, size: "#{size}GB", primary: true
+  # expand partition and filesystem
+  require_root_size = (size - 5) * 1024 * 1024 # in KiB, swap 4GiB + margin 1GiB
+  config.vm.provision "extend_disk", type: "shell" do |shell|
+    shell.inline = <<-"SHELL"
+      root_size=`df -k --output=size / | sed -n '$p'`
+      if [ ${root_size} -ge #{require_root_size} ]; then
+        echo "Root filesystem size is already ${root_size}KB, no need to resize."
+        exit 0
+      fi
+
+      root_devise=`df --output=source / | sed -n '$p'`
+      root_type=`df --output=fstype / | sed -n '$p'`
+      root_disk=`sed -r 's:^(/dev/sd[a-z]+)([0-9]+)$:\\\\1:' <<< "${root_devise}"`
+      root_part=`sed -r 's:^(/dev/sd[a-z]+)([0-9]+)$:\\\\2:' <<< "${root_devise}"`
+      if [ ${root_part} -gt 0 ]; then
+        sudo parted -s -f ${root_disk} print
+        echo Yes | sudo parted ${root_disk} ---pretend-input-tty resizepart ${root_part} 100%
+        if [ ${root_type} = "xfs" ]; then
+          sudo xfs_growfs /
+        elif [ ${root_type} = "ext4"  ]; then
+          sudo resize2fs ${root_devise}
+        else
+          echo "Unknown filesystem type: ${root_type}"
+        fi
+        df -h /
+      else
+        echo "Root device is not a partition: ${root_devise}"
+      fi
+    SHELL
+  end
+end
+
+def common_config(config, dir = Dir.pwd)
+  config.vm.box_check_update = true
+
+  hostname = File.basename(File.absolute_path(dir)).gsub("_", "-")
+  ssh_port = calc_port(hostname)
+
+  config.vm.hostname = hostname
+
+  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = recommended_cpus
+    vb.memory = recommended_memory
+  end
+
+  config.vm.provider "hyperv" do |hv|
+    hv.cpus = recommended_cpus
+    hv.maxmemory = recommended_memory
+  end
+
+  # do manual "vagrant vbguest --do install"
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+
+  proxy = get_proxy
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    if proxy
+      config.proxy.enabled = true
+      %i[http https ftp].each do |name|
+        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
+      end
+      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
+    else
+      config.proxy.enabled = false
+    end
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = File.join(ANSIBLE_DIR, "setup.yml")
+    ansible.extra_vars = {setup: {}, app: {}, proxy: proxy}
+      .merge(load_vars(File.join(dir, "vars.yml")))
+  end
+
+  if File.exist?("local.yml")
+    config.vm.provision "local", type: "ansible" do |ansible|
+      ansible.compatibility_mode = "2.0"
+      ansible.playbook = File.join(dir, "local.yml")
+    end
+  end
 end
