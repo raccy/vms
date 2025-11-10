@@ -1,0 +1,53 @@
+- name: Git clone anyenv
+  ansible.builtin.git:
+    repo: https://github.com/anyenv/anyenv
+    dest: ~/.anyenv
+  environment: '{{ proxy_env }}'
+
+- name: Block anyenv in bashrc
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK anyenv'
+    block: |
+      if ! [[ "$PATH" =~ "$HOME/.anyenv/bin:" ]]
+      then
+          export PATH="$HOME/.anyenv/bin:$PATH"
+      fi
+      eval "$(anyenv init -)"
+
+- name: Make anyenv plugins directory
+  ansible.builtin.file:
+    path: ~/.anyenv/plugins
+    state: directory
+    mode: '0755'
+  when: anyenv_update
+
+- name: Git clone anyenv-update
+  ansible.builtin.git:
+    repo: https://github.com/znz/anyenv-update.git
+    dest: ~/.anyenv/plugins/anyenv-update
+  environment: '{{ proxy_env }}'
+  when: anyenv_update
+
+- name: Install packages for pyenv
+  become: true
+  ansible.builtin.package:
+    name: '{{ anyenv_pyenv_packages[ansible_pkg_mgr] }}'
+  when: '"pyenv" in anyenv_envs'
+
+- name: Enable crb repo for rbenv
+  become: true
+  ansible.builtin.command:
+    cmd: dnf config-manager --set-enabled crb
+  register: result_dnf_config_manager
+  changed_when: result_dnf_config_manager.rc == 0
+  when:
+    - '"rbenv" in anyenv_envs'
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version | int >= 9
+
+- name: Install apt packages for rbenv
+  become: true
+  ansible.builtin.package:
+    name: '{{ anyenv_rbenv_packages[ansible_pkg_mgr] }}'
+  when: '"rbenv" in anyenv_envs'

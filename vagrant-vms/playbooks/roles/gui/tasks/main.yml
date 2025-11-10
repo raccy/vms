@@ -1,0 +1,36 @@
+# TODO: dnfは未対応
+
+- name: Fail without apt
+  ansible.builtin.fail:
+    msg: support apt only
+  when: ansible_pkg_mgr != "apt"
+
+- name: Install GUI desktop
+  become: true
+  ansible.builtin.apt:
+    name: '{{ gui_desktop }}'
+  when: gui_desktop
+
+# https://github.com/microsoft/wslg/issues/960
+- name: Stop and disable serivce for GDM
+  become: true
+  ansible.builtin.service:
+    name: gdm
+    enabled: false
+    state: stopped
+  loop: '{{ gui_packages }}'
+  when: gui_desktop
+
+- name: Install GUI package
+  become: true
+  ansible.builtin.apt:
+    name: '{{ item }}'
+  loop: '{{ gui_packages }}'
+  when: gui_packages
+
+- name: Task im
+  ansible.builtin.include_tasks:
+    file: im.yml
+  when:
+    - gui_ime
+    - gui_imf
