@@ -88,6 +88,48 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   end
 end
 
+# patch for vagrant-proxyconf to support yum proxy configuration
+# see https://github.com/tmatilai/vagrant-proxyconf/pull/243
+require "vagrant-proxyconf/action/configure_yum_proxy"
+module VagrantPlugins
+  module ProxyConf
+    class Action
+      class ConfigureYumProxy < Base
+        private
+
+        def configure_machine
+          return if !supported?
+
+          tmp = "/tmp/vagrant-proxyconf"
+          path = config_path
+
+          @machine.communicate.tap do |comm|
+            comm.sudo("rm -f #{tmp}", error_check: false)
+            comm.upload(ProxyConf.resource("yum_config.awk"), tmp)
+            comm.sudo("touch #{path}")
+            comm.sudo("gawk -i inplace -f #{tmp} #{proxy_params} `realpath #{path}`")
+            comm.sudo("rm -f #{tmp}")
+          end
+
+          true
+        end
+
+        def unconfigure_machine
+          return if !supported?
+
+          @machine.communicate.tap do |comm|
+            if comm.test("grep '^proxy' #{config_path}")
+              comm.sudo("sed -i.bak -e '/^proxy/d' `realpath #{config_path}`")
+            end
+          end
+
+          true
+        end
+      end
+    end
+  end
+end
+
 def calc_port(name, range: (10_000..30_000))
   range.begin + (Digest::MD5.digest(name).unpack1("L") % range.size)
 end
@@ -245,8 +287,7 @@ def common_config(config, dir: Dir.pwd)
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
     ansible.playbook = File.join(ANSIBLE_DIR, "setup.yml")
-    ansible.extra_vars = {setup: {}, app: {}, proxy: proxy}
-      .merge(load_vars(File.join(dir, "vars.yml")))
+    ansible.extra_vars = load_vars(File.join(dir, "vars.yml"))
   end
 
   if File.exist?("local.yml")

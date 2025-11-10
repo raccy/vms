@@ -3,55 +3,8 @@ require_relative "../common"
 Vagrant.configure("2") do |config|
   config.vm.box = "eurolinux-vagrant/rocky-9"
 
-  config.vm.box_check_update = true
+  # if you want to extend disk size, you can use (defaut size 32GB):
+  # expand_disk(config)
 
-  hostname = File.basename(File.absolute_path(__dir__)).gsub("_", "-")
-  ssh_port = calc_port(hostname)
-
-  config.vm.hostname = hostname
-
-  config.vm.network "forwarded_port", guest: 22, host: ssh_port, host_ip: "127.0.0.1", id: "ssh"
-
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  # config.vm.synced_folder ".", "/vagrant", type: "rsync"
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.cpus = recommended_cpus
-    vb.memory = recommended_memory
-  end
-
-  config.vm.provider "hyperv" do |hv|
-    hv.cpus = recommended_cpus
-    hv.maxmemory = recommended_memory
-  end
-
-  # do manual "vagrant vbguest --do install"
-  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
-
-  proxy = get_proxy
-
-  if Vagrant.has_plugin?("vagrant-proxyconf")
-    if proxy
-      config.proxy.enabled = true
-      %i[http https ftp].each do |name|
-        config.proxy.__send__("#{name}=", proxy[name]) if proxy[name]
-      end
-      config.proxy.no_proxy = proxy[:no_proxy] if proxy[:no_proxy]
-    else
-      config.proxy.enabled = false
-    end
-  end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.compatibility_mode = "2.0"
-    ansible.playbook = "../../ansible/setup.yml"
-    ansible.extra_vars = {setup: {}, app: {}, proxy: proxy}
-      .merge(load_vars("vars.yml").merge).compact
-    p ansible.extra_vars
-  end
-
-  config.vm.provision "local", type: "ansible" do |ansible|
-    ansible.compatibility_mode = "2.0"
-    ansible.playbook = "local.yml"
-  end
+  common_config(config)
 end
