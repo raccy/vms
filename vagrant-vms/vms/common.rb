@@ -3,6 +3,7 @@
 require "digest/md5"
 require "uri"
 require "etc"
+require "yaml"
 
 if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   # DOSISH
@@ -155,4 +156,10 @@ def recommended_memory
   end
 rescue StandardError
   4 * 1024
+end
+
+def load_vars(file)
+  return {} unless File.exist?(file)
+
+  YAML.load_file(file) || {}
 end

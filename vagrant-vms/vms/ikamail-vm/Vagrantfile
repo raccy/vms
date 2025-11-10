@@ -45,49 +45,13 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
     ansible.playbook = "../../ansible/setup.yml"
-    setup = {
-      pkgs: [
-        "@Development Tools",
-      ],
-    }
-    app = {
-      ds: {
-        posix: "person",
-      },
-      git: {
-        config: git_config,
-      },
-      mariadb: {
-        dev: true,
-      },
-      postgresql: {
-        dev: true,
-      },
-      nodejs: {
-        version: "22", # 2027-04
-        yarn: true,
-        npms: [
-          "npm-check-updates",
-        ],
-      },
-      redis: {
-        dev: true,
-      },
-      ruby: {
-        version: "3.3", # 2027-03
-        dev: true,
-      },
-    }
-
-    ansible.extra_vars = {
-      setup: setup,
-      app: app,
-      proxy: proxy,
-    }.compact
+    ansible.extra_vars = {setup: {}, app: {}, proxy: proxy}
+      .merge(load_vars("vars.yml").merge).compact
+    p ansible.extra_vars
   end
 
-  config.vm.provision "ikamail", type: "ansible" do |ansible|
+  config.vm.provision "local", type: "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
-    ansible.playbook = "ikamail.yml"
+    ansible.playbook = "local.yml"
   end
 end
