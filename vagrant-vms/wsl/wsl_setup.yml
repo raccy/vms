@@ -1,0 +1,20 @@
+---
+wsl_setup:
+  name: vms
+  distro: "AlmaLinux-9"
+  version: 1
+# general (default: true)
+user_name: vms
+system_hostname: vms
+system_windows_path: true
+system_mount_options:
+  - metadata
+lang: false
+font: false
+# additional (default: false)
+app: true
+app_list:
+  - rsync
+git: true
+vagrant: true
+vagrant_wsl: true
