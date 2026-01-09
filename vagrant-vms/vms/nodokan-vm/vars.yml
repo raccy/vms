@@ -1,0 +1,22 @@
+---
+setup:
+  pkgs:
+    - "@Development Tools"
+app:
+  ds:
+    posix: "person"
+  git: {}
+  mariadb:
+    dev: true
+  nodejs:
+    version: "20" # 2026-04
+    yarn: true
+    npms:
+      - "npm-check-updates"
+  redis:
+    dev: true
+  ruby:
+    version: "3.3" # 2027-03
+    dev: true
+    pkgs:
+      - "rubygem-bundler"

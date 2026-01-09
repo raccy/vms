@@ -11,7 +11,7 @@
     dest: ~/nodokan
     version: main
 
-# testにもコピーする
+# テストに対しては未反映になる。
 - name: copy settings.local.yml
   copy:
     src: settings.local.yml
@@ -19,7 +19,6 @@
     mode: '0644'
   loop:
     - settings.local.yml
-    - settings/test.local.yml
 
 # - name: bundle config
 #   command:
