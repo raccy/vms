@@ -1,10 +1,7 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "eurolinux-vagrant/rocky-9"
-
-  # if you want to extend disk size, you can use (defaut size 32GB):
-  # expand_disk(config)
+  config.vm.box = "bento/rockylinux-9"
 
   common_config(config)
 end
