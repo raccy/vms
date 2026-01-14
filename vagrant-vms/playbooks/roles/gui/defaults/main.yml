@@ -1,4 +1,0 @@
-gui_desktop: ubuntu-desktop-minimal
-gui_packages: []
-gui_ime: mozc
-gui_imf: fcitx
