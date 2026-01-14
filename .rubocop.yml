@@ -26,11 +26,38 @@ Layout/LineLength:
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Layout/ParameterAlignment:
-  EnforcedStyle: with_fixed_indentation
+Metrics/BlockLength:
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+  AllowedMethods:
+    - refine
+    - configure
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Style/PerlBackrefs:
+  Enabled: false
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_builtin_english_names
@@ -40,3 +67,9 @@ Style/StringLiterals:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/WordArray:
+  EnforcedStyle: brackets

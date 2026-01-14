@@ -1,7 +1,10 @@
-# vagrant-vms
-vagrantのvm集
+# vagrant
+
+vagrantのVM集
 
 WSL上のvagrantを使うことを前提に、Win側と連携するように工夫する予定。
+
+個々にある情報は未更新。参考程度に留めること。
 
 ## Issues
 
@@ -17,7 +20,7 @@ WSL上のvagrantを使うことを前提に、Win側と連携するように工�
 
 プラグインは必要であれば。
 
-```
+```sh
 vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-proxyconf
 ```
@@ -52,7 +55,7 @@ export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
 
 WSL2では`virtualbox_WSL2`が必要。
 
-```
+```sh
 vagrant plugin install virtualbox_WSL2
 ```
 
