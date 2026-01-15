@@ -1,3 +1,5 @@
+# wsl_wsl_path -> wsl_win_path
+---
 - name: Run wslpath -m
   ansible.builtin.command:
     argv:

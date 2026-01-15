@@ -10,13 +10,15 @@ WSL_SETUP = {
   name: nil,
   distro: "Ubuntu",
   version: 2,
-  input_user: false,
-  require_password: false,
+  username: nil,
+  password: nil,
+  # input_user: false,
+  # require_password: false,
   work: ".",
   location: "image",
-  config: "wsl_setup.yml",
+  config: "setup.yml",
   dir: __dir__,
-  playbooks: "playbooks",
+  playbooks: "../playbooks",
   proxy: nil,
   http_proxy: ENV.fetch("http_proxy", nil),
   https_proxy: ENV.fetch("http_proxy", nil),
@@ -30,8 +32,7 @@ end
 
 WSL_SETUP_CONFIG_FILE = File.expand_path(WSL_SETUP[:config], WSL_SETUP[:work])
 if FileTest.exist?(WSL_SETUP_CONFIG_FILE)
-  WSL_SETUP.merge!(YAML.load_file(WSL_SETUP_CONFIG_FILE, symbolize_names: true)
-    .fetch(:wsl_setup, {}))
+  WSL_SETUP.merge!(YAML.load_file(WSL_SETUP_CONFIG_FILE, symbolize_names: true).fetch(:wsl_setup, {}))
 end
 
 WSL_SETUP[:name] ||= WSL_SETUP[:distro]
@@ -44,10 +45,11 @@ WSL_SETUP[:config] = File.expand_path(WSL_SETUP[:config], WSL_SETUP[:work])
 WSL_SETUP[:dir] = File.expand_path(WSL_SETUP[:dir])
 WSL_SETUP[:playbooks] = File.expand_path(WSL_SETUP[:playbooks], WSL_SETUP[:dir])
 
-WSL_SETUP[:location_disk] = case WSL_SETUP[:version]
-in 1 then "#{WSL_SETUP[:location]}/rootfs"
-in 2 then "#{WSL_SETUP[:location]}/ext4.vhdx"
-end
+WSL_SETUP[:location_disk] =
+  case WSL_SETUP[:version]
+  in 1 then "#{WSL_SETUP[:location]}/rootfs"
+  in 2 then "#{WSL_SETUP[:location]}/ext4.vhdx"
+  end
 
 if WSL_SETUP[:proxy]
   %i[http_proxy https_proxy ftp_proxy].each do |name|
@@ -58,8 +60,7 @@ end
 def run_capture(cmd, encoding: Encoding::UTF_8, exception: false, **)
   stdout, status = Open3.capture2(cmd, binmode: true, **)
   if status.success?
-    stdout.encode(Encoding.default_internal || Encoding::UTF_8, encoding)
-      .gsub(/\R/, "\n")
+    stdout.encode(Encoding.default_internal || Encoding::UTF_8, encoding).gsub(/\R/, "\n")
   elsif exception
     raise "Failed to command: #{cmd}"
   end
@@ -89,8 +90,7 @@ end
 # rubocop: enable Naming/MethodParameterName
 
 def wsl_path(path, **)
-  wsl_run("wslpath -u \"#{path}\"", capture: true, **)
-    .force_encoding(Encoding::UTF_8).chomp
+  wsl_run("wslpath -u \"#{path}\"", capture: true, **).force_encoding(Encoding::UTF_8).chomp
 end
 
 def wsl_file_read(path, **)
@@ -129,7 +129,7 @@ def wsl_whoami(**)
 end
 
 def wsl_pkg_mgr(**)
-  mgr_list = %w[apt dnf yum pacman apk zypper]
+  mgr_list = ["apt", "dnf", "yum", "pacman", "apk", "zypper"]
   mgr_list.find do |mgr|
     result = wsl_run("which #{mgr}", **, capture: true, exception: false)
     result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
@@ -152,19 +152,18 @@ def proxy_env
   WSL_SETUP.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
 end
 
-def get_wsl_status # rubocop: disable Naming/AccessorMethodName
+def get_wsl_status
   result = run_capture("wsl --status", encoding: Encoding::UTF_16LE)
   return if result.nil?
 
   {
     default: /^既定のディストリビューション: (\S+)$/.match(result)&.[](1),
     version: /^既定のバージョン: (\S+)$/.match(result)[1].to_i,
-    enable_wsl1: !/^WSL1 は、現在のマシン構成ではサポートされていません。$/
-      .match?(result),
+    enable_wsl1: !/^WSL1 は、現在のマシン構成ではサポートされていません。$/.match?(result),
   }
 end
 
-def get_wsl_list # rubocop: disable Naming/AccessorMethodName
+def get_wsl_list
   result = run_capture("wsl --list --all --verbose",
     encoding: Encoding::UTF_16LE)
   return {} if result.nil?
@@ -182,7 +181,7 @@ def parse_wsl_list(list)
   end
 end
 
-def get_wsl_registry # rubocop: disable Naming/AccessorMethodName
+def get_wsl_registry
   list = {}
   open_lxss_registry do |reg|
     reg.each_key do |key, _wtime|
@@ -222,9 +221,7 @@ task :destroy do
   if get_wsl_list.key?(WSL_SETUP[:name])
     sh "wsl --unregister #{WSL_SETUP[:name]}"
     sleep 1 # wait for unregister
-    if !WSL_SETUP[:skip_location] && FileTest.exist?(WSL_SETUP[:location])
-      rmdir WSL_SETUP[:location]
-    end
+    rmdir WSL_SETUP[:location] if !WSL_SETUP[:skip_location] && FileTest.exist?(WSL_SETUP[:location])
   end
 end
 
@@ -255,28 +252,26 @@ task distro: :wsl do
   unless get_wsl_list.key?(WSL_SETUP[:name])
     install_option = String.new
     install_option << " --install #{WSL_SETUP[:distro]}"
-    unless WSL_SETUP[:skip_location]
-      install_option << " --location #{WSL_SETUP[:location]}"
-    end
-    if WSL_SETUP[:name] != WSL_SETUP[:distro]
-      install_option << " --name #{WSL_SETUP[:name]}"
-    end
+    install_option << " --location #{WSL_SETUP[:location]}" unless WSL_SETUP[:skip_location]
+    install_option << " --name #{WSL_SETUP[:name]}" if WSL_SETUP[:name] != WSL_SETUP[:distro]
     install_option << " --no-launch"
     # FIXME: version 1 を指定してインストールするのに失敗する場合がある。
     # install_option << " --version #{WSL_SETUP[:version]}"
     sh "wsl #{install_option}"
 
-    if WSL_SETUP[:input_user]
-      sh "wsl --distribution #{WSL_SETUP[:name]}"
-    else
+    if WSL_SETUP[:username]
       key = get_wsl_registry[WSL_SETUP[:name]][:key]
       open_lxss_registry(key, mode: "w") do |reg|
         reg["RunOOBE"] = 0
       end
+    else
+      echo "Run exit after setting username and password for WSL distribution."
+      sh "wsl --distribution #{WSL_SETUP[:name]}"
     end
 
     if WSL_SETUP[:version].to_i == 1
       sh "wsl --set-version #{WSL_SETUP[:name]} 1"
+      # NOTE: WSL1 では、/etc/resolv.conf のパーミッションがおかしい時がある？
       wsl_run("chmod 644 /etc/resolv.conf", user: "root")
     end
   end
@@ -290,9 +285,7 @@ task update: :pkg do
   case pkg_mgr
   in "apt"
     wsl_run("apt update -y", env: proxy_env, user: "root")
-    unless WSL_SETUP[:skip_update]
-      wsl_run("apt upgrade -y", env: proxy_env, user: "root")
-    end
+    wsl_run("apt upgrade -y", env: proxy_env, user: "root") unless WSL_SETUP[:skip_update]
     wsl_run("apt autoremove -y", env: proxy_env, user: "root")
   in "dnf"
     wsl_run("dnf update -y", env: proxy_env, user: "root")
@@ -302,35 +295,32 @@ task update: :pkg do
   end
 end
 
-task ansible_playbook: %i[ansible ansible_playbook_root] do
+task ansible_playbook: %i[ansible ansible_playbook_wsl] do
+  # playbook with user
   pkg_mgr = wsl_pkg_mgr
   if pkg_mgr == "dnf"
-    %w[community.general community.mysql community.postgresql ansible.posix]
-      .each do |collection|
-      wsl_run("ansible-galaxy collection install #{collection}",
-        env: proxy_env)
+    ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
+      wsl_run("ansible-galaxy collection install #{collection}", env: proxy_env)
     end
   end
 
   option = String.new
-  if FileTest.file?(WSL_SETUP[:config])
-    option << " -e @#{wsl_path(WSL_SETUP[:config])}"
-  end
+  option << " -e @#{wsl_path(WSL_SETUP[:config])}" if FileTest.file?(WSL_SETUP[:config])
   option << " -e user_default=#{wsl_whoami}" if WSL_SETUP[:input_user]
   option << " -K" if WSL_SETUP[:require_password]
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
   wsl_run("ansible-playbook all.yml #{option}", env:, cd: WSL_SETUP[:playbooks])
 end
 
-task ansible_playbook_root: :ansible do
+task ansible_playbook_wsl: :ansible do
+  # playbook with root
+  puts "Setup wsl playbook"
   option = String.new
-  if FileTest.file?(WSL_SETUP[:config])
-    option << " -e @#{wsl_path(WSL_SETUP[:config], user: 'root')}"
-  end
-  option << " -e user_default=#{wsl_whoami}" if WSL_SETUP[:input_user]
-
-  wsl_run("ansible-playbook root.yml #{option}", cd: WSL_SETUP[:playbooks],
-    user: "root")
+  option << " -e @#{wsl_path(WSL_SETUP[:config], user: 'root')}" if FileTest.file?(WSL_SETUP[:config])
+  option << " -e wsl_default_user=#{wsl_whoami}"
+  option << " -e user_name=#{WSL_SETUP[:username]}" if WSL_SETUP[:username]
+  option << " -e user_password=#{WSL_SETUP[:password]}" if WSL_SETUP[:password]
+  wsl_run("ansible-playbook wsl.yml #{option}", cd: WSL_SETUP[:playbooks], user: "root")
   sh "wsl --terminate #{WSL_SETUP[:name]}"
 end
 
@@ -341,7 +331,6 @@ task ansible: %i[pkg update].compact do
     wsl_run("apt install ansible -y", env: proxy_env, user: "root")
   in "dnf"
     wsl_run("dnf install ansible-core -y", env: proxy_env, user: "root")
-    wsl_run("ansible-galaxy collection install community.general",
-      env: proxy_env, user: "root")
+    wsl_run("ansible-galaxy collection install community.general", env: proxy_env, user: "root")
   end
 end

@@ -1,0 +1,103 @@
+- name: Enable/Disable systemd in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: boot
+    option: systemd
+    value: '{{ wsl_conf_systemd | lower }}' # default false
+    state: '{{ (wsl_version | int >= 2 and wsl_conf_systemd) | ternary("present", "absent") }}'
+
+- name: Set hostname in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: network
+    option: hostname
+    value: '{{ wsl_hostname | default("") }}'
+    state: '{{ wsl_hostname is defined | ternary("present", "absent") }}'
+
+- name: Enable/Disable interop in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: interop
+    option: enabled
+    value: '{{ wsl_windows_exe | lower }}' # default true
+    state: '{{ wsl_windows_exe | ternary("absent", "present") }}'
+
+- name: Enable/Disable windows path in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: interop
+    option: appendWindowsPath
+    value: '{{ wsl_windows_path | lower }}' # default true
+    state: '{{ wsl_windows_path | ternary("absent", "present") }}'
+
+- name: Enable/Disable automount in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: automount
+    option: enabled
+    value: '{{ wsl_mount_auto | lower }}' # default true
+    state: '{{ wsl_mount_auto | ternary("absent", "present") }}'
+
+- name: Enable/Disable fstab in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: automount
+    option: mountFsTab
+    value: '{{ wsl_mount_fstab | lower }}' # default true
+    state: '{{ wsl_mount_fstab | ternary("absent", "present") }}'
+
+- name: Set automount options in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: true
+    section: automount
+    option: options
+    value: '"{{ wsl_mount_options | default([]) | join(",") }}"'
+    state: '{{ wsl_mount_options is defined | ternary("present", "absent") }}'
+
+- name: Set default user in wsl.conf
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    owner: root
+    group: root
+    mode: '0644'
+    exclusive: false
+    section: user
+    option: default
+    value: '{{ user_default_user.name }}'
+  when: user_default is not defined

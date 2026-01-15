@@ -1,4 +1,2 @@
 dependencies:
   - role: proxy
-  - role: user
-  - role: wsl

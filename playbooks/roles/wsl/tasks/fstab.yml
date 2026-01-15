@@ -4,8 +4,8 @@
     path: '/mnt/{{ item | lower }}'
     state: directory
     mode: '0777' # all
-  loop: '{{ system_mount_drives }}'
-  when: system_mount_drives is defined
+  loop: '{{ wsl_mount_drives }}'
+  when: wsl_mount_drives is defined
 
 # TODO: not delete
 - name: Add drive mount in /etc/fstab
@@ -22,5 +22,5 @@
           "gid=" ~ user_default_group.gid] + system_mount_options)
         | unique | join(",")
       }} 0 0
-  loop: '{{ system_mount_drives }}'
-  when: system_mount_drives is defined
+  loop: '{{ wsl_mount_drives }}'
+  when: wsl_mount_drives is defined

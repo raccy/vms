@@ -1,13 +1,11 @@
-- name: Task info
+- name: Task facts
   ansible.builtin.import_tasks:
-    file: info.yml
+    file: facts.yml
 
-- name: Check pid 1 proccess
-  ansible.builtin.command:
-    cmd: ps -p 1 -o %c --no-headers
-  changed_when: false
-  register: wsl_run_ps_1
+- name: Task wsl_conf
+  ansible.builtin.import_tasks:
+    file: wsl_conf.yml
 
-- name: Setting systemd
-  ansible.builtin.set_fact:
-    wsl_systemd: '{{ wsl_run_ps_1.stdout is match "systemd" }}'
+- name: Task fstab
+  ansible.builtin.import_tasks:
+    file: fstab.yml

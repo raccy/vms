@@ -1,0 +1,11 @@
+wsl_systemd: true # but ignore when wsl1
+# wsl_hostname: default value is windows hostname
+wsl_windows_exe: true
+wsl_windows_path: true
+wsl_mount_auto: true
+wsl_mount_fstab: true
+# wsl_mount_drives:
+#   - c
+#   - z
+# wsl_mount_options:
+#   - metadata

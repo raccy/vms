@@ -1,4 +1,4 @@
-- name: Task win_path in wsl
+- name: Task wsl_path in wsl
   ansible.builtin.include_role:
     name: wsl
     tasks_from: wsl_path

@@ -1,31 +1,12 @@
 - name: Task check_user
-  ansible.builtin.include_tasks:
+  ansible.builtin.import_tasks:
     file: check_user.yml
-  when: user_default is defined
 
 - name: Task add_user
-  ansible.builtin.include_tasks:
+  ansible.builtin.import_tasks:
     file: add_user.yml
-  when: user_default is not defined
+  when: !user_present
 
-- name: Set default user in wsl.conf
-  become: true
-  community.general.ini_file:
-    path: /etc/wsl.conf
-    owner: root
-    group: root
-    mode: '0644'
-    exclusive: false
-    section: user
-    option: default
-    value: '{{ user_default_user.name }}'
-  when: user_default is not defined
-
-- name: Allow the default user to run sudo all without password
-  become: true
-  community.general.sudoers:
-    name: 10-allow-default-user
-    user: '{{ user_default_user.name }}'
-    runas: ALL
-    commands: ALL
-    state: '{{ user_sudo_without_password | ternary("present", "absent") }}'
+- name: Task sudoers
+  ansible.builtin.import_tasks:
+    file: sudoers.yml

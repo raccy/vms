@@ -1,11 +1,10 @@
 ---
-wsl_setup:
+setup:
   # name: (default is same distro)
-  # distro: "Ubuntu"
-  # distro: "AlmaLinux-10"
+  # distro: "Ubuntu" # run `wsl -l -o` to get available distor list
   # version: 2
-  # input_user: false
-  # require_password: false
+  # username: (default input prompt)
+  # password: (default no password)
   # work: "."
   # location: "image"
   # config: "wsl_setup.yml"

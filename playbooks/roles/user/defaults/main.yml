@@ -1,5 +1,4 @@
-# user_default: null
-user_name: '{{ user_default | default("user") }}'
+user_name: "root" # must overide
 # user_password: ""
 user_group: '{{ user_name }}'
 user_groups:
@@ -10,4 +9,4 @@ user_groups:
 user_shell: /bin/bash
 # user_home: '/home/{{ user_name }}'
 # user_comment: ""
-user_sudo_without_password: '{{ wsl_setup.require_password | default(false) | ternary(false, true) }}'
+user_sudo_without_password: false
