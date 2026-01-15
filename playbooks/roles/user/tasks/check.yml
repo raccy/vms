@@ -3,10 +3,19 @@
     database: passwd
   when: ansible_facts.getent_passwd is not defined
 
+- name: Set user_present
+  ansible.builtin.set_fact:
+    user_present: '{{ ansible_facts.getent_passwd[user_name] is defined| default(omit) }}'
+
+
+
 - name: Get all groups
   ansible.builtin.getent:
     database: group
   when: ansible_facts.getent_group is not defined
+
+- name:
+
 
 - name: Set default user name
   ansible.builtin.set_fact:

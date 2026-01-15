@@ -1,12 +1,14 @@
+# User
+---
 - name: Task check_user
   ansible.builtin.import_tasks:
     file: check_user.yml
 
-- name: Task add_user
-  ansible.builtin.import_tasks:
-    file: add_user.yml
-  when: !user_present
+# - name: Task add_user
+#   ansible.builtin.import_tasks:
+#     file: add_user.yml
+#   when: !user_present
 
-- name: Task sudoers
-  ansible.builtin.import_tasks:
-    file: sudoers.yml
+# - name: Task sudoers
+#   ansible.builtin.import_tasks:
+#     file: sudoers.yml

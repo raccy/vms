@@ -1,7 +1,7 @@
 - name: Playbook for wsl
   hosts: localhost
-  vars:
-    user_name: '{{ user_name | default(wsl_default_user | default(ansible_user)) }}'
+  # vars:
+  #   user_name: '{{ user_name | default(wsl_default_user | default(ansible_user)) }}'
   roles:
     - user
-    - wsl
+    # - wsl
