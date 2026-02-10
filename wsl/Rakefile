@@ -265,7 +265,7 @@ task distro: :wsl do
         reg["RunOOBE"] = 0
       end
     else
-      echo "Run exit after setting username and password for WSL distribution."
+      puts "Run exit after setting username and password for WSL distribution."
       sh "wsl --distribution #{WSL_SETUP[:name]}"
     end
 
