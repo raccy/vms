@@ -6,16 +6,15 @@ setup:
   # username: (default input prompt)
   # password: (default no password)
   # work: "."
-  # location: "image"
-  # config: "wsl_setup.yml"
+  # location: (default no location, so install deafult path for distro)
+  # config: "setup.yml"
   # dir: (default is Rakefile directory)
-  # playbooks: "playbooks"
+  # playbooks: (default is Rakefile directary ../playbooks)
   # proxy: http://proxy.example.com:8080
   # http_proxy: http://proxy.example.com:8080
   # https_proxy: http://proxy.example.com:8080
   # ftp_proxy: http://proxy.example.com:8080
   # no_proxy: "localhost,127.0.0.1,::1"
-  # skip_location: false
   # skip_update: false
 # debug: false
 # # general (default: true)

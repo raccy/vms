@@ -6,7 +6,7 @@ require "open3"
 require "yaml"
 require "win32/registry"
 
-WSL_SETUP = {
+SETUP = {
   name: nil,
   distro: "Ubuntu",
   version: 2,
@@ -15,45 +15,46 @@ WSL_SETUP = {
   # input_user: false,
   # require_password: false,
   work: ".",
-  location: "image",
+  location: nil,
   config: "setup.yml",
   dir: __dir__,
-  playbooks: "../playbooks",
+  playbooks: nil, # File.join(__dir__, "..", "playbooks")
   proxy: nil,
   http_proxy: ENV.fetch("http_proxy", nil),
   https_proxy: ENV.fetch("http_proxy", nil),
   ftp_proxy: ENV.fetch("ftp_proxy", nil),
   no_proxy: ENV.fetch("no_proxy", nil),
-  skip_location: false,
   skip_update: false,
+  skip_ansible: false,
 }.to_h do |name, default|
-  [name, ENV.fetch("WSL_SETUP_#{name.to_s.upcase}", default)]
+  [name, ENV.fetch("SETUP_#{name.to_s.upcase}", default)]
 end
 
-WSL_SETUP_CONFIG_FILE = File.expand_path(WSL_SETUP[:config], WSL_SETUP[:work])
-if FileTest.exist?(WSL_SETUP_CONFIG_FILE)
-  WSL_SETUP.merge!(YAML.load_file(WSL_SETUP_CONFIG_FILE, symbolize_names: true).fetch(:wsl_setup, {}))
+SETUP_CONFIG_FILE = File.expand_path(SETUP[:config], SETUP[:work])
+if FileTest.exist?(SETUP_CONFIG_FILE)
+  SETUP.merge!(YAML.load_file(SETUP_CONFIG_FILE, symbolize_names: true).fetch(:setup, {}))
 end
 
-WSL_SETUP[:name] ||= WSL_SETUP[:distro]
-WSL_SETUP[:version] = WSL_SETUP[:version].to_i
-WSL_SETUP[:root] = "//wsl.localhost/#{WSL_SETUP[:name]}"
+SETUP[:name] ||= SETUP[:distro]
+SETUP[:version] = SETUP[:version].to_i
+SETUP[:root] = "//wsl.localhost/#{SETUP[:name]}"
 
-WSL_SETUP[:work] = File.expand_path(WSL_SETUP[:work])
-WSL_SETUP[:location] = File.expand_path(WSL_SETUP[:location], WSL_SETUP[:work])
-WSL_SETUP[:config] = File.expand_path(WSL_SETUP[:config], WSL_SETUP[:work])
-WSL_SETUP[:dir] = File.expand_path(WSL_SETUP[:dir])
-WSL_SETUP[:playbooks] = File.expand_path(WSL_SETUP[:playbooks], WSL_SETUP[:dir])
+SETUP[:work] = File.expand_path(SETUP[:work])
+SETUP[:location] = File.expand_path(SETUP[:location], SETUP[:work]) if SETUP[:location]
+SETUP[:config] = File.expand_path(SETUP[:config], SETUP[:work])
+SETUP[:dir] = File.expand_path(SETUP[:dir], SETUP[:work])
+SETUP[:playbooks] =
+  File.expand_path(SETUP[:playbooks] || File.join(SETUP[:dir], "..", "playbooks"), SETUP[:work])
 
-WSL_SETUP[:location_disk] =
-  case WSL_SETUP[:version]
-  in 1 then "#{WSL_SETUP[:location]}/rootfs"
-  in 2 then "#{WSL_SETUP[:location]}/ext4.vhdx"
+SETUP[:location_disk] =
+  case SETUP[:version]
+  in 1 then "#{SETUP[:location]}/rootfs"
+  in 2 then "#{SETUP[:location]}/ext4.vhdx"
   end
 
-if WSL_SETUP[:proxy]
+if SETUP[:proxy]
   %i[http_proxy https_proxy ftp_proxy].each do |name|
-    WSL_SETUP[name] ||= WSL_SETUP[:proxy]
+    SETUP[name] ||= SETUP[:proxy]
   end
 end
 
@@ -79,7 +80,7 @@ def wsl_run(cmd, capture: false, exception: true, **opts)
 end
 
 # rubocop: disable Naming/MethodParameterName
-def generate_wsl_cmd(cmd, distro: WSL_SETUP[:name], user: nil, cd: nil, env: {})
+def generate_wsl_cmd(cmd, distro: SETUP[:name], user: nil, cd: nil, env: {})
   wsl_cmd = "wsl -d #{distro}"
   wsl_cmd << " -u #{user}" if user
   wsl_cmd << " --cd \"#{cd}\"" if cd
@@ -149,7 +150,7 @@ def check_mode(mode)
 end
 
 def proxy_env
-  WSL_SETUP.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
+  SETUP.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
 end
 
 def get_wsl_status
@@ -218,10 +219,10 @@ task create: %i[distro ansible_playbook]
 
 desc "Destroy WSL distribution"
 task :destroy do
-  if get_wsl_list.key?(WSL_SETUP[:name])
-    sh "wsl --unregister #{WSL_SETUP[:name]}"
+  if get_wsl_list.key?(SETUP[:name])
+    sh "wsl --unregister #{SETUP[:name]}"
     sleep 1 # wait for unregister
-    rmdir WSL_SETUP[:location] if !WSL_SETUP[:skip_location] && FileTest.exist?(WSL_SETUP[:location])
+    rmdir SETUP[:location] if SETUP[:location] && FileTest.exist?(SETUP[:location])
   end
 end
 
@@ -233,7 +234,7 @@ task :wsl do
     puts "Reboot after 10secs"
     sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
     exit # no return
-  elsif WSL_SETUP[:version] == 1 && !wsl_status[:enable_wsl1]
+  elsif SETUP[:version] == 1 && !wsl_status[:enable_wsl1]
     # NOTE: 下記コマンドでは有効にならない
     #   wsl --install --enable-wsl1 --no-distribution
     # install Microsoft-Windows-Subsystem-Linux feature
@@ -249,28 +250,28 @@ task :wsl do
 end
 
 task distro: :wsl do
-  unless get_wsl_list.key?(WSL_SETUP[:name])
+  unless get_wsl_list.key?(SETUP[:name])
     install_option = String.new
-    install_option << " --install #{WSL_SETUP[:distro]}"
-    install_option << " --location #{WSL_SETUP[:location]}" unless WSL_SETUP[:skip_location]
-    install_option << " --name #{WSL_SETUP[:name]}" if WSL_SETUP[:name] != WSL_SETUP[:distro]
+    install_option << " --install #{SETUP[:distro]}"
+    install_option << " --location #{SETUP[:location]}" if SETUP[:location]
+    install_option << " --name #{SETUP[:name]}" if SETUP[:name] != SETUP[:distro]
     install_option << " --no-launch"
     # FIXME: version 1 を指定してインストールするのに失敗する場合がある。
-    # install_option << " --version #{WSL_SETUP[:version]}"
+    # install_option << " --version #{SETUP[:version]}"
     sh "wsl #{install_option}"
 
-    if WSL_SETUP[:username]
-      key = get_wsl_registry[WSL_SETUP[:name]][:key]
+    if SETUP[:username]
+      key = get_wsl_registry[SETUP[:name]][:key]
       open_lxss_registry(key, mode: "w") do |reg|
         reg["RunOOBE"] = 0
       end
     else
       puts "Run exit after setting username and password for WSL distribution."
-      sh "wsl --distribution #{WSL_SETUP[:name]}"
+      sh "wsl --distribution #{SETUP[:name]}"
     end
 
-    if WSL_SETUP[:version].to_i == 1
-      sh "wsl --set-version #{WSL_SETUP[:name]} 1"
+    if SETUP[:version].to_i == 1
+      sh "wsl --set-version #{SETUP[:name]} 1"
       # NOTE: WSL1 では、/etc/resolv.conf のパーミッションがおかしい時がある？
       wsl_run("chmod 644 /etc/resolv.conf", user: "root")
     end
@@ -281,11 +282,13 @@ task pkg: :distro
 
 desc "Update WSL distribution"
 task update: :pkg do
+  next if SETUP[:skip_update]
+
   pkg_mgr = wsl_pkg_mgr
   case pkg_mgr
   in "apt"
     wsl_run("apt update -y", env: proxy_env, user: "root")
-    wsl_run("apt upgrade -y", env: proxy_env, user: "root") unless WSL_SETUP[:skip_update]
+    wsl_run("apt upgrade -y", env: proxy_env, user: "root")
     wsl_run("apt autoremove -y", env: proxy_env, user: "root")
   in "dnf"
     wsl_run("dnf update -y", env: proxy_env, user: "root")
@@ -296,6 +299,8 @@ task update: :pkg do
 end
 
 task ansible_playbook: %i[ansible ansible_playbook_wsl] do
+  next if SETUP[:skip_ansible]
+
   # playbook with user
   pkg_mgr = wsl_pkg_mgr
   if pkg_mgr == "dnf"
@@ -305,26 +310,30 @@ task ansible_playbook: %i[ansible ansible_playbook_wsl] do
   end
 
   option = String.new
-  option << " -e @#{wsl_path(WSL_SETUP[:config])}" if FileTest.file?(WSL_SETUP[:config])
-  option << " -e user_default=#{wsl_whoami}" if WSL_SETUP[:input_user]
-  option << " -K" if WSL_SETUP[:require_password]
+  option << " -e @#{wsl_path(SETUP[:config])}" if FileTest.file?(SETUP[:config])
+  option << " -e user_default=#{wsl_whoami}" if SETUP[:input_user]
+  option << " -K" if SETUP[:require_password]
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
-  wsl_run("ansible-playbook all.yml #{option}", env:, cd: WSL_SETUP[:playbooks])
+  wsl_run("ansible-playbook all.yml #{option}", env:, cd: SETUP[:playbooks])
 end
 
 task ansible_playbook_wsl: :ansible do
+  next if SETUP[:skip_ansible]
+
   # playbook with root
   puts "Setup wsl playbook"
   option = String.new
-  option << " -e @#{wsl_path(WSL_SETUP[:config], user: 'root')}" if FileTest.file?(WSL_SETUP[:config])
+  option << " -e @#{wsl_path(SETUP[:config], user: 'root')}" if FileTest.file?(SETUP[:config])
   option << " -e wsl_default_user=#{wsl_whoami}"
-  option << " -e user_name=#{WSL_SETUP[:username]}" if WSL_SETUP[:username]
-  option << " -e user_password=#{WSL_SETUP[:password]}" if WSL_SETUP[:password]
-  wsl_run("ansible-playbook wsl.yml #{option}", cd: WSL_SETUP[:playbooks], user: "root")
-  sh "wsl --terminate #{WSL_SETUP[:name]}"
+  option << " -e user_name=#{SETUP[:username]}" if SETUP[:username]
+  option << " -e user_password=#{SETUP[:password]}" if SETUP[:password]
+  wsl_run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
+  sh "wsl --terminate #{SETUP[:name]}"
 end
 
 task ansible: %i[pkg update].compact do
+  next if SETUP[:skip_ansible]
+
   pkg_mgr = wsl_pkg_mgr
   case pkg_mgr
   in "apt"

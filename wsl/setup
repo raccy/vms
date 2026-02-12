@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+RAKE="rake"
+$RAKE -f "$(dirname $0)/Rakefile" $@
