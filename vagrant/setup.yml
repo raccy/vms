@@ -4,7 +4,7 @@ setup:
   distro: "AlmaLinux-10"
   version: 1
   username: vagrant
-  skip_update: true
+  # skip_update: true
   skip_ansible: true
 # general (default: true)
 user_name: vagrant

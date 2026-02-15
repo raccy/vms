@@ -58,10 +58,21 @@ if SETUP[:proxy]
   end
 end
 
-def run_capture(cmd, encoding: Encoding::UTF_8, exception: false, **)
-  stdout, status = Open3.capture2(cmd, binmode: true, **)
+def run_capture(cmd, encoding: Encoding::UTF_8, exception: false, stderr: :stderr, **)
+  out, status =
+    case stderr
+    when :stderr
+      Open3.capture2(cmd, binmode: true, **)
+    when :stdout
+      Open3.capture2e(cmd, binmode: true, **)
+    when nil
+      Open3.capture3(cmd, binmode: true, **).then { |out, _err, status| [out, status] }
+    else
+      raise "invalid stderr option: #{stderr}"
+    end
+
   if status.success?
-    stdout.encode(Encoding.default_internal || Encoding::UTF_8, encoding).gsub(/\R/, "\n")
+    out.encode(Encoding.default_internal || Encoding::UTF_8, encoding).gsub(/\R/, "\n")
   elsif exception
     raise "Failed to command: #{cmd}"
   end
@@ -132,7 +143,7 @@ end
 def wsl_pkg_mgr(**)
   mgr_list = ["apt", "dnf", "yum", "pacman", "apk", "zypper"]
   mgr_list.find do |mgr|
-    result = wsl_run("which #{mgr}", **, capture: true, exception: false)
+    result = wsl_run("which #{mgr}", **, capture: true, exception: false, stderr: nil)
     result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
   end
 end
@@ -256,8 +267,7 @@ task distro: :wsl do
     install_option << " --location #{SETUP[:location]}" if SETUP[:location]
     install_option << " --name #{SETUP[:name]}" if SETUP[:name] != SETUP[:distro]
     install_option << " --no-launch"
-    # FIXME: version 1 を指定してインストールするのに失敗する場合がある。
-    # install_option << " --version #{SETUP[:version]}"
+    install_option << " --version #{SETUP[:version]}"
     sh "wsl #{install_option}"
 
     if SETUP[:username]
@@ -272,7 +282,7 @@ task distro: :wsl do
 
     if SETUP[:version].to_i == 1
       sh "wsl --set-version #{SETUP[:name]} 1"
-      # NOTE: WSL1 では、/etc/resolv.conf のパーミッションがおかしい時がある？
+      # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0600 になってしまう。
       wsl_run("chmod 644 /etc/resolv.conf", user: "root")
     end
   end
