@@ -13,56 +13,55 @@ class WSL
     wsl_cmd = generate_wsl_cmd(cmd, **wsl_cmd_opts.compact)
 
     if capture
-      Wsl.run_capture(wsl_cmd, exception:, **opts)
+      WSL.run_capture(wsl_cmd, exception:, **opts)
     else
       system(wsl_cmd, exception:, **opts)
     end
   end
 
   def path(path, **)
-    wsl_run("wslpath -u \"#{path}\"", capture: true, **).force_encoding(Encoding::UTF_8).chomp
+    run("wslpath -u \"#{path}\"", capture: true, **).force_encoding(Encoding::UTF_8).chomp
   end
 
   def file_read(path, **)
     check_path(path)
-    wsl_run("cat -- #{path}", capture: true, **)
+    run("cat -- #{path}", capture: true, **)
   end
 
   def file_write(path, data, mode: nil, **)
     check_path(path)
-    wsl_mkdir(File.dirname(path), **)
-    wsl_run("tee -- #{path}", capture: true, stdin_data: data, **)
-    wsl_chmod(path, mode) if mode
+    mkdir(File.dirname(path), **)
+    run("tee -- #{path}", capture: true, stdin_data: data, **)
+    chmod(path, mode) if mode
   end
 
   def file_append(path, data, mode: nil, **)
     check_path(path)
-    wsl_mkdir(File.dirname(path), **)
-    wsl_run("tee -a -- #{path}", capture: true, stdin_data: data, **)
-    wsl_chmod(path, mode) if mode
+    mkdir(File.dirname(path), **)
+    run("tee -a -- #{path}", capture: true, stdin_data: data, **)
+    chmod(path, mode) if mode
   end
 
   def mkdir(path, mode: nil, **)
     check_path(path)
-    wsl_run("mkdir -p -- #{path}", **)
-    wsl_chmod(path, mode) if mode
+    run("mkdir -p -- #{path}", **)
+    chmod(path, mode) if mode
   end
 
   def chmod(path, mode, **)
     check_path(path)
     check_mode(mode)
-    wsl_run("chmod #{mode} -- #{path}", **)
+    run("chmod #{mode} -- #{path}", **)
   end
 
   def whoami
-    wsl_run("whoami", capture: true).force_encoding(Encoding::UTF_8).chomp
+    run("whoami", capture: true).force_encoding(Encoding::UTF_8).chomp
   end
 
-  # cache for wsl_pkg_mgr
   def pkg_mgr
     @pkg_mgr ||=
       ["apt", "dnf", "yum", "pacman", "apk", "zypper"].find do |mgr|
-        result = wsl_run("which #{mgr}", capture: true, exception: false, stderr: nil)
+        result = run("which #{mgr}", capture: true, exception: false, stderr: nil)
         result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
       end
   end
@@ -95,7 +94,7 @@ class WSL
 
   # class methods
   class << self
-    def self.run_capture(cmd, encoding: Encoding::UTF_8, exception: false, stderr: :stderr, **)
+    def run_capture(cmd, encoding: Encoding::UTF_8, exception: false, stderr: :stderr, **)
       out, status =
         case stderr
         when :stderr
@@ -142,11 +141,11 @@ class WSL
     end
 
     def distro(name)
-      @dict[name]
+      dict[name]
     end
 
     def dict
-      @dict ||= list.index_by { |d| d[:name] }
+      @dict ||= list.to_h { |d| [d[:name], d] }
     end
 
     def list
@@ -172,7 +171,7 @@ class WSL
         end
       end
     end
-    private def parse_wsl_ist(list)
+    private def parse_wsl_list(list)
       list.lines.drop(1).map do |line|
         if (m = /^(.)\s+(\S+)\s+(\S+)\s+(\d)\s*$/.match(line))
           {default: m[1] == "*", name: m[2], state: m[3], version: m[4].to_i}

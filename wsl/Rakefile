@@ -53,7 +53,7 @@ end
 
 task distro: :wsl do
   case WSL.distro(setup.name)
-  in {version: Integer}
+  in version:
     if version != setup.version
       sh "wsl --set-version #{setup.name} 1"
       WSL.clear
@@ -96,26 +96,10 @@ task update: :pkg do
 
   case wsl.pkg_mgr
   in "apt"
-    apt_opts = +"-y"
-    if proxy_required?
-      ["http", "https", "ftp"].each do |proto|
-        key = :"#{proto}_proxy"
-        value = SETUP[key]
-        if value
-          apt_opts << " -o Acquire::#{proto}::Proxy=\"#{value}\""
-          apt_opts << " -o Acquire::#{proto}::Timeout=600"
-        end
-      end
-    end
     wsl.run("apt update -y #{setup.apt_opts}", **run_opts)
     wsl.run("apt upgrade -y #{setup.apt_opts}", **run_opts)
     wsl.run("apt autoremove -y #{setup.apt_opts}", **run_opts)
   in "dnf"
-    dnf_opts = +"-y"
-    if proxy_required?
-      dnf_opts << " --setopt=proxy=#{proxy_uri}"
-      dnf_opts << " --setopt=timeout=600"
-    end
     wsl.run("dnf update -y #{setup.dnf_opts}", **run_opts)
     wsl.run("dnf autoremove -y #{setup.dnf_opts}", **run_opts)
   else

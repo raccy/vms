@@ -54,6 +54,7 @@ class Setup
   end
 
   def version
+    options[:version]
   end
 
   def location
@@ -85,14 +86,13 @@ class Setup
   end
 
   def apt_opts
-    @opt_opts ||=
+    @apt_opts ||=
       if proxy_required?
         %w[http https ftp]
           .map { |proto| [proto, options["#{proto}_proxy".intern]] }
           .select { |_, value| value }
           .map { |proto, value| "-o Acquire::#{proto}::Proxy=\"#{value}\" -o Acquire::#{proto}::Timeout=600" }
           .join(" ")
-        end
       else
         ""
       end
