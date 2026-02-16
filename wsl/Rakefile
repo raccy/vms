@@ -6,239 +6,18 @@ require "open3"
 require "yaml"
 require "win32/registry"
 
-# default setup options
-SETUP = {
-  name: nil,
-  distro: "Ubuntu",
-  version: 2,
-  username: nil,
-  password: nil,
-  # input_user: false,
-  # require_password: false,
-  work: ".",
-  location: nil,
-  config: "setup.yml",
-  dir: __dir__,
-  playbooks: nil, # File.join(__dir__, "..", "playbooks")
-  proxy: nil,
-  http_proxy: ENV.fetch("http_proxy", nil),
-  https_proxy: ENV.fetch("http_proxy", nil),
-  ftp_proxy: ENV.fetch("ftp_proxy", nil),
-  no_proxy: ENV.fetch("no_proxy", nil),
-  skip_update: false,
-  skip_ansible: false,
-}
-
-# load setup options from config file
-SETUP_CONFIG_FILE = File.expand_path(ENV.fetch("SETUP_CONFIG", SETUP[:config]), SETUP[:work])
-if FileTest.exist?(SETUP_CONFIG_FILE)
-  SETUP.merge!(YAML.load_file(SETUP_CONFIG_FILE, symbolize_names: true).fetch(:setup, {}))
-end
-
-# override options with environment variables
-SETUP.keys.each do |name|
-  env_key = "SETUP_#{name.to_s.upcase}"
-  if ENV.key?(env_key)
-    SETUP[name] = ENV[env_key]
-  end
-end
-
-# normalize options
-SETUP[:name] ||= SETUP[:distro]
-SETUP[:version] = SETUP[:version].to_i
-SETUP[:root] = "//wsl.localhost/#{SETUP[:name]}"
-
-SETUP[:work] = File.expand_path(SETUP[:work])
-SETUP[:location] = File.expand_path(SETUP[:location], SETUP[:work]) if SETUP[:location]
-SETUP[:config] = File.expand_path(SETUP[:config], SETUP[:work])
-SETUP[:dir] = File.expand_path(SETUP[:dir], SETUP[:work])
-SETUP[:playbooks] =
-  File.expand_path(SETUP[:playbooks] || File.join(SETUP[:dir], "..", "playbooks"), SETUP[:work])
-
-SETUP[:location_disk] =
-  case SETUP[:version]
-  in 1 then "#{SETUP[:location]}/rootfs"
-  in 2 then "#{SETUP[:location]}/ext4.vhdx"
-  end
-
-if SETUP[:proxy]
-  %i[http_proxy https_proxy ftp_proxy].each do |name|
-    SETUP[name] ||= SETUP[:proxy]
-  end
-end
-
-def run_capture(cmd, encoding: Encoding::UTF_8, exception: false, stderr: :stderr, **)
-  out, status =
-    case stderr
-    when :stderr
-      Open3.capture2(cmd, binmode: true, **)
-    when :stdout
-      Open3.capture2e(cmd, binmode: true, **)
-    when nil
-      Open3.capture3(cmd, binmode: true, **).then { |out, _err, status| [out, status] }
-    else
-      raise "invalid stderr option: #{stderr}"
-    end
-
-  if status.success?
-    out.encode(Encoding.default_internal || Encoding::UTF_8, encoding).gsub(/\R/, "\n")
-  elsif exception
-    raise "Failed to command: #{cmd}"
-  end
-end
-
-def wsl_run(cmd, capture: false, exception: true, **opts)
-  puts cmd
-  wsl_cmd_opts = %i[distro user cd env].to_h { |key| [key, opts.delete(key)] }
-  wsl_cmd = generate_wsl_cmd(cmd, **wsl_cmd_opts.compact)
-
-  if capture
-    run_capture(wsl_cmd, exception:, **opts)
+require_relative "setup"
+setup_env_options = ENV.to_h
+  .transform_keys(&:downcase)
+  .select{|k, _| k.start_with?("setup_")})
+  .transform_keys {|k| k.delete_prefix("setup_").to_sym}
+setup_config_file = setup_env_options[:config_file] ||
+  if FileTest.exist?("setup.yml")
+    "setup.yml"
   else
-    system(wsl_cmd, exception:, **opts)
+    nil
   end
-end
-
-# rubocop: disable Naming/MethodParameterName
-def generate_wsl_cmd(cmd, distro: SETUP[:name], user: nil, cd: nil, env: {})
-  wsl_cmd = "wsl -d #{distro}"
-  wsl_cmd << " -u #{user}" if user
-  wsl_cmd << " --cd \"#{cd}\"" if cd
-  wsl_cmd << " -- "
-  env.each { |key, value| wsl_cmd << "#{key}=#{value} " }
-  wsl_cmd << cmd
-end
-# rubocop: enable Naming/MethodParameterName
-
-def wsl_path(path, **)
-  wsl_run("wslpath -u \"#{path}\"", capture: true, **).force_encoding(Encoding::UTF_8).chomp
-end
-
-def wsl_file_read(path, **)
-  check_path(path)
-  wsl_run("cat -- #{path}", capture: true, **)
-end
-
-def wsl_file_write(path, data, mode: nil, **)
-  check_path(path)
-  wsl_mkdir(File.dirname(path), **)
-  wsl_run("tee -- #{path}", capture: true, stdin_data: data, **)
-  wsl_chmod(path, mode) if mode
-end
-
-def wsl_file_append(path, data, mode: nil, **)
-  check_path(path)
-  wsl_mkdir(File.dirname(path), **)
-  wsl_run("tee -a -- #{path}", capture: true, stdin_data: data, **)
-  wsl_chmod(path, mode) if mode
-end
-
-def wsl_mkdir(path, mode: nil, **)
-  check_path(path)
-  wsl_run("mkdir -p -- #{path}", **)
-  wsl_chmod(path, mode) if mode
-end
-
-def wsl_chmod(path, mode)
-  check_path(path)
-  check_mode(mode)
-  wsl_run("chmod #{mode} -- #{path}")
-end
-
-def wsl_whoami(**)
-  wsl_run("whoami", capture: true, **).force_encoding(Encoding::UTF_8).chomp
-end
-
-def wsl_pkg_mgr(**)
-  mgr_list = ["apt", "dnf", "yum", "pacman", "apk", "zypper"]
-  mgr_list.find do |mgr|
-    result = wsl_run("which #{mgr}", **, capture: true, exception: false, stderr: nil)
-    result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
-  end
-end
-
-def check_path(path)
-  return if path =~ %r{\A[\w/.-]+\z}
-
-  raise "invalid path: #{path}"
-end
-
-def check_mode(mode)
-  return if mode =~ /\A([ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+)\z/
-
-  raise "invalid mode: #{mode}"
-end
-
-def proxy_uri
-  SETUP[:proxy] || SETUP[:http_proxy] || SETUP[:https_proxy] || SETUP[:ftp_proxy]
-end
-
-def proxy_required?
-  !proxy_uri.nil?
-end
-
-def proxy_env
-  SETUP.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
-end
-
-def get_wsl_status
-  result = run_capture("wsl --status", encoding: Encoding::UTF_16LE)
-  return if result.nil?
-
-  {
-    default: /^既定のディストリビューション: (\S+)$/.match(result)&.[](1),
-    version: /^既定のバージョン: (\S+)$/.match(result)[1].to_i,
-    enable_wsl1: !/^WSL1 は、現在のマシン構成ではサポートされていません。$/.match?(result),
-  }
-end
-
-def get_wsl_list
-  result = run_capture("wsl --list --all --verbose",
-    encoding: Encoding::UTF_16LE)
-  return {} if result.nil?
-
-  parse_wsl_list(result).to_h { |d| [d[:name], d] }
-end
-
-def parse_wsl_list(list)
-  list.lines.drop(1).map do |line|
-    if (m = /^(.)\s+(\S+)\s+(\S+)\s+(\d)\s*$/.match(line))
-      {default: m[1] == "*", name: m[2], state: m[3], version: m[4].to_i}
-    else
-      raise "invalid wsl list line: #{line}"
-    end
-  end
-end
-
-def get_wsl_registry
-  list = {}
-  open_lxss_registry do |reg|
-    reg.each_key do |key, _wtime|
-      next unless key =~ /^\{[\h-]+\}$/
-
-      reg.open(key) do |sub|
-        list[sub["DistributionName"]] =
-          {key: key, uid: sub["DefaultUid"], path: sub["BasePath"]}
-      end
-    end
-  end
-  list
-end
-
-def open_lxss_registry(subkey = nil, mode: "r", &)
-  key = 'Software\Microsoft\Windows\CurrentVersion\Lxss'
-  key += "\\#{subkey}" if subkey
-  desired = calc_mask(mode)
-  Win32::Registry::HKEY_CURRENT_USER.open(key, desired, &)
-end
-
-def calc_mask(mode)
-  desired = 0
-  desired |= Win32::Registry::KEY_READ if mode.include?("r")
-  desired |= Win32::Registry::KEY_WRITE if mode.include?("w")
-  desired |= Win32::Registry::KEY_EXECUTE if mode.include?("x")
-  desired
-end
+setup = Setup.new(setup_config_file, **setup_env_options)
 
 task default: :create
 
@@ -247,10 +26,10 @@ task create: %i[distro ansible_playbook]
 
 desc "Destroy WSL distribution"
 task :destroy do
-  if get_wsl_list.key?(SETUP[:name])
-    sh "wsl --unregister #{SETUP[:name]}"
+  if steup.get_wsl_list.key?(setup.name)
+    sh "wsl --unregister #{setup.name}"
     sleep 1 # wait for unregister
-    rmdir SETUP[:location] if SETUP[:location] && FileTest.exist?(SETUP[:location])
+    rmdir setup.location if setup.location && FileTest.exist?(setup.location)
   end
 end
 
@@ -262,7 +41,7 @@ task :wsl do
     puts "Reboot after 10secs"
     sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
     exit # no return
-  elsif SETUP[:version] == 1 && !wsl_status[:enable_wsl1]
+  elsif setup.version == 1 && !wsl_status[:enable_wsl1]
     # NOTE: 下記コマンドでは有効にならない
     #   wsl --install --enable-wsl1 --no-distribution
     # install Microsoft-Windows-Subsystem-Linux feature
@@ -278,27 +57,27 @@ task :wsl do
 end
 
 task distro: :wsl do
-  unless get_wsl_list.key?(SETUP[:name])
+  unless get_wsl_list.key?(setup.name)
     install_option = String.new
     install_option << " --install #{SETUP[:distro]}"
-    install_option << " --location #{SETUP[:location]}" if SETUP[:location]
-    install_option << " --name #{SETUP[:name]}" if SETUP[:name] != SETUP[:distro]
+    install_option << " --location #{setup.location}" if setup.location
+    install_option << " --name #{setup.name}" if setup.name != SETUP[:distro]
     install_option << " --no-launch"
     install_option << " --version #{SETUP[:version]}"
     sh "wsl #{install_option}"
 
     if SETUP[:username]
-      key = get_wsl_registry[SETUP[:name]][:key]
+      key = get_wsl_registry[setup.name][:key]
       open_lxss_registry(key, mode: "w") do |reg|
         reg["RunOOBE"] = 0
       end
     else
       puts "Run exit after setting username and password for WSL distribution."
-      sh "wsl --distribution #{SETUP[:name]}"
+      sh "wsl --distribution #{setup.name}"
     end
 
     if SETUP[:version].to_i == 1
-      sh "wsl --set-version #{SETUP[:name]} 1"
+      sh "wsl --set-version #{setup.name} 1"
       # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0600 になってしまう。
       wsl_run("chmod 644 /etc/resolv.conf", user: "root")
     end
@@ -373,7 +152,7 @@ task ansible_playbook_wsl: :ansible do
   option << " -e user_name=#{SETUP[:username]}" if SETUP[:username]
   option << " -e user_password=#{SETUP[:password]}" if SETUP[:password]
   wsl_run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
-  sh "wsl --terminate #{SETUP[:name]}"
+  sh "wsl --terminate #{setup.name}"
 end
 
 task ansible: %i[pkg update].compact do
