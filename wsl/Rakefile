@@ -8,14 +8,9 @@ require_relative "setup"
 require_relative "wsl"
 setup_env_options = ENV.to_h
   .transform_keys(&:downcase)
-  .select{|k, _| k.start_with?("setup_")})
-  .transform_keys {|k| k.delete_prefix("setup_").to_sym}
-setup_config_file = setup_env_options[:config_file] ||
-  if FileTest.exist?("setup.yml")
-    "setup.yml"
-  else
-    nil
-  end
+  .select { |k, _| k.start_with?("setup_") }
+  .transform_keys { |k| k.delete_prefix("setup_").to_sym }
+setup_config_file = setup_env_options[:config_file] || ("setup.yml" if FileTest.exist?("setup.yml"))
 setup = Setup.new(setup_config_file, **setup_env_options)
 wsl = WSL.new(distro: setup.name)
 
@@ -38,7 +33,7 @@ task :wsl do
   in 1
     unless WSL.status[:enable_wsl1]
       # install wsl with wsl1
-      wsl --install --enable-wsl1 --no-distribution
+      sh "wsl --install --enable-wsl1 --no-distribution"
       puts "Reboot after 10secs"
       sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
       exit # no return
@@ -104,7 +99,7 @@ task update: :pkg do
     apt_opts = +"-y"
     if proxy_required?
       ["http", "https", "ftp"].each do |proto|
-        key = "#{proto}_proxy".intern
+        key = :"#{proto}_proxy"
         value = SETUP[key]
         if value
           apt_opts << " -o Acquire::#{proto}::Proxy=\"#{value}\""

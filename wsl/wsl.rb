@@ -65,7 +65,6 @@ class WSL
         result = wsl_run("which #{mgr}", capture: true, exception: false, stderr: nil)
         result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
       end
-    end
   end
 
   # wsl run helper methods
@@ -171,8 +170,8 @@ class WSL
         else
           []
         end
+      end
     end
-
     private def parse_wsl_ist(list)
       list.lines.drop(1).map do |line|
         if (m = /^(.)\s+(\S+)\s+(\S+)\s+(\d)\s*$/.match(line))
@@ -211,6 +210,5 @@ class WSL
       desired |= Win32::Registry::KEY_EXECUTE if mode.include?("x")
       desired
     end
-
   end
 end
