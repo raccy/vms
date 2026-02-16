@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # setup wsl
 
 require "open3"
@@ -7,6 +5,7 @@ require "yaml"
 require "win32/registry"
 
 require_relative "setup"
+require_relative "wsl"
 setup_env_options = ENV.to_h
   .transform_keys(&:downcase)
   .select{|k, _| k.start_with?("setup_")})
@@ -18,6 +17,7 @@ setup_config_file = setup_env_options[:config_file] ||
     nil
   end
 setup = Setup.new(setup_config_file, **setup_env_options)
+wsl = WSL.new(distro: setup.name)
 
 task default: :create
 
@@ -26,7 +26,7 @@ task create: %i[distro ansible_playbook]
 
 desc "Destroy WSL distribution"
 task :destroy do
-  if steup.get_wsl_list.key?(setup.name)
+  if WSL.distro(setup.name)
     sh "wsl --unregister #{setup.name}"
     sleep 1 # wait for unregister
     rmdir setup.location if setup.location && FileTest.exist?(setup.location)
@@ -34,53 +34,59 @@ task :destroy do
 end
 
 task :wsl do
-  wsl_status = get_wsl_status
-  if wsl_status.nil?
-    # install wsl
-    sh "wsl --install --no-distribution"
-    puts "Reboot after 10secs"
-    sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
-    exit # no return
-  elsif setup.version == 1 && !wsl_status[:enable_wsl1]
-    # NOTE: 下記コマンドでは有効にならない
-    #   wsl --install --enable-wsl1 --no-distribution
-    # install Microsoft-Windows-Subsystem-Linux feature
-    # TODO: 管理者権限がないため、下記も実行できない。
-    # sh "dism /online /enable-feature " \
-    #    "/featurename:Microsoft-Windows-Subsystem-Linux /all /norestart"
-    # puts "Reboot after 10secs"
-    # sh "shutdown /r /t 10 /c \"Reboot for fuature installing for wsl1.\""
-    puts "WSL1 を使用するには、\"Linux 用 Windows サブシステム\" オプション " \
-         "コンポーネントを有効にしてください。"
-    exit # no return
+  case setup.version
+  in 1
+    unless WSL.status[:enable_wsl1]
+      # install wsl with wsl1
+      wsl --install --enable-wsl1 --no-distribution
+      puts "Reboot after 10secs"
+      sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
+      exit # no return
+    end
+  in 2
+    unless WSL.status[:enable_wsl2]
+      # install wsl
+      sh "wsl --install --no-distribution"
+      puts "Reboot after 10secs"
+      sh "shutdown /r /t 10 /c \"Reboot for wsl installing.\""
+      exit # no return
+    end
+  else
+    raise "Unsupported WSL version: #{setup.version}"
   end
 end
 
 task distro: :wsl do
-  unless get_wsl_list.key?(setup.name)
+  case WSL.distro(setup.name)
+  in {version: Integer}
+    if version != setup.version
+      sh "wsl --set-version #{setup.name} 1"
+      WSL.clear
+    end
+  in nil
+    # install distrobution
     install_option = String.new
-    install_option << " --install #{SETUP[:distro]}"
+    install_option << " --install #{setup.distro}" if setup.distro
     install_option << " --location #{setup.location}" if setup.location
-    install_option << " --name #{setup.name}" if setup.name != SETUP[:distro]
+    install_option << " --name #{setup.name}" if setup.name != setup.distro
     install_option << " --no-launch"
-    install_option << " --version #{SETUP[:version]}"
+    install_option << " --version #{setup.version}"
     sh "wsl #{install_option}"
+    WSL.clear
 
-    if SETUP[:username]
-      key = get_wsl_registry[setup.name][:key]
-      open_lxss_registry(key, mode: "w") do |reg|
-        reg["RunOOBE"] = 0
-      end
-    else
+    if setup.input_user?
       puts "Run exit after setting username and password for WSL distribution."
       sh "wsl --distribution #{setup.name}"
+    else
+      open_lxss_registry(WSL.distro(setup.name)[:key], mode: "w") do |reg|
+        reg["RunOOBE"] = 0
+      end
     end
+  end
 
-    if SETUP[:version].to_i == 1
-      sh "wsl --set-version #{setup.name} 1"
-      # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0600 になってしまう。
-      wsl_run("chmod 644 /etc/resolv.conf", user: "root")
-    end
+  if setup.version.to_i == 1
+    # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0600 になってしまう。
+    wsl.run("chmod 644 /etc/resolv.conf", user: "root")
   end
 end
 
@@ -106,17 +112,17 @@ task update: :pkg do
         end
       end
     end
-    wsl_run("apt update #{apt_opts}", **run_opts)
-    wsl_run("apt upgrade #{apt_opts}", **run_opts)
-    wsl_run("apt autoremove #{apt_opts}", **run_opts)
+    wsl.run("apt update #{apt_opts}", **run_opts)
+    wsl.run("apt upgrade #{apt_opts}", **run_opts)
+    wsl.run("apt autoremove #{apt_opts}", **run_opts)
   in "dnf"
     dnf_opts = +"-y"
     if proxy_required?
       dnf_opts << " --setopt=proxy=#{proxy_uri}"
       dnf_opts << " --setopt=timeout=600"
     end
-    wsl_run("dnf update #{dnf_opts}", **run_opts)
-    wsl_run("dnf autoremove #{dnf_opts}", **run_opts)
+    wsl.run("dnf update #{dnf_opts}", **run_opts)
+    wsl.run("dnf autoremove #{dnf_opts}", **run_opts)
   else
     raise "Unsupported package manager: #{pkg_mgr}"
   end
@@ -129,7 +135,7 @@ task ansible_playbook: %i[ansible ansible_playbook_wsl] do
   pkg_mgr = wsl_pkg_mgr
   if pkg_mgr == "dnf"
     ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
-      wsl_run("ansible-galaxy collection install #{collection}", env: proxy_env)
+      wsl.run("ansible-galaxy collection install #{collection}", env: proxy_env)
     end
   end
 
@@ -138,7 +144,7 @@ task ansible_playbook: %i[ansible ansible_playbook_wsl] do
   option << " -e user_default=#{wsl_whoami}" if SETUP[:input_user]
   option << " -K" if SETUP[:require_password]
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
-  wsl_run("ansible-playbook all.yml #{option}", env:, cd: SETUP[:playbooks])
+  wsl.run("ansible-playbook all.yml #{option}", env:, cd: SETUP[:playbooks])
 end
 
 task ansible_playbook_wsl: :ansible do
@@ -151,7 +157,7 @@ task ansible_playbook_wsl: :ansible do
   option << " -e wsl_default_user=#{wsl_whoami}"
   option << " -e user_name=#{SETUP[:username]}" if SETUP[:username]
   option << " -e user_password=#{SETUP[:password]}" if SETUP[:password]
-  wsl_run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
+  wsl.run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
   sh "wsl --terminate #{setup.name}"
 end
 
@@ -161,9 +167,9 @@ task ansible: %i[pkg update].compact do
   pkg_mgr = wsl_pkg_mgr
   case pkg_mgr
   in "apt"
-    wsl_run("apt install ansible -y", env: proxy_env, user: "root")
+    wsl.run("apt install ansible -y", env: proxy_env, user: "root")
   in "dnf"
-    wsl_run("dnf install ansible-core -y", env: proxy_env, user: "root")
-    wsl_run("ansible-galaxy collection install community.general", env: proxy_env, user: "root")
+    wsl.run("dnf install ansible-core -y", env: proxy_env, user: "root")
+    wsl.run("ansible-galaxy collection install community.general", env: proxy_env, user: "root")
   end
 end
