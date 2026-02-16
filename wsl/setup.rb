@@ -64,6 +64,10 @@ class Setup
     "//wsl.localhost/#{name}"
   end
 
+  def config_file
+    options[:config_file] && File.expand_path(options[:config_file])
+  end
+
   def input_user?
     options[:username].nil? || options[:username].empty?
   end
@@ -80,4 +84,34 @@ class Setup
     options.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
   end
 
+  def apt_opts
+    @opt_opts ||=
+      if proxy_required?
+        %w[http https ftp]
+          .map { |proto| [proto, options["#{proto}_proxy".intern]] }
+          .select { |_, value| value }
+          .map { |proto, value| "-o Acquire::#{proto}::Proxy=\"#{value}\" -o Acquire::#{proto}::Timeout=600" }
+          .join(" ")
+        end
+      else
+        ""
+      end
+  end
+
+  def dnf_opts
+    @dnf_opts ||=
+      if proxy_required?
+        "--setopt=proxy=#{proxy_uri} --setopt=timeout=600"
+      else
+        ""
+      end
+  end
+
+  def skip_update?
+    options[:skip_update]
+  end
+
+  def skip_ansible?
+    options[:skip_ansible]
+  end
 end

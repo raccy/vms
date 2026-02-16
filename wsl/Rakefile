@@ -66,11 +66,11 @@ task distro: :wsl do
   in nil
     # install distrobution
     install_option = String.new
-    install_option << " --install #{setup.distro}" if setup.distro
+    install_option << " --install #{setup.distro}"
     install_option << " --location #{setup.location}" if setup.location
     install_option << " --name #{setup.name}" if setup.name != setup.distro
+    install_option << " --version #{setup.version}" if setup.version == 1
     install_option << " --no-launch"
-    install_option << " --version #{setup.version}"
     sh "wsl #{install_option}"
     WSL.clear
 
@@ -78,6 +78,7 @@ task distro: :wsl do
       puts "Run exit after setting username and password for WSL distribution."
       sh "wsl --distribution #{setup.name}"
     else
+      # TODO: ユーザーの作成とデフォルトUIDの設定をするようにしたい。
       open_lxss_registry(WSL.distro(setup.name)[:key], mode: "w") do |reg|
         reg["RunOOBE"] = 0
       end
@@ -94,12 +95,11 @@ task pkg: :distro
 
 desc "Update WSL distribution"
 task update: :pkg do
-  next if SETUP[:skip_update]
+  next if setup.skip_update?
 
   run_opts = {user: "root"}
-  pkg_mgr = wsl_pkg_mgr
 
-  case pkg_mgr
+  case wsl.pkg_mgr
   in "apt"
     apt_opts = +"-y"
     if proxy_required?
@@ -112,64 +112,64 @@ task update: :pkg do
         end
       end
     end
-    wsl.run("apt update #{apt_opts}", **run_opts)
-    wsl.run("apt upgrade #{apt_opts}", **run_opts)
-    wsl.run("apt autoremove #{apt_opts}", **run_opts)
+    wsl.run("apt update -y #{setup.apt_opts}", **run_opts)
+    wsl.run("apt upgrade -y #{setup.apt_opts}", **run_opts)
+    wsl.run("apt autoremove -y #{setup.apt_opts}", **run_opts)
   in "dnf"
     dnf_opts = +"-y"
     if proxy_required?
       dnf_opts << " --setopt=proxy=#{proxy_uri}"
       dnf_opts << " --setopt=timeout=600"
     end
-    wsl.run("dnf update #{dnf_opts}", **run_opts)
-    wsl.run("dnf autoremove #{dnf_opts}", **run_opts)
+    wsl.run("dnf update -y #{setup.dnf_opts}", **run_opts)
+    wsl.run("dnf autoremove -y #{setup.dnf_opts}", **run_opts)
   else
-    raise "Unsupported package manager: #{pkg_mgr}"
+    raise "Unsupported package manager: #{wsl.pkg_mgr}"
+  end
+end
+
+task ansible: %i[pkg update].compact do
+  next if setup.skip_ansible?
+
+  case wsl.pkg_mgr
+  in "apt"
+    wsl.run("apt install ansible -y #{setup.apt_opts}", user: "root")
+  in "dnf"
+    wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
+    # for root
+    wsl.run("ansible-galaxy collection install community.general", env: setup.proxy_env, user: "root")
   end
 end
 
 task ansible_playbook: %i[ansible ansible_playbook_wsl] do
-  next if SETUP[:skip_ansible]
+  next if setup.skip_ansible?
 
   # playbook with user
-  pkg_mgr = wsl_pkg_mgr
-  if pkg_mgr == "dnf"
+  if wsl.pkg_mgr == "dnf"
+    # for user
     ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
-      wsl.run("ansible-galaxy collection install #{collection}", env: proxy_env)
+      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
     end
   end
 
   option = String.new
-  option << " -e @#{wsl_path(SETUP[:config])}" if FileTest.file?(SETUP[:config])
-  option << " -e user_default=#{wsl_whoami}" if SETUP[:input_user]
+  option << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
+  option << " -e user_default=#{wsl_whoami}" if setup.input_user?
   option << " -K" if SETUP[:require_password]
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
   wsl.run("ansible-playbook all.yml #{option}", env:, cd: SETUP[:playbooks])
 end
 
 task ansible_playbook_wsl: :ansible do
-  next if SETUP[:skip_ansible]
+  next if setup.skip_ansible?
 
   # playbook with root
   puts "Setup wsl playbook"
   option = String.new
-  option << " -e @#{wsl_path(SETUP[:config], user: 'root')}" if FileTest.file?(SETUP[:config])
+  option << " -e @#{wsl.path(setup.config_file, user: 'root')}" if setup.config_file
   option << " -e wsl_default_user=#{wsl_whoami}"
   option << " -e user_name=#{SETUP[:username]}" if SETUP[:username]
   option << " -e user_password=#{SETUP[:password]}" if SETUP[:password]
   wsl.run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
   sh "wsl --terminate #{setup.name}"
-end
-
-task ansible: %i[pkg update].compact do
-  next if SETUP[:skip_ansible]
-
-  pkg_mgr = wsl_pkg_mgr
-  case pkg_mgr
-  in "apt"
-    wsl.run("apt install ansible -y", env: proxy_env, user: "root")
-  in "dnf"
-    wsl.run("dnf install ansible-core -y", env: proxy_env, user: "root")
-    wsl.run("ansible-galaxy collection install community.general", env: proxy_env, user: "root")
-  end
 end
