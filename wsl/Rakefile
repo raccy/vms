@@ -6,6 +6,7 @@ require "open3"
 require "yaml"
 require "win32/registry"
 
+# default setup options
 SETUP = {
   name: nil,
   distro: "Ubuntu",
@@ -26,15 +27,23 @@ SETUP = {
   no_proxy: ENV.fetch("no_proxy", nil),
   skip_update: false,
   skip_ansible: false,
-}.to_h do |name, default|
-  [name, ENV.fetch("SETUP_#{name.to_s.upcase}", default)]
-end
+}
 
-SETUP_CONFIG_FILE = File.expand_path(SETUP[:config], SETUP[:work])
+# load setup options from config file
+SETUP_CONFIG_FILE = File.expand_path(ENV.fetch("SETUP_CONFIG", SETUP[:config]), SETUP[:work])
 if FileTest.exist?(SETUP_CONFIG_FILE)
   SETUP.merge!(YAML.load_file(SETUP_CONFIG_FILE, symbolize_names: true).fetch(:setup, {}))
 end
 
+# override options with environment variables
+SETUP.keys.each do |name|
+  env_key = "SETUP_#{name.to_s.upcase}"
+  if ENV.key?(env_key)
+    SETUP[name] = ENV[env_key]
+  end
+end
+
+# normalize options
 SETUP[:name] ||= SETUP[:distro]
 SETUP[:version] = SETUP[:version].to_i
 SETUP[:root] = "//wsl.localhost/#{SETUP[:name]}"
@@ -158,6 +167,14 @@ def check_mode(mode)
   return if mode =~ /\A([ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+)\z/
 
   raise "invalid mode: #{mode}"
+end
+
+def proxy_uri
+  SETUP[:proxy] || SETUP[:http_proxy] || SETUP[:https_proxy] || SETUP[:ftp_proxy]
+end
+
+def proxy_required?
+  !proxy_uri.nil?
 end
 
 def proxy_env
@@ -294,15 +311,33 @@ desc "Update WSL distribution"
 task update: :pkg do
   next if SETUP[:skip_update]
 
+  run_opts = {user: "root"}
   pkg_mgr = wsl_pkg_mgr
+
   case pkg_mgr
   in "apt"
-    wsl_run("apt update -y", env: proxy_env, user: "root")
-    wsl_run("apt upgrade -y", env: proxy_env, user: "root")
-    wsl_run("apt autoremove -y", env: proxy_env, user: "root")
+    apt_opts = +"-y"
+    if proxy_required?
+      ["http", "https", "ftp"].each do |proto|
+        key = "#{proto}_proxy".intern
+        value = SETUP[key]
+        if value
+          apt_opts << " -o Acquire::#{proto}::Proxy=\"#{value}\""
+          apt_opts << " -o Acquire::#{proto}::Timeout=600"
+        end
+      end
+    end
+    wsl_run("apt update #{apt_opts}", **run_opts)
+    wsl_run("apt upgrade #{apt_opts}", **run_opts)
+    wsl_run("apt autoremove #{apt_opts}", **run_opts)
   in "dnf"
-    wsl_run("dnf update -y", env: proxy_env, user: "root")
-    wsl_run("dnf autoremove -y", env: proxy_env, user: "root")
+    dnf_opts = +"-y"
+    if proxy_required?
+      dnf_opts << " --setopt=proxy=#{proxy_uri}"
+      dnf_opts << " --setopt=timeout=600"
+    end
+    wsl_run("dnf update #{dnf_opts}", **run_opts)
+    wsl_run("dnf autoremove #{dnf_opts}", **run_opts)
   else
     raise "Unsupported package manager: #{pkg_mgr}"
   end
