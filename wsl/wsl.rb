@@ -20,7 +20,7 @@ class WSL
   end
 
   def path(path, **)
-    run("wslpath -u \"#{path}\"", capture: true, **).force_encoding(Encoding::UTF_8).chomp
+    run("wslpath -u \"#{path}\"", capture: true, **).chomp
   end
 
   def file_read(path, **)
@@ -28,42 +28,112 @@ class WSL
     run("cat -- #{path}", capture: true, **)
   end
 
-  def file_write(path, data, mode: nil, **)
+  def file_write(path, data, mode: nil, owner: nil, group: nil, **)
     check_path(path)
     mkdir(File.dirname(path), **)
     run("tee -- #{path}", capture: true, stdin_data: data, **)
     chmod(path, mode) if mode
+    chown(path, owner, group) if owner || group
   end
 
-  def file_append(path, data, mode: nil, **)
+  def file_append(path, data, mode: nil, owner: nil, group: nil, **)
     check_path(path)
     mkdir(File.dirname(path), **)
     run("tee -a -- #{path}", capture: true, stdin_data: data, **)
     chmod(path, mode) if mode
+    chown(path, owner, group) if owner || group
   end
 
-  def mkdir(path, mode: nil, **)
+  def mkdir(path, mode: nil, owner: nil, group: nil, **)
     check_path(path)
     run("mkdir -p -- #{path}", **)
     chmod(path, mode) if mode
+    chown(path, owner, group) if owner || group
   end
 
   def chmod(path, mode, **)
     check_path(path)
     check_mode(mode)
+
+    mode = format("%04o", mode) if mode.is_a?(Integer)
+
     run("chmod #{mode} -- #{path}", **)
   end
 
+  def chown(path, owner = nil, group = nil, **)
+    check_path(path)
+    check_id_or_name(owner)
+    check_id_or_name(group)
+
+    owner_group = +""
+    owner_group << owner.to_s if owner
+    owner_group << ":#{group}" if group
+    return if owner_group.empty?
+
+    run("chown #{owner_group} -- #{path}", **)
+  end
+
   def whoami
-    run("whoami", capture: true).force_encoding(Encoding::UTF_8).chomp
+    run("whoami", capture: true).chomp
   end
 
   def pkg_mgr
     @pkg_mgr ||=
       ["apt", "dnf", "yum", "pacman", "apk", "zypper"].find do |mgr|
-        result = run("which #{mgr}", capture: true, exception: false, stderr: nil)
-        result && result.force_encoding(Encoding::UTF_8).chomp.length.positive?
+        run("which #{mgr}", capture: true, exception: false, stderr: nil)&.chomp&.length&.positive?
       end
+  end
+
+  def users
+    file_read("/etc/passwd", user: "root").each_line.map { |line| line.split(":").first }
+  end
+
+  def groups
+    file_read("/etc/group", user: "root").each_line.map { |line| line.split(":").first }
+  end
+
+  def installed?
+    !info.nil?
+  end
+
+  def info(force: false)
+    WSL.clear if force
+    WSL.dict[@distro]
+  end
+
+  def version
+    info[:version]
+  end
+
+  def key
+    info[:key]
+  end
+
+  def uid
+    info[:uid]
+  end
+
+  def uid=(uid)
+    registry(mode: "w") do |reg|
+      reg["DefaultUid"] = uid
+    end
+    info[:uid] = uid
+  end
+
+  def oobe
+    info[:oobe]
+  end
+  alias_method :oobe?, :oobe
+
+  def oobe=(oobe)
+    registry(mode: "w") do |reg|
+      reg["RunOOBE"] = (oobe ? 1 : 0)
+    end
+    info[:oobe] = oobe
+  end
+
+  def registry(**, &)
+    WSL.open_lxss_registry(key, **, &)
   end
 
   # wsl run helper methods
@@ -74,9 +144,27 @@ class WSL
   end
 
   private def check_mode(mode)
-    return if mode =~ /\A([ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+)\z/
+    case mode
+    when Integer
+      return if mode.between?(0, 0o7777)
+    when String
+      return if mode =~ /\A([augo]*([-+=][rstwxXugo])+(,[augo]*([-+=][rstwxXugo])+)|[0-7]{3,4})\z/
+    end
 
     raise "invalid mode: #{mode}"
+  end
+
+  private def check_id_or_name(id_or_name)
+    case id_or_name
+    when nil
+      return
+    when Integer
+      return if id_or_name >= 0
+    when String
+      return if id_or_name =~ /\A\w+\z/
+    end
+
+    raise "invalid id or name: #{id_or_name}"
   end
 
   # rubocop: disable Naming/MethodParameterName
@@ -116,11 +204,11 @@ class WSL
 
     def clear
       @status = nil
-      @list = nil
       @dict = nil
     end
 
-    def status
+    def status(force: false)
+      @status = nil if force
       @status ||= run_capture("wsl --status", encoding: Encoding::UTF_16LE).then do |result|
         if result
           {
@@ -140,26 +228,22 @@ class WSL
       end
     end
 
-    def distro(name)
-      dict[name]
-    end
+    def dict(force: false)
+      @dict = nil if force
+      return @dict if @dict
 
-    def dict
-      @dict ||= list.to_h { |d| [d[:name], d] }
-    end
-
-    def list
-      @list ||= merge_list(:name, wsl_list, registry_list)
-    end
-
-    private def merge_list(key, *lists)
-      hash = Hash.new { |h, k| h[k] = {} }
-      lists.each do |list|
-        list.each do |v|
-          hash[v[key]].merge!(v)
+      @dict = {}
+      [wsl_list, registry_list].each do |list|
+        list.each do |info|
+          @dict[info[:name]] ||= {}
+          @dict[info[:name]].merge!(info)
         end
       end
-      hash.values
+      @dict
+    end
+
+    def list(...)
+      dict(...).values
     end
 
     private def wsl_list
@@ -171,10 +255,16 @@ class WSL
         end
       end
     end
+
     private def parse_wsl_list(list)
       list.lines.drop(1).map do |line|
         if (m = /^(.)\s+(\S+)\s+(\S+)\s+(\d)\s*$/.match(line))
-          {default: m[1] == "*", name: m[2], state: m[3], version: m[4].to_i}
+          {
+            default: m[1] == "*",
+            name: m[2],
+            state: m[3],
+            version: m[4].to_i,
+          }
         else
           raise "invalid wsl list line: #{line}"
         end
@@ -188,14 +278,20 @@ class WSL
           next unless key =~ /^\{[\h-]+\}$/
 
           reg.open(key) do |sub|
-            list << {name: sub["DistributionName"], key: key, uid: sub["DefaultUid"], path: sub["BasePath"]}
+            list << {
+              name: sub["DistributionName"],
+              key: key,
+              uid: sub["DefaultUid"],
+              path: sub["BasePath"],
+              oobe: sub["RunOOBE"].positive?,
+            }
           end
         end
       end
       list
     end
 
-    private def open_lxss_registry(subkey = nil, mode: "r", &)
+    def open_lxss_registry(subkey = nil, mode: "r", &)
       key = 'Software\Microsoft\Windows\CurrentVersion\Lxss'
       key += "\\#{subkey}" if subkey
       desired = calc_mask(mode)

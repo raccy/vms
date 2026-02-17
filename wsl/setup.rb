@@ -4,6 +4,7 @@ class Setup
     distro: "Ubuntu",
     version: 2,
     username: nil,
+    groupname: nil,
     password: nil,
     location: nil,
     config_file: nil,
@@ -17,9 +18,13 @@ class Setup
     skip_ansible: false,
   }.freeze
 
+  DEFAULT_UID = 1000
+  DEFAULT_GID = 1000
+  DEFAULT_GROUPS = ["wheel", "adm", "cdrom", "sudo", "dip", "plugdev"].freeze
+
   attr_reader :options
 
-  def initialize(config_file, **opts)
+  def initialize(config_file, **)
     # default setup options
     @options = DEFAULT_OPTIONS.dup
     # load proxy settings from environment variables
@@ -32,7 +37,7 @@ class Setup
       @options[:config_file] = config_file
     end
     # override options
-    @options.merge!(**opts)
+    @options.merge!(**)
     # normalize options
     @options[:name] ||= @options[:distro]
     @options[:version] = @options[:version].to_i
@@ -73,6 +78,30 @@ class Setup
     options[:username].nil? || options[:username].empty?
   end
 
+  def username
+    options[:username]
+  end
+
+  def groupname
+    options[:groupname] || username
+  end
+
+  def password
+    options[:password] || username
+  end
+
+  def uid
+    Setup::DEFAULT_UID
+  end
+
+  def gid
+    Setup::DEFAULT_GID
+  end
+
+  def groups
+    Setup::DEFAULT_GROUPS
+  end
+
   def proxy_uri
     %i[proxy http_proxy https_proxy ftp_proxy].map { |key| options[key] }.find(&:itself)
   end
@@ -88,8 +117,8 @@ class Setup
   def apt_opts
     @apt_opts ||=
       if proxy_required?
-        %w[http https ftp]
-          .map { |proto| [proto, options["#{proto}_proxy".intern]] }
+        ["http", "https", "ftp"]
+          .map { |proto| [proto, options[:"#{proto}_proxy"]] }
           .select { |_, value| value }
           .map { |proto, value| "-o Acquire::#{proto}::Proxy=\"#{value}\" -o Acquire::#{proto}::Timeout=600" }
           .join(" ")

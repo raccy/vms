@@ -21,8 +21,9 @@ task create: %i[distro ansible_playbook]
 
 desc "Destroy WSL distribution"
 task :destroy do
-  if WSL.distro(setup.name)
+  if wsl.installed?
     sh "wsl --unregister #{setup.name}"
+    puts "sleep 1sec for unregistering WSL distribution..."
     sleep 1 # wait for unregister
     rmdir setup.location if setup.location && FileTest.exist?(setup.location)
   end
@@ -52,13 +53,7 @@ task :wsl do
 end
 
 task distro: :wsl do
-  case WSL.distro(setup.name)
-  in version:
-    if version != setup.version
-      sh "wsl --set-version #{setup.name} 1"
-      WSL.clear
-    end
-  in nil
+  unless wsl.installed?
     # install distrobution
     install_option = String.new
     install_option << " --install #{setup.distro}"
@@ -68,21 +63,61 @@ task distro: :wsl do
     install_option << " --no-launch"
     sh "wsl #{install_option}"
     WSL.clear
+  end
 
+  if wsl.version != setup.version
+    sh "wsl --set-version #{setup.name} #{setup.version}"
+    WSL.clear
+  end
+
+  if wsl.oobe
     if setup.input_user?
       puts "Run exit after setting username and password for WSL distribution."
       sh "wsl --distribution #{setup.name}"
     else
-      # TODO: ユーザーの作成とデフォルトUIDの設定をするようにしたい。
-      open_lxss_registry(WSL.distro(setup.name)[:key], mode: "w") do |reg|
-        reg["RunOOBE"] = 0
+      wsl.oobe = false
+    end
+  end
+
+  if wsl.uid.zero?
+    if setup.input_user?
+      warn "Maybe bug: Already run oobe, but uid is still 0. Force to run oobe again."
+      puts "Run exit after setting username and password for WSL distribution."
+      sh "wsl --distribution #{setup.name}"
+    else
+      current_users= wsl.users
+      current_groups = wsl.groups
+
+      unless current_groups.include?(setup.groupname)
+        groupadd_opts = String.new
+        groupadd_opts << " -g #{setup.gid}"
+        wsl.run("groupadd #{groupadd_opts} \"#{setup.groupname}\"", user: "root")
       end
+
+      unless current_users.include?(setup.username)
+        useradd_opts = String.new
+        useradd_opts << " -u #{setup.uid}"
+        useradd_opts << " -g #{setup.gid}"
+        available_groups = setup.groups & current_groups
+        useradd_opts << " -G \"#{available_groups.join(',')}\"" unless available_groups.empty?
+        useradd_opts << " -m"
+        wsl.run("useradd #{useradd_opts} \"#{setup.username}\"", user: "root")
+        begin
+          wsl.run("chpasswd", capture: true, stdin_data: "#{setup.username}:#{setup.password}", user: "root")
+        rescue
+          wsl.run("userdel -r \"#{setup.username}\"", user: "root")
+          raise
+        end
+      end
+
+      wsl.uid = 1000
+      sh "wsl --terminate #{setup.name}"
     end
   end
 
   if setup.version.to_i == 1
-    # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0600 になってしまう。
-    wsl.run("chmod 644 /etc/resolv.conf", user: "root")
+    # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0700 になってしまう。
+    wsl.chmod("/etc/resolv.conf", 0o644, user: "root")
   end
 end
 
