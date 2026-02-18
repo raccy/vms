@@ -17,7 +17,11 @@ wsl = WSL.new(distro: setup.name)
 task default: :create
 
 desc "Create WSL distribution"
-task create: %i[distro ansible_playbook]
+task create: [
+  :install,
+  unless setup.skip_update? then :update end,
+  unless setup.skip_ansible? then :ansible end,
+].compact
 
 desc "Destroy WSL distribution"
 task :destroy do
@@ -52,7 +56,7 @@ task :wsl do
   end
 end
 
-task distro: :wsl do
+task install: :wsl do
   unless wsl.installed?
     # install distrobution
     install_option = String.new
@@ -125,68 +129,41 @@ task distro: :wsl do
   end
 end
 
-task pkg: :distro
-
 desc "Update WSL distribution"
-task update: :pkg do
-  next if setup.skip_update?
-
-  run_opts = {user: "root"}
-
+task :update do
   case wsl.pkg_mgr
   in "apt"
-    wsl.run("apt update -y #{setup.apt_opts}", **run_opts)
-    wsl.run("apt upgrade -y #{setup.apt_opts}", **run_opts)
-    wsl.run("apt autoremove -y #{setup.apt_opts}", **run_opts)
+    wsl.run("apt update -y #{setup.apt_opts}", user: "root")
+    wsl.run("apt upgrade -y #{setup.apt_opts}", user: "root")
+    wsl.run("apt autoremove -y #{setup.apt_opts}", user: "root")
   in "dnf"
-    wsl.run("dnf update -y #{setup.dnf_opts}", **run_opts)
-    wsl.run("dnf autoremove -y #{setup.dnf_opts}", **run_opts)
+    wsl.run("dnf update -y #{setup.dnf_opts}", user: "root")
+    wsl.run("dnf autoremove -y #{setup.dnf_opts}", user: "root")
   else
     raise "Unsupported package manager: #{wsl.pkg_mgr}"
   end
 end
 
-task ansible: %i[pkg update].compact do
-  next if setup.skip_ansible?
+desc "Run Ansible playbook for WSL distribution"
+task ansible: %i[ansible_pkg] do
+  opt = String.new
+  opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
+  opt << if setup.input_user? then " -K" else " -e ansible_become_password=\"#{setup.password}\"" end
+  env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
 
+  wsl.run("ansible-playbook wsl.yml setup.yml #{opt}", env:, cd: setup.playbooks)
+  sh "wsl --terminate #{setup.name}"
+end
+
+task :ansible_pkg do
   case wsl.pkg_mgr
   in "apt"
     wsl.run("apt install ansible -y #{setup.apt_opts}", user: "root")
   in "dnf"
     wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
-    # for root
-    ["community.general"].each do |collection|
-      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env, user: "root")
-    end
     # for user
     ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
       wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
     end
   end
-end
-
-task ansible_playbook: %i[ansible ansible_playbook_wsl] do
-  next if setup.skip_ansible?
-
-  # opt = String.new
-  # opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
-  # if setup.input_user?
-  #   opt << " -K"
-  # else
-  #   opt << " -e ansible_become_password=\"#{setup.passwd}\""
-  # end
-  # opt << " -K" if SETUP[:require_password]
-  # env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
-
-  # wsl.run("ansible-playbook setup.yml #{opt}", env:, cd: setup.playbooks)
-end
-
-task ansible_playbook_wsl: :ansible do
-  next if setup.skip_ansible?
-
-  # playbook with root
-  opt = String.new
-  opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
-  wsl.run("ansible-playbook wsl.yml #{opt}", cd: setup.playbooks, user: "root")
-  sh "wsl --terminate #{setup.name}"
 end
