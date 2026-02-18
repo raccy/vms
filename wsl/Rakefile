@@ -116,8 +116,12 @@ task distro: :wsl do
   end
 
   if setup.version.to_i == 1
-    # NOTE: WSL1 では、/etc/resolv.conf のパーミッションが 0700 になってしまう。
-    wsl.chmod("/etc/resolv.conf", 0o644, user: "root")
+    # FIXME: WSL1では、パーミションが0700の/etc/resolv.confが作成されてしまう場合がある。
+    #    本来は自動生成されるファイルへのシンボリックリンクなるべき。
+    if wsl.run("realpath /etc/resolv.conf", capture: true, exception: false)&.chomp == "/etc/resolv.conf"
+      wsl.run("rm -f /etc/resolv.conf", user: "root")
+      sh "wsl --terminate #{setup.name}"
+    end
   end
 end
 
@@ -151,39 +155,38 @@ task ansible: %i[pkg update].compact do
   in "dnf"
     wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
     # for root
-    wsl.run("ansible-galaxy collection install community.general", env: setup.proxy_env, user: "root")
+    ["community.general"].each do |collection|
+      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env, user: "root")
+    end
+    # for user
+    ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
+      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
+    end
   end
 end
 
 task ansible_playbook: %i[ansible ansible_playbook_wsl] do
   next if setup.skip_ansible?
 
-  # playbook with user
-  if wsl.pkg_mgr == "dnf"
-    # for user
-    ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
-      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
-    end
-  end
+  # opt = String.new
+  # opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
+  # if setup.input_user?
+  #   opt << " -K"
+  # else
+  #   opt << " -e ansible_become_password=\"#{setup.passwd}\""
+  # end
+  # opt << " -K" if SETUP[:require_password]
+  # env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
 
-  option = String.new
-  option << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
-  option << " -e user_default=#{wsl_whoami}" if setup.input_user?
-  option << " -K" if SETUP[:require_password]
-  env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
-  wsl.run("ansible-playbook all.yml #{option}", env:, cd: SETUP[:playbooks])
+  # wsl.run("ansible-playbook setup.yml #{opt}", env:, cd: setup.playbooks)
 end
 
 task ansible_playbook_wsl: :ansible do
   next if setup.skip_ansible?
 
   # playbook with root
-  puts "Setup wsl playbook"
-  option = String.new
-  option << " -e @#{wsl.path(setup.config_file, user: 'root')}" if setup.config_file
-  option << " -e wsl_default_user=#{wsl_whoami}"
-  option << " -e user_name=#{SETUP[:username]}" if SETUP[:username]
-  option << " -e user_password=#{SETUP[:password]}" if SETUP[:password]
-  wsl.run("ansible-playbook wsl.yml #{option}", cd: SETUP[:playbooks], user: "root")
+  opt = String.new
+  opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
+  wsl.run("ansible-playbook wsl.yml #{opt}", cd: setup.playbooks, user: "root")
   sh "wsl --terminate #{setup.name}"
 end

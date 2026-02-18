@@ -136,6 +136,10 @@ class Setup
       end
   end
 
+  def playbooks
+    File.expand_path(options[:playbooks])
+  end
+
   def skip_update?
     options[:skip_update]
   end
