@@ -28,13 +28,16 @@
   changed_when: false
   register: wsl_run_ps_1
 
-- name: Setting systemd
+- name: Setting systemd run
   ansible.builtin.set_fact:
-    wsl_systemd: '{{ wsl_run_ps_1.stdout is match "systemd" }}'
+    wsl_init: '{{ wsl_run_ps_1.stdout_lines | first }}'
 
-- name: Setting wsl facts
+- name: Find WSLInterop
+  ansible.builtin.find:
+    path: /proc/sys/fs/binfmt_misc
+    patterns: 'WSLInterop*'
+  register: wsl_find_interop
+
+- name: Setting interop facts
   ansible.builtin.set_fact:
-    wsl_facts:
-      wsl_networking_mode: '{{ wsl_run_wslinfo_networking_mode.stdout }}'
-      wsl_version: '{{ (wsl_run_wslinfo_networking_mode.stdout == "wsl1") | ternary(1, 2) }}'
-      wsl_systemd: '{{ wsl_run_ps_1.stdout is match "systemd" }}'
+    wsl_interop: '{{ wsl_find_interop.files | length > 0 }}'

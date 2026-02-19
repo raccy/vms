@@ -1,3 +1,5 @@
+# where wexecutable path in windows and convert to wsl path
+---
 - name: Run where in windows
   ansible.builtin.shell:
     cmd: '{{ win_system_bin }}/where.exe {{ win_where_name }} 2>/dev/null'

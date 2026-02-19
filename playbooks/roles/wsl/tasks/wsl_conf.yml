@@ -8,8 +8,8 @@
     exclusive: true
     section: boot
     option: systemd
-    value: '{{ wsl_conf_systemd | lower }}' # default false
-    state: '{{ (wsl_version | int >= 2 and wsl_conf_systemd) | ternary("present", "absent") }}'
+    value: '{{ wsl_systemd | lower }}' # default false
+    state: '{{ (wsl_version | int >= 2 and wsl_systemd) | ternary("present", "absent") }}'
 
 - name: Set hostname in wsl.conf
   become: true
@@ -99,5 +99,4 @@
     exclusive: false
     section: user
     option: default
-    value: '{{ user_default_user.name }}'
-  when: user_default is not defined
+    value: '{{ ansible_facts.user_id }}'

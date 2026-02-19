@@ -4,8 +4,9 @@ wsl_windows_exe: true
 wsl_windows_path: true
 wsl_mount_auto: true
 wsl_mount_fstab: true
+wsl_mount_options:
+  - metadata
+# set when wsl_mount_auto is false, or network drives are used
 # wsl_mount_drives:
 #   - c
 #   - z
-# wsl_mount_options:
-#   - metadata

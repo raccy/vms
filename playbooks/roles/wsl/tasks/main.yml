@@ -6,6 +6,10 @@
   ansible.builtin.import_tasks:
     file: wsl_conf.yml
 
-- name: Task fstab
-  ansible.builtin.import_tasks:
-    file: fstab.yml
+- name: Task mount_drive
+  ansible.builtin.include_tasks:
+    file: mount_drive.yml
+  loop: '{{ wsl_mount_drives }}'
+  loop_control:
+    loop_var: wsl_mount_drive
+  when: wsl_mount_drives is defined

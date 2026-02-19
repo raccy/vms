@@ -7,11 +7,6 @@ setup:
   skip_update: true
   skip_ansible: true
 # general (default: true)
-user_name: vagrant
-system_hostname: vagrant
-system_windows_path: true
-system_mount_options:
-  - metadata
 lang: false
 font: false
 # additional (default: false)

@@ -156,14 +156,20 @@ task ansible: %i[ansible_pkg] do
 end
 
 task :ansible_pkg do
-  case wsl.pkg_mgr
-  in "apt"
-    wsl.run("apt install ansible -y #{setup.apt_opts}", user: "root")
-  in "dnf"
-    wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
-    # for user
-    ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
-      wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
+  unless wsl.run("which ansible", capture: true, exception: false)&.chomp&.length&.positive?
+    case wsl.pkg_mgr
+    in "apt"
+      wsl.run("apt install ansible -y #{setup.apt_opts}", user: "root")
+    in "dnf"
+      wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
     end
+  end
+
+  collection_list = wsl.run("ansible-galaxy collection list", capture: true, exception: false)
+  # for user
+  ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
+    next if collection_list.include?(collection)
+
+    wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
   end
 end

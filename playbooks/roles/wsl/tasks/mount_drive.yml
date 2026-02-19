@@ -1,25 +1,24 @@
+# Mount Windows drive in WSL
+---
 - name: Make drive mount point diretory
   become: true
   ansible.builtin.file:
-    path: '/mnt/{{ item | lower }}'
+    path: '/mnt/{{ wsl_mount_drive | lower }}'
     state: directory
     mode: '0777' # all
-  loop: '{{ wsl_mount_drives }}'
-  when: wsl_mount_drives is defined
 
-# TODO: not delete
 - name: Add drive mount in /etc/fstab
   become: true
   ansible.builtin.lineinfile:
     path: /etc/fstab
     owner: root
     mode: '0644'
-    regexp: '^{{ item | upper }}:\\\s'
+    regexp: '^{{ wsl_mount_drive | upper }}:\\\s'
     line: >-
-      {{ item | upper }}:\ /mnt/{{ item | lower }} drvfs {{
+      {{ wsl_mount_drive | upper }}:\ /mnt/{{ wsl_mount_drive | lower }} drvfs {{
         (["noatime",
-          "uid=" ~ user_default_user.uid,
-          "gid=" ~ user_default_group.gid] + system_mount_options)
+          "uid=" ~ ansible_facts.user_uid,
+          "gid=" ~ ansible_facts.user_gid] + system_mount_options)
         | unique | join(",")
       }} 0 0
   loop: '{{ wsl_mount_drives }}'

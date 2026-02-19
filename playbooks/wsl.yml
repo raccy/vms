@@ -1,10 +1,4 @@
 - name: Playbook for wsl
   hosts: localhost
-  tasks:
-    - debug:
-        msg: "This is a playbook for WSL. It is not intended to be run directly. Please use the Rakefile to run the playbook."
-  # vars:
-  #   user_name: '{{ user_name | default(wsl_default_user | default(ansible_user)) }}'
-  # roles:
-  #   - user
-  #   # - wsl
+  roles:
+    - wsl
