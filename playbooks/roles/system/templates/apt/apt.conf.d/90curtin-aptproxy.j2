@@ -1,6 +1,5 @@
-{% if proxy_env.http_proxy | default("") %}
-Acquire::http::Proxy "{{ proxy_env.http_proxy }}";
-{% endif %}
-{% if proxy_env.https_proxy | default("") %}
-Acquire::https::Proxy "{{ proxy_env.https_proxy }}";
+{% for proto in ["http", "https", "ftp"] %}
+{% if proxy_env[proto ~ "_proxy"] is defined %}
+Acquire::{{ proto }}::Proxy "{{ proxy_env[proto ~ "_proxy"] }}";
+Acquire::{{ proto }}::Timeout={{ system_pkg_timeout_with_proxy }};
 {% endif %}

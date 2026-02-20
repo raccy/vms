@@ -66,10 +66,6 @@ class Setup
     options[:location] && File.expand_path(options[:location])
   end
 
-  def root
-    "//wsl.localhost/#{name}"
-  end
-
   def config_file
     options[:config_file] && File.expand_path(options[:config_file])
   end
@@ -111,7 +107,8 @@ class Setup
   end
 
   def proxy_env
-    options.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy)
+    @proxy_env ||= options.slice(:http_proxy, :https_proxy, :ftp_proxy, :no_proxy).compact
+      .then { |env| env.merge(env.transform_keys(&:upcase)) }
   end
 
   def apt_opts

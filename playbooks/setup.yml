@@ -1,11 +1,28 @@
 - name: Setup
   hosts: localhost
-  tasks:
-    - debug:
-        msg: "setup.yml is not intended to be run directly. Please use the Rakefile to run the playbook."
-      become: true
-  # vars:
-  #   user_name: '{{ user_name | default(wsl_default_user | default(ansible_user)) }}'
-  # roles:
-  #   - user
-  #   # - wsl
+  roles:
+    - role: system
+    # - role: update
+    #   when: update
+    # - role: lang
+    #   when: lang
+    # - role: font
+    #   when: font
+    # - role: app
+    #   when: app
+    # - role: srv
+    #   when: srv
+    # - role: gui
+    #   when: gui
+    # - role: git
+    #   when: git
+    # - role: vscode
+    #   when: vscode
+    # - role: anyenv
+    #   when: anyenv
+    # - role: docker
+    #   when: docker
+    # - role: vagrant
+    #   when: vagrant
+    # - role: home
+    #   when: home

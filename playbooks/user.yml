@@ -1,4 +1,0 @@
-- name: Playbook for user
-  hosts: localhost
-  roles:
-    - user

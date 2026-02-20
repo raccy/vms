@@ -1,4 +1,4 @@
 - name: Task proxy
   ansible.builtin.include_tasks:
     file: proxy.yml
-  when: proxy_env
+  when: proxy_env != {}

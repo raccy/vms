@@ -5,12 +5,14 @@ setup:
   version: 1
   username: vagrant
 # general (default: true)
+debug: true
+update: false
 lang: false
 font: false
 # additional (default: false)
-app: true
-app_list:
-  - rsync
-git: true
-vagrant: true
-vagrant_wsl: true
+# app: true
+# app_list:
+#   - rsync
+# git: true
+# vagrant: true
+# vagrant_wsl: true

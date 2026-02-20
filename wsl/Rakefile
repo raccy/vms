@@ -149,7 +149,7 @@ task ansible: %i[ansible_pkg] do
   opt = String.new
   opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
   opt << if setup.input_user? then " -K" else " -e ansible_become_password=\"#{setup.password}\"" end
-  env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}
+  env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
   wsl.run("ansible-playbook wsl.yml setup.yml #{opt}", env:, cd: setup.playbooks)
   sh "wsl --terminate #{setup.name}"
