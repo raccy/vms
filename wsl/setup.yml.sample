@@ -17,11 +17,12 @@ setup:
   # no_proxy: "localhost,127.0.0.1,::1"
   # skip_update: false
 # debug: false
-# # general (default: true)
+# # essential (default: true)
+# system: true
 # update: true
 # lang: true
 # font: true
-# # additional (default: false)
+# # optional (default: false)
 # app: false
 # srv: false
 # gui: false
