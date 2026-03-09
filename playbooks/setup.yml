@@ -2,12 +2,12 @@
   hosts: localhost
   roles:
     - role: system
-    # - role: update
-    #   when: update
-    # - role: lang
-    #   when: lang
-    # - role: font
-    #   when: font
+    - role: update
+      when: update
+    - role: lang
+      when: lang
+    - role: font
+      when: font
     # - role: app
     #   when: app
     # - role: srv
