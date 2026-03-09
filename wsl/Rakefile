@@ -89,7 +89,7 @@ task install: :wsl do
       puts "Run exit after setting username and password for WSL distribution."
       sh "wsl --distribution #{setup.name}"
     else
-      current_users= wsl.users
+      current_users = wsl.users
       current_groups = wsl.groups
 
       unless current_groups.include?(setup.groupname)
@@ -108,7 +108,7 @@ task install: :wsl do
         wsl.run("useradd #{useradd_opts} \"#{setup.username}\"", user: "root")
         begin
           wsl.run("chpasswd", capture: true, stdin_data: "#{setup.username}:#{setup.password}", user: "root")
-        rescue
+        rescue StandardError
           wsl.run("userdel -r \"#{setup.username}\"", user: "root")
           raise
         end
@@ -119,13 +119,12 @@ task install: :wsl do
     end
   end
 
-  if setup.version.to_i == 1
-    # FIXME: WSL1では、パーミションが0700の/etc/resolv.confが作成されてしまう場合がある。
-    #    本来は自動生成されるファイルへのシンボリックリンクなるべき。
-    if wsl.run("realpath /etc/resolv.conf", capture: true, exception: false)&.chomp == "/etc/resolv.conf"
-      wsl.run("rm -f /etc/resolv.conf", user: "root")
-      sh "wsl --terminate #{setup.name}"
-    end
+  # FIXME: WSL1では、パーミションが0700の/etc/resolv.confが作成されてしまう場合がある。
+  #    本来は自動生成されるファイルへのシンボリックリンクなるべき。
+  if setup.version.to_i == 1 &&
+      wsl.run("realpath /etc/resolv.conf", capture: true, exception: false)&.chomp == "/etc/resolv.conf"
+    wsl.run("rm -f /etc/resolv.conf", user: "root")
+    sh "wsl --terminate #{setup.name}"
   end
 end
 
@@ -148,7 +147,12 @@ desc "Run Ansible playbook for WSL distribution"
 task ansible: %i[ansible_pkg] do
   opt = String.new
   opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
-  opt << if setup.input_user? then " -K" else " -e ansible_become_password=\"#{setup.password}\"" end
+  opt <<
+    if setup.input_user?
+      " -K"
+    else
+      " -e ansible_become_password=\"#{setup.password}\""
+    end
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
   wsl.run("ansible-playbook wsl.yml setup.yml #{opt}", env:, cd: setup.playbooks)

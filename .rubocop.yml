@@ -23,6 +23,9 @@ Layout/EndOfLine:
 Layout/LineLength:
   Max: 120
 
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
@@ -32,7 +35,13 @@ Layout/ParameterAlignment:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
+# Metrics double
+
+Metrics/AbcSize:
+  Max: 30 # 15
+
 Metrics/BlockLength:
+  Max: 50 # 25
   CountAsOne:
     - array
     - hash
@@ -40,6 +49,34 @@ Metrics/BlockLength:
   AllowedMethods:
     - refine
     - configure
+
+Metrics/BlockNesting:
+  Max: 6 # 3
+
+Metrics/ClassLength:
+  Max: 200 # 100
+  Exclude:
+    - test/**/*.rb
+    - app/controllers/*.rb
+
+Metrics/CyclomaticComplexity:
+  Max: 12 # 6
+
+Metrics/MethodLength:
+  Max: 20 # 10
+  CountAsOne: ['array', 'hash', 'heredoc']
+  Exclude:
+    - db/migrate/*.rb
+
+Metrics/ModuleLength:
+  Max: 200 # 100
+
+Metrics/ParameterLists:
+  Max: 10 # 5
+  MaxOptionalParameters: 6 # 3
+
+Metrics/PerceivedComplexity:
+  Max: 14 # 7
 
 Naming/AccessorMethodName:
   Enabled: false
@@ -56,7 +93,13 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 
+Style/OneLineConditional:
+  AlwaysCorrectToMultiline: true
+
 Style/PerlBackrefs:
+  Enabled: false
+
+Style/SafeNavigationChainLength:
   Enabled: false
 
 Style/SpecialGlobalVars:
