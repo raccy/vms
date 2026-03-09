@@ -1,0 +1,19 @@
+# main
+
+- name: Task role
+  ansible.builtin.include_tasks:
+    file: role.yml
+  loop: '{{ setup_essential_roles }}'
+  loop_control:
+    loop_var: setup_role_name
+  vars:
+    setup_role_default: true
+
+- name: Task role
+  ansible.builtin.include_tasks:
+    file: role.yml
+  loop: '{{ setup_optional_roles }}'
+  loop_control:
+    loop_var: setup_role_name
+  vars:
+    setup_role_default: false

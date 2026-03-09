@@ -1,28 +1,4 @@
-- name: Setup
+- name: Playbook for setup
   hosts: localhost
   roles:
-    - role: system
-    - role: update
-      when: update
-    - role: lang
-      when: lang
-    - role: font
-      when: font
-    # - role: app
-    #   when: app
-    # - role: srv
-    #   when: srv
-    # - role: gui
-    #   when: gui
-    # - role: git
-    #   when: git
-    # - role: vscode
-    #   when: vscode
-    # - role: anyenv
-    #   when: anyenv
-    # - role: docker
-    #   when: docker
-    # - role: vagrant
-    #   when: vagrant
-    # - role: home
-    #   when: home
+    - setup

@@ -1,0 +1,4 @@
+- name: 'Role {{ setup_role_name }}'
+  ansible.builtin.include_role:
+    name: '{{ setup_role_name }}'
+  when: vars[setup_role_name] | default(setup_role_default)

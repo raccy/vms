@@ -1,0 +1,15 @@
+setup_essential_roles:
+  - system
+  - update
+  - lang
+  - font
+setup_optional_roles:
+  - app
+  - srv
+  - gui
+  - git
+  - vscode
+  - anyenv
+  - docker
+  - vagrant
+  - home
