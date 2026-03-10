@@ -1,3 +1,7 @@
+- name: Role win
+  ansible.builtin.include_role:
+    name: win
+
 - name: Task wsl_path in wsl
   ansible.builtin.include_role:
     name: wsl
@@ -20,4 +24,3 @@
       {% if vagrant_home is defined %}
       export VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH={{ vagrant_home | dirname }}
       {% endif %}
-  when: home_bin_path

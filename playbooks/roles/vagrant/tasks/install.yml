@@ -1,0 +1,8 @@
+- name: 'Task repo_{{ ansible_pkg_mgr }}'
+  ansible.builtin.include_tasks:
+    file: repo_{{ ansible_pkg_mgr }}.yml
+
+- name: Install vagrant
+  become: true
+  ansible.builtin.package:
+    name: vagrant

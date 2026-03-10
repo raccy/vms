@@ -1,0 +1,31 @@
+# https://developer.hashicorp.com/vagrant/install
+
+- name: Assert ansible_pkg_mgr is apt
+  ansible.builtin.assert:
+    that: ansible_pkg_mgr == "apt"
+    msg: "ansible_pkg_mgr is not apt, but {{ ansible_pkg_mgr }}"
+    quiet: true
+
+- name: Role apt
+  ansible.builtin.include_role:
+    name: apt
+
+- name: Add hashicorp gpg for apt
+  become: true
+  ansible.builtin.get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: '{{ apt_keyrings_dir }}/hashicorp.asc'
+    mode: '0644'
+  # environment: '{{ proxy_env }}'
+
+- name: Add hashicorp repository for apt
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb
+      [arch={{ apt_architecture }} signed-by={{ apt_keyrings_dir }}/hashicorp.asc]
+      https://apt.releases.hashicorp.com
+      {{ apt_release }}
+      main
+    filename: hashicorp
+    state: present

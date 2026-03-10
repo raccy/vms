@@ -14,5 +14,5 @@ app: true
 app_list:
   - rsync
 git: true
-# vagrant: true
-# vagrant_wsl: true
+vagrant: true
+vagrant_wsl: true
