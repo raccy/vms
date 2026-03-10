@@ -1,11 +1,10 @@
-# TODO: dnfは未対応
+- name: Assert ansible_pkg_mgr is apt
+  ansible.builtin.assert:
+    that: ansible_pkg_mgr == "apt"
+    msg: "ansible_pkg_mgr is not apt, but {{ ansible_pkg_mgr }}"
+    quiet: true
 
-- name: Fail without apt
-  ansible.builtin.fail:
-    msg: support apt only
-  when: ansible_pkg_mgr != "apt"
-
-- name: Add docker gpg 
+- name: Add docker gpg
   become: true
   ansible.builtin.command:
     argv:

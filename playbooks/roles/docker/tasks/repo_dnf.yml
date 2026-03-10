@@ -1,0 +1,12 @@
+# https://developer.hashicorp.com/vagrant/install
+
+- name: Assert ansible_pkg_mgr is dnf
+  ansible.builtin.assert:
+    that: ansible_pkg_mgr == "dnf"
+    msg: "ansible_pkg_mgr is not dnf, but {{ ansible_pkg_mgr }}"
+    quiet: true
+
+# TODO: まだ書いていない
+- name: Not supported dnf
+  ansible.builtin.fail:
+    msg: not support
