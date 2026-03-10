@@ -1,14 +1,9 @@
-- name: Check pid 1 proccess
-  ansible.builtin.command:
-    cmd: ps -p 1 -o %c --no-headers
-  changed_when: false
-  register: system_run_ps_1
-
-- name: Setting system init
-  ansible.builtin.set_fact:
-    system_init: '{{ system_run_ps_1.stdout_lines | first }}'
+# system
+---
+- name: Task facts
+  ansible.builtin.import_tasks:
+    file: facts.yml
 
 - name: Task proxy
   ansible.builtin.include_tasks:
     file: proxy.yml
-  when: proxy_env != {}

@@ -1,28 +1,10 @@
-- name: Where code
-  ansible.builtin.include_role:
-    name: win
-    tasks_from: where
-  vars:
-    win_where_name: code
+- name: Set fs.inotify.max_user_watches in sysctl
+  become: true
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_watches
+    value: '{{ vscode_max_watches }}'
 
-- name: Setting vscode_win_path
-  ansible.builtin.set_fact:
-    vscode_win_path: '{{ win_where_path }}'
-
-- name: Debug vscode_win_path
-  ansible.builtin.debug:
-    var: vscode_win_path
-  when: debug | default(false)
-
-- name: Block vscode in bashrc
-  ansible.builtin.blockinfile:
-    path: ~/.bashrc
-    marker: '# {mark} ANSIBLE MANAGED BLOCK vscode'
-    block: |
-      if ! [[ "$PATH" =~ ":{{ vscode_win_path | dirname }}" ]]
-      then
-          export PATH="$PATH:{{ vscode_win_path | dirname }}"
-      fi
-  when:
-    - vscode_win_path
-    - vscode_win_path | dirname not in lookup("env", "PATH") | split(":")
+- name: Task wsl
+  ansible.builtin.include_tasks:
+    file: wsl.yml
+  when: system_virt == "wsl"

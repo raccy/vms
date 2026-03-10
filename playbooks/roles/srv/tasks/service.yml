@@ -40,4 +40,3 @@
   when:
     - srn_service.lang is defined
     - srv_service.lang[itme] is defiend
-
