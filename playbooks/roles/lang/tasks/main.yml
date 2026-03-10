@@ -20,7 +20,7 @@
     cmd: localectl status
   changed_when: false
   register: lang_run_localectl_status
-  when: wsl_systemd
+  when: system_init == "systemd"
 
 - name: Run localectl set-locale
   become: true
@@ -28,10 +28,8 @@
     cmd: 'localectl set-locale {{ lang_locale }}'
   changed_when: true
   when:
-    - wsl_systemd
-    - >-
-      lang_run_localectl_status.stdout_lines | first
-        is not search("LANG=" ~ lang_locale)
+    - system_init == "systemd"
+    - lang_run_localectl_status.stdout_lines | first is not search("LANG=" ~ lang_locale)
 
 # FIXME: dnfは日本語manが無い？
 - name: Install manual packages

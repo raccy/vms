@@ -3,3 +3,4 @@
 Acquire::{{ proto }}::Proxy "{{ proxy_env[proto ~ "_proxy"] }}";
 Acquire::{{ proto }}::Timeout={{ system_pkg_timeout_with_proxy }};
 {% endif %}
+{% endfor %}

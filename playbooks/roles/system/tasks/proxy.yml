@@ -32,14 +32,9 @@
   become: true
   ansible.builtin.lineinfile:
     path: /etc/dnf/dnf.conf
-    regexp: '^proxy=.*$'
-    line: 'proxy={{ proxy_env.http_proxy }}'
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Insert timeout in dnf.conf for dnf
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/dnf/dnf.conf
-    regexp: '^timeout=.*$'
-    line: 'timeout={{ system_pkg_timeout_with_proxy }}'
+    regexp: '^{{ item.key }}=.*$'
+    line: '{{ item.key }}={{ item.value }}'
+  loop:
+    - {key: proxy, value: '{{ proxy_env.http_proxy }}'}
+    - {key: timeout, value: '{{ system_pkg_timeout_with_proxy }}'}
   when: ansible_pkg_mgr == "dnf"
