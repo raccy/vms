@@ -1,0 +1,4 @@
+- name: Playbook for setup on localhost
+  hosts: localhost
+  roles:
+    - setup

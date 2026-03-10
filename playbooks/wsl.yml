@@ -1,4 +1,4 @@
-- name: Playbook for wsl
+- name: Playbook for wsl on localhost
   hosts: localhost
   roles:
     - wsl

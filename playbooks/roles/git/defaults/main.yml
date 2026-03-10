@@ -1,4 +1,4 @@
-git_lfs: true
+git_lfs: false
 # git_config:
 #   user.name: your name
 #   user.email: account@exmaple.com

@@ -12,7 +12,7 @@
     name: '{{ item }}'
     install_weak_deps: '{{ item not in app_no_install_recommends }}'
   loop: '{{ app_list }}'
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Select editor
   become: true

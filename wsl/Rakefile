@@ -2,6 +2,7 @@
 
 require "open3"
 require "yaml"
+require "json"
 require "win32/registry"
 
 require_relative "setup"
@@ -153,9 +154,10 @@ task ansible: %i[ansible_pkg] do
     else
       " -e ansible_become_password=\"#{setup.password}\""
     end
+  opt << " -e '#{{git_config: setup.git_config}.to_json}'"
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
-  wsl.run("ansible-playbook wsl.yml setup.yml #{opt}", env:, cd: setup.playbooks)
+  wsl.run("ansible-playbook wsl.yml setup_localhost.yml #{opt}", env:, cd: setup.playbooks)
   sh "wsl --terminate #{setup.name}"
 end
 

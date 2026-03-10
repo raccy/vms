@@ -1,0 +1,16 @@
+- name: Debug git_config
+  ansible.builtin.debug:
+    var: git_config
+  when: debug | default(false)
+
+# TODO: 複数の値に未対応
+# TODO: ネストしたdictに未対応
+- name: Set git config
+  community.general.git_config:
+    scope: global
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
+  loop: '{{ git_config | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  when: git_config is defined

@@ -13,6 +13,6 @@ font: false
 app: true
 app_list:
   - rsync
-# git: true
+git: true
 # vagrant: true
 # vagrant_wsl: true
