@@ -16,6 +16,7 @@ setup:
   # ftp_proxy: http://proxy.example.com:8080
   # no_proxy: "localhost,127.0.0.1,::1"
   # skip_update: false
+  # skip_ansible: false
 # debug: false
 # # essential (default: true)
 # system: true
