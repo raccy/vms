@@ -1,4 +1,5 @@
 # TODO: dnfは未対応
+# TODO: WSL以外はよくわかっていない。
 
 - name: Fail without apt
   ansible.builtin.fail:
