@@ -16,4 +16,4 @@
 
 - name: Set system virt
   ansible.builtin.set_fact:
-    system_virt: '{{ system_run_systemd_detect_virt..stdout_lines | first }}'
+    system_virt: '{{ system_run_systemd_detect_virt.stdout_lines | first }}'

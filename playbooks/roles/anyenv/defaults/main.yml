@@ -1,5 +1,2 @@
-anyenv_envs:
-  - rbenv
-  - pyenv
-  - nodev
+anyenv_envs: []
 anyenv_update: true
