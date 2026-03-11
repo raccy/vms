@@ -11,11 +11,14 @@
     name: 'langpacks-{{ lang_package }}'
   when: ansible_pkg_mgr == "dnf"
 
-- name: Create locale
+# FIXME: もしかしたらUbuntuでも必要ない？
+- name: Create locale when apt only
   become: true
   community.general.locale_gen:
     name: '{{ lang_locale }}'
-  when: system_init == "systemd"
+  when:
+    - system_init == "systemd"
+    - ansible_pkg_mgr == "apt"
 
 - name: Set locale
   become: true
