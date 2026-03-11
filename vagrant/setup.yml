@@ -4,14 +4,10 @@ setup:
   distro: "AlmaLinux-10"
   version: 1
   username: vagrant
-# general (default: true)
-debug: true
 update: false
-# lang: false
-# font: false
-# additional (default: false)
-app: true
 app_list:
   - rsync
+  - ruby
 git: true
+vscode: true
 vagrant: true

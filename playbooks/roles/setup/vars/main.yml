@@ -5,10 +5,10 @@ setup_essential_roles:
   - time
   - lang
   - font
-setup_optional_roles:
-  - snap
   - app
   - srv
+setup_optional_roles:
+  - snap
   - gui
   - git
   - vscode
