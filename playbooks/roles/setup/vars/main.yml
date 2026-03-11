@@ -6,6 +6,7 @@ setup_essential_roles:
   - lang
   - font
 setup_optional_roles:
+  - snap
   - app
   - srv
   - gui

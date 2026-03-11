@@ -1,24 +1,29 @@
+# NOTE: Do not use role_path directly in the included role, because it will be changed to the included role's path.
+- name: Set env_role_path fact
+  ansible.builtin.set_fact:
+    env_role_path: '{{ role_path }}'
+
 - name: Task etc on proxy for environment
   ansible.builtin.include_role:
-    name: snap
-    tasks_from: proxy
+    name: proxy
+    tasks_from: etc
   vars:
-    proxy_etc_role_path: '{{ role_path }}'
+    proxy_etc_role_path: '{{ env_role_path }}'
     proxy_etc_files:
       - environment.d/10proxy.conf
   when:
     - proxy_env != {}
-    - proxy_env_environment
+    - env_proxy_environment
 
 - name: Task etc on proxy for shell
   ansible.builtin.include_role:
-    name: snap
-    tasks_from: proxy
+    name: proxy
+    tasks_from: etc
   vars:
-    proxy_etc_role_path: '{{ role_path }}'
+    proxy_etc_role_path: '{{ env_role_path }}'
     proxy_etc_files:
       - profile.d/proxy.sh
       - profile.d/proxy.csh
   when:
     - proxy_env != {}
-    - proxy_env_shell
+    - env_proxy_shell

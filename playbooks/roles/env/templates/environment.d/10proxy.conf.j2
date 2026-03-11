@@ -1,9 +1,9 @@
-{% if proxy_env_uppercase %}
+{% if env_proxy_uppercase %}
 {% for env in proxy_env | dict2items %}
 {{ env.key | upper }}={{ env.value }}
 {% endfor %}
 {% endif %}
-{% if proxy_env_lowercase %}
+{% if env_proxy_lowercase %}
 {% for env in proxy_env | dict2items %}
 {{ env.key }}={{ env.value }}
 {% endfor %}

@@ -1,4 +1,0 @@
-system_proxy_etc_files:
-  - environment.d/10proxy.conf
-  - profile.d/proxy.sh
-  - profile.d/proxy.csh

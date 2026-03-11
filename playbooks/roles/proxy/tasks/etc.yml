@@ -1,5 +1,11 @@
 # Copy etc files for proxy setting
 ---
+- debug:
+    var: proxy_etc_role_path
+
+- debug:
+    var: proxy_etc_files
+
 - name: Make diretory
   become: true
   ansible.builtin.file:
