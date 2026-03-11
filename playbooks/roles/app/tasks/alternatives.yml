@@ -1,0 +1,6 @@
+- name: Select alternative
+  become: true
+  community.general.alternatives:
+    name: '{{ item.key }}'
+    path: '{{ item.value }}'
+  loop: '{{ app_alternatives | dict2items }}'

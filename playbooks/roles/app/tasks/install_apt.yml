@@ -1,0 +1,13 @@
+- name: Install packages by apt
+  become: true
+  ansible.builtin.apt:
+    name: '{{ app_list }}'
+    install_recommends: '{{ app_recommends }}'
+
+- name: Install dev packages by apt
+  become: true
+  ansible.builtin.apt:
+    name: '{{ app_list }}'
+    state: bulid-dep
+    install_recommends: '{{ app_recommends }}'
+  when: app_dev

@@ -1,0 +1,13 @@
+- name: Install packages by dnf
+  become: true
+  ansible.builtin.dnf:
+    name: '{{ item }}'
+    install_weak_deps: '{{ app_recommends }}'
+  loop: '{{ app_list }}'
+
+- name: Install dev packages by apt
+  become: true
+  ansible.builtin.dnf:
+    name: '{{ app_list | map("~", "-devel") }}'
+    install_weak_deps: '{{ app_recommends }}'
+  when: app_dev

@@ -1,6 +1,6 @@
 setup_essential_roles:
   - env
-  - package
+  - pkg
   - update
   - time
   - lang

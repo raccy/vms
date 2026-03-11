@@ -1,4 +1,7 @@
 app_list: []
+app_src: pkg
+app_recommends: true
+app_dev: false
 app_alternatives: {}
 # app_alternatives:
 #   editor: /usr/bin/vim.basic
