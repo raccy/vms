@@ -1,6 +1,8 @@
 setup_essential_roles:
-  - system
+  - env
+  - package
   - update
+  - time
   - lang
   - font
 setup_optional_roles:

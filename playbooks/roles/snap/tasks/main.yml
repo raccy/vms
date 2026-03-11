@@ -1,0 +1,10 @@
+# snap
+---
+- name: Task etc on proxy
+  ansible.builtin.include_role:
+    name: snap
+    tasks_from: proxy
+  vars:
+    proxy_etc_role_path: '{{ role_path }}'
+    proxy_etc_files: '{{ snap_proxy_etc_files }}'
+  when: proxy_env != {}

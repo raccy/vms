@@ -1,0 +1,35 @@
+# time
+---
+- name: 'Set RTC to {{ system_timezone_rtc_local | ternary("local", "UTC") }}'
+  become: true
+  ansible.builtin.command:
+    argv:
+      - timedatectl
+      - set-local-rtc
+      - '{{ system_timezone_rtc_local | ternary("1", "0") }}'
+  changed_when: true
+  when: system_init == "systemd"
+
+# FIXME: RedHat系でタイムゾーンを変更するときに、SELinuxの許可モードに変更する必要がある。
+- name: Change permissive mode for SELinux
+  become: true
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
+  when:
+    - ansible_os_family == "RedHat"
+    - system_virt != "wsl"
+
+- name: Set timezone
+  become: true
+  community.general.timezone:
+    name: '{{ system_timezone }}'
+
+- name: CHange enforcing mode for SELinux
+  become: true
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
+  when:
+    - ansible_os_family == "RedHat"
+    - system_virt != "wsl"

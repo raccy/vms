@@ -1,0 +1,4 @@
+env_proxy_environment: true
+env_proxy_shell: true
+env_proxy_uppercase: true
+env_proxy_lowercase: true

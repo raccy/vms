@@ -1,24 +1,18 @@
-- name: Make apt_keyrings_dir
-  become: true
-  ansible.builtin.file:
-    path: '{{ apt_keyrings_dir }}'
-    state: directory
-    mode: '0755'
-  when: ansible_pkg_mgr == "apt"
+- name: Assert ansible_pkg_mgr is apt
+  ansible.builtin.assert:
+    that: ansible_pkg_mgr == "apt"
+    msg: "ansible_pkg_mgr is not apt, but {{ ansible_pkg_mgr }}"
+    quiet: true
 
-- name: Run dpkg --print-architecture
-  ansible.builtin.command:
-    cmd: dpkg --print-architecture
-  changed_when: false
-  register: apt_run_dpkg_print_architecture
-  when: ansible_pkg_mgr == "apt"
+- name: Task facts
+  ansible.builtin.import_tasks:
+    file: facts.yml
 
-- name: Set apt_architecture
-  ansible.builtin.set_fact:
-    apt_architecture: '{{ apt_run_dpkg_print_architecture.stdout }}'
-  when: ansible_pkg_mgr == "apt"
-
-- name: Set apt_release
-  ansible.builtin.set_fact:
-    apt_release: '{{ ansible_distribution_release }}'
-  when: ansible_pkg_mgr == "apt"
+- name: Task etc on proxy
+  ansible.builtin.include_role:
+    name: snap
+    tasks_from: proxy
+  vars:
+    proxy_etc_role_path: '{{ role_path }}'
+    proxy_etc_files: '{{ apt_proxy_etc_files }}'
+  when: proxy_env != {}

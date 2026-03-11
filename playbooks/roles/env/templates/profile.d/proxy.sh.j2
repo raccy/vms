@@ -1,0 +1,11 @@
+# proxy
+{% if proxy_env_uppercase %}
+{% for env in proxy_env | dict2items %}
+export {{ env.key | upper }}="{{ env.value }}"
+{% endfor %}
+{% endif %}
+{% if proxy_env_lowercase %}
+{% for env in proxy_env | dict2items %}
+export {{ env.key }}="{{ env.value }}"
+{% endfor %}
+{% endif %}

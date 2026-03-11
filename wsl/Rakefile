@@ -105,6 +105,7 @@ task install: :wsl do
         useradd_opts << " -g #{setup.gid}"
         available_groups = setup.groups & current_groups
         useradd_opts << " -G \"#{available_groups.join(',')}\"" unless available_groups.empty?
+        useradd_opts << " -s /bin/bash"
         useradd_opts << " -m"
         wsl.run("useradd #{useradd_opts} \"#{setup.username}\"", user: "root")
         begin

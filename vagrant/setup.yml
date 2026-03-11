@@ -7,8 +7,8 @@ setup:
 # general (default: true)
 debug: true
 update: false
-lang: false
-font: false
+# lang: false
+# font: false
 # additional (default: false)
 app: true
 app_list:

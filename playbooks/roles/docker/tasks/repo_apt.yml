@@ -21,7 +21,7 @@
   ansible.builtin.apt_repository:
     repo: >-
       deb
-      [arch={{ apt_architecture}}
+      [arch={{ apt_architecture }}
       signed-by={{ apt_keyrings_dir }}/docker.asc]
       https://download.docker.com/linux/ubuntu
       {{ apt_release }}

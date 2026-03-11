@@ -1,0 +1,21 @@
+# Copy etc files for proxy setting
+---
+- name: Make diretory
+  become: true
+  ansible.builtin.file:
+    path: '/etc/{{ item }}'
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+  loop: '{{ proxy_etc_files | map("dirname") }}'
+
+- name: Copy template config to etc directory for proxy
+  become: true
+  ansible.builtin.template:
+    src: '{{ proxy_etc_role_path | default(role_path) }}/templates/{{ item }}.j2'
+    dest: '/etc/{{ item }}'
+    owner: root
+    group: root
+    mode: '0644'
+  loop: '{{ proxy_etc_files }}'

@@ -1,0 +1,16 @@
+- name: Assert ansible_pkg_mgr is dnf
+  ansible.builtin.assert:
+    that: ansible_pkg_mgr == "dnf"
+    msg: "ansible_pkg_mgr is not dnf, but {{ ansible_pkg_mgr }}"
+    quiet: true
+
+- name: Insert proxy in dnf.conf for dnf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    regexp: '^{{ item.key }}=.*$'
+    line: '{{ item.key }}={{ item.value }}'
+  loop:
+    - {key: proxy, value: '{{ proxy_env.http_proxy | default(proxy_env.https_proxy) }}'}
+    - {key: timeout, value: '{{ dnf_timeout_with_proxy }}'}
+  when: proxy_env != {}

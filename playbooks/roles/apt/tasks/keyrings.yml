@@ -1,0 +1,6 @@
+- name: Make apt_keyrings_dir
+  become: true
+  ansible.builtin.file:
+    path: '{{ apt_keyrings_dir }}'
+    state: directory
+    mode: '0755'

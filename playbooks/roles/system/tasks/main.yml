@@ -3,7 +3,3 @@
 - name: Task facts
   ansible.builtin.import_tasks:
     file: facts.yml
-
-- name: Task proxy
-  ansible.builtin.include_tasks:
-    file: proxy.yml

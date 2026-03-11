@@ -1,6 +1,6 @@
 {% for proto in ["http", "https", "ftp"] %}
 {% if proxy_env[proto ~ "_proxy"] is defined %}
 Acquire::{{ proto }}::Proxy "{{ proxy_env[proto ~ "_proxy"] }}";
-Acquire::{{ proto }}::Timeout={{ system_pkg_timeout_with_proxy }};
+Acquire::{{ proto }}::Timeout={{ apt_timeout_with_proxy }};
 {% endif %}
 {% endfor %}

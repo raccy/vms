@@ -1,0 +1,2 @@
+snap_proxy_etc_files:
+  - systemd/system/snapd.service.d/snap_proxy.conf
