@@ -1,3 +1,4 @@
+# FIXME: Ubuntuのパッケージではvenvを使用するように言われて、インストールできない。
 - name: Intall pip
   ansible.builtin.pip:
     name: '{{ python_pips }}'
