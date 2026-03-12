@@ -1,9 +1,26 @@
+- name: Set default app_install_* facts
+  ansible.builtin.set_fact:
+    app_install_src: '{{ app_install_src | default("pkg") }}'
+    app_install_pkg: '{{ app_install_pkg | default([]) }}'
+    app_install_recommends: '{{ app_install_recommends | default(true) }}'
+    app_install_dev: '{{ app_install_dev | default(false) }}'
+
 - name: 'Task package manager {{ ansible_pkg_mgr }}'
   ansible.builtin.include_tasks:
     file: 'install_{{ ansible_pkg_mgr }}.yml'
-  when: app_src == "pkg"
+  when: app_install_src == "pkg"
+
+# TODO: 他のソース
+#   snap, rbenv, pyenv, nodenv, *env
 
 - name: 'Task package manager {{ ansible_pkg_mgr }}'
   ansible.builtin.include_tasks:
     file: 'install_{{ app_src }}.yml'
-  when: app_src != "pkg"
+  when: app_install_src != "pkg"
+
+- name: Reset app_install_* facts
+  ansible.builtin.set_fact:
+    app_install_src: "pkg"
+    app_install_pkg: []
+    app_install_recommends: true
+    app_install_dev: false

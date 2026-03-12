@@ -1,0 +1,18 @@
+- name: Task install on app for ruby
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install_pkg: ruby
+    app_install_src: '{{ ruby_src }}'
+    app_install_dev: '{{ ruby_dev }}'
+
+- name: Task install on app for ruby libs by pkg only
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install_pkg: '{{ ruby_libs | map("regex_replace", "^", "ruby-") | list }}'
+  when:
+    - ruby_src == "pkg"
+    - ruby_libs | length > 0

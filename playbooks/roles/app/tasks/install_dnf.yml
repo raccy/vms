@@ -1,13 +1,15 @@
 - name: Install packages by dnf
   become: true
   ansible.builtin.dnf:
-    name: '{{ item }}'
-    install_weak_deps: '{{ app_recommends }}'
-  loop: '{{ app_list }}'
+    name: '{{ app_install_pkg }}'
+    install_weak_deps: '{{ app_install_recommends }}'
+  when: app_install_pkg | length > 0
 
 - name: Install dev packages by apt
   become: true
   ansible.builtin.dnf:
-    name: '{{ app_list | map("~", "-devel") }}'
-    install_weak_deps: '{{ app_recommends }}'
-  when: app_dev
+    name: '{{ app_install_pkg | map("regex_replace", "$", "-devel") }}'
+    install_weak_deps: '{{ app_install_recommends }}'
+  when:
+    - app_install_pkg | length > 0
+    - app_install_dev

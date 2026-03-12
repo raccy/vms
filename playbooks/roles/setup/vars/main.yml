@@ -8,10 +8,14 @@ setup_essential_roles:
   - app
   - srv
 setup_optional_roles:
+  # tools
   - snap
-  - gui
-  - git
-  - vscode
   - anyenv
   - docker
+  # applications
+  - gui
+  - git
+  - ruby
   - vagrant
+  # environments
+  - vscode
