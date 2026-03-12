@@ -3,13 +3,21 @@
   ansible.builtin.dnf:
     name: '{{ app_install_pkg }}'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_pkg | length > 0
 
-- name: Install dev packages by apt
+- name: Install build packages by dnf
   become: true
   ansible.builtin.dnf:
-    name: '{{ app_install_pkg | map("regex_replace", "$", "-devel") }}'
+    name: '@Development Tools'
+    install_weak_deps: false
+  when: app_install_dev
+
+- name: Install dev package by dnf when pkg is string
+  become: true
+  ansible.builtin.dnf:
+    name: >-
+      {{ app_install_pkg is string | ternary(
+        app_install_pkg ~ "-devel",
+        app_install_pkg | map("regex_replace", "$", "-devel")
+      ) }}
     install_weak_deps: '{{ app_install_recommends }}'
-  when:
-    - app_install_pkg | length > 0
-    - app_install_dev
+  when: app_install_dev

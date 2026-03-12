@@ -13,7 +13,7 @@
 # TODO: 他のソース
 #   snap, rbenv, pyenv, nodenv, *env
 
-- name: 'Task package manager {{ ansible_pkg_mgr }}'
+- name: 'Task other source {{ app_install_src }}'
   ansible.builtin.include_tasks:
     file: 'install_{{ app_src }}.yml'
   when: app_install_src != "pkg"

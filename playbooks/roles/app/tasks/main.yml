@@ -1,9 +1,10 @@
 - name: Task install
-  ansible.builtin.import_tasks:
+  ansible.builtin.include_tasks:
     file: install.yml
   vars:
     app_install_pkg: '{{ app_pkg }}'
     app_install_recommends: '{{ app_recommends }}'
+  when: app_pkg | length > 0
 
 - name: Task alternatives
   ansible.builtin.import_tasks:
