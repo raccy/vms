@@ -175,7 +175,7 @@ task :ansible_pkg do
   collection_list = wsl.run("ansible-galaxy collection list", capture: true, exception: false)
   # for user
   ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
-    next if collection_list.include?(collection)
+    next if collection_list&.include?(collection)
 
     wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
   end
