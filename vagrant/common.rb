@@ -5,7 +5,7 @@ require "uri"
 require "etc"
 require "yaml"
 
-ANSIBLE_DIR = File.expand_path("../ansible", __dir__)
+PLAYBOOKS_DIR = File.expand_path("../playbooks", __dir__)
 
 if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   # DOSISH
@@ -248,7 +248,7 @@ def common_config(config, dir: Dir.pwd)
 
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
-    ansible.playbook = File.join(ANSIBLE_DIR, "setup.yml")
+    ansible.playbook = File.join(PLAYBOOKS_DIR, "setup.yml")
     ansible.extra_vars = load_vars(File.join(dir, "vars.yml"))
   end
 
@@ -258,4 +258,6 @@ def common_config(config, dir: Dir.pwd)
       ansible.playbook = File.join(dir, "local.yml")
     end
   end
+
+  config
 end
