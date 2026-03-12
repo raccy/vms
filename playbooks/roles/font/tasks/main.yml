@@ -1,20 +1,18 @@
 - name: Install Font package by apt
   become: true
   ansible.builtin.apt:
-    name: 'fonts-{{ item }}'
-  loop: '{{ font_list }}'
+    name: '{{ font_fonts | map("regex_replace", "^", "fonts-") }}'
   when:
-    - font_list
+    - font_fonts | length > 0
     - ansible_pkg_mgr == "apt"
 
 - name: Install Font package by dnf
   become: true
   ansible.builtin.dnf:
-    name: '{{ item }}-fonts'
-  loop: '{{ font_list }}'
+    name: '{{ font_fonts | map("regex_replace", "$", "-fonts") }}'
   when:
-    - font_list
-    - ansible_pkg_mgr == "dnf"
+    - font_fonts | length > 0
+    - ansible_pkg_mgr == "apt"
 
 - name: Make /etc/fonts diretory
   become: true
