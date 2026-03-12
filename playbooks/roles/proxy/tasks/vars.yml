@@ -5,8 +5,8 @@
       https_proxy: '{{ proxy_https | default(omit) }}'
       ftp_proxy: '{{ proxy_ftp | default(omit) }}'
       no_proxy: >-
-        {{ proxy_no
-          | default((proxy_bypass_loopback | ternary(proxy_loopback, []) + proxy_bypass_list) | unique | join(",")) }}
+        {{ proxy_no | default(
+          (proxy_bypass_loopback | ternary(proxy_loopback, []) + proxy_bypass_list) | unique | join(",")) }}
   when:
     - proxy_env is not defined
     - proxy_http is defined or proxy_https is defined or proxy_ftp is defined

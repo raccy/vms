@@ -1,0 +1,5 @@
+python_name: python3
+python_src: pkg
+python_dev: false
+python_libs: []
+python_pips: []

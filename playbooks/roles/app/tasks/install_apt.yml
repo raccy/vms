@@ -15,7 +15,7 @@
   become: true
   ansible.builtin.apt:
     name: >-
-      {{ app_install_pkg is string | ternary(
+      {{ (app_install_pkg is string) | ternary(
         app_install_pkg ~ "-dev",
         app_install_pkg | map("regex_replace", "$", "-dev")
       ) }}

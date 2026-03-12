@@ -1,0 +1,4 @@
+- name: Intall pip
+  ansible.builtin.pip:
+    name: '{{ python_pips }}'
+  when: python_pips | length > 0

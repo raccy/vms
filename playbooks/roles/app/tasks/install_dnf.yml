@@ -11,11 +11,11 @@
     install_weak_deps: false
   when: app_install_dev
 
-- name: Install dev package by dnf when pkg is string
+- name: Install dev packages by dnf
   become: true
   ansible.builtin.dnf:
     name: >-
-      {{ app_install_pkg is string | ternary(
+      {{ (app_install_pkg is string) | ternary(
         app_install_pkg ~ "-devel",
         app_install_pkg | map("regex_replace", "$", "-devel")
       ) }}
