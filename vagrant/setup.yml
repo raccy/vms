@@ -1,7 +1,7 @@
 ---
 setup:
   name: vagrant
-  distro: AlmaLinux-10
+  distro: AlmaLinux-9
   version: 1
   username: vagrant
 update: false
