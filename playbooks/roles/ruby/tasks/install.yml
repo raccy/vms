@@ -3,7 +3,7 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkg: ruby
+    app_install_pkgs: [ruby]
     app_install_src: '{{ ruby_src }}'
     app_install_dev: '{{ ruby_dev }}'
 
@@ -12,7 +12,7 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkg: '{{ ruby_libs | map("regex_replace", "^", "ruby-") }}'
+    app_install_pkgs: '{{ ruby_libs | map("regex_replace", "^", "ruby-") }}'
   when:
     - ruby_src == "pkg"
     - ruby_libs | length > 0

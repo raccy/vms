@@ -3,7 +3,7 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkg: '{{ python_name }}'
+    app_install_pkgs: ['{{ python_name }}']
     app_install_src: '{{ python_src }}'
     app_install_dev: '{{ python_dev }}'
 
@@ -12,7 +12,7 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkg: '{{ python_name }}-pip'
+    app_install_pkgs: ['{{ python_name }}-pip']
   when:
     - python_src == "pkg"
     - python_pips | length > 0
@@ -23,7 +23,7 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkg: '{{ python_libs | map("regex_replace", "^", python_name ~ "-") | list }}'
+    app_install_pkgs: '{{ python_libs | map("regex_replace", "^", python_name ~ "-") }}'
   when:
     - python_src == "pkg"
     - python_libs | length > 0

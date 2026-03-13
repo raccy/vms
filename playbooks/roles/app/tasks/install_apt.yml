@@ -1,7 +1,7 @@
 - name: Install packages by apt
   become: true
   ansible.builtin.apt:
-    name: '{{ app_install_pkg }}'
+    name: '{{ app_install_pkgs }}'
     install_recommends: '{{ app_install_recommends }}'
 
 - name: Install build packages by apt
@@ -14,10 +14,6 @@
 - name: Install dev packages by apt
   become: true
   ansible.builtin.apt:
-    name: >-
-      {{ (app_install_pkg is string) | ternary(
-        app_install_pkg ~ "-dev",
-        app_install_pkg | map("regex_replace", "$", "-dev")
-      ) }}
+    name: '{{ app_install_pkgs | map("regex_replace", "$", "-dev") }}'
     install_recommends: '{{ app_install_recommends }}'
   when: app_install_dev

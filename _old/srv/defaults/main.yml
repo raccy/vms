@@ -1,4 +1,4 @@
-srv_list: []
+srv_names: []
   # - apache
   # - nginx
   # - mariadb

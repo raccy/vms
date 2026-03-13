@@ -7,14 +7,6 @@ setup:
 update: false
 app_pkg:
   - rsync
+  - ruby
 git: true
-vscode: true
 vagrant: true
-python: true
-python_pips:
-  - ansible-dev-tools
-ruby: true
-ruby_dev: true
-ruby_gems:
-  - rubocop
-  - ruby-lsp

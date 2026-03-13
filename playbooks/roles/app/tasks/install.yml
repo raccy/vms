@@ -1,7 +1,7 @@
 - name: Set default app_install_* facts
   ansible.builtin.set_fact:
     app_install_src: '{{ app_install_src | default("pkg") }}'
-    app_install_pkg: '{{ app_install_pkg | default([]) }}'
+    app_install_pkgs: '{{ app_install_pkgs | default([]) }}'
     app_install_recommends: '{{ app_install_recommends | default(true) }}'
     app_install_dev: '{{ app_install_dev | default(false) }}'
 
@@ -21,6 +21,6 @@
 - name: Reset app_install_* facts
   ansible.builtin.set_fact:
     app_install_src: "pkg"
-    app_install_pkg: []
+    app_install_pkgs: []
     app_install_recommends: true
     app_install_dev: false

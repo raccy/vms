@@ -1,4 +1,4 @@
-app_pkg: []
+app_pkgs: []
 app_recommends: true
 app_alternatives: {}
 # app_alternatives:

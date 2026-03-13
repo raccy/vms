@@ -6,7 +6,6 @@ setup_essential_roles:
   - lang
   - font
   - app
-  - srv
 setup_optional_roles:
   # tools
   - snap
