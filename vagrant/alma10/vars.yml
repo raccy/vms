@@ -3,37 +3,38 @@
 app_pkg:
   - vim
   - rsync
-  - '@Development Tools'
-# ds:
-#   posix: "samba" # or "account", "person"
-#   member: true
-git: true
-srv_names:
-  - mariadb@10.11
+  - "@Development Tools"
+ds: true
+ds_member: true
+ds_posix: samba # or account, person
 
-mariadb:
-  verison: "10.11" # 2028-03
-  dev: true
-nginx: {}
-nodejs:
-  version: "22" # 2027-04
-  yarn: true
-  npms:
-    "npm-check-updates"
-# openldap:
-#   posix: "samba" # or "account", "person"
-#   member: true
-postgresql:
-  dev: true
-redis:
-  dev: true
-ruby:
-  version: "3.3" # 2027-03
-  dev: true
-  pkgs:
-    - "rubygem-irb"
-    - "rubygem-rake"
-    - "rubygem-bundler"
-  gems:
-    "rubocop"
-samba: {}
+git: true
+
+mariadb: true
+mariadb_ver: "10.11" # 2028-03
+mariadb_dev: true
+
+nginx: true
+
+nodejs: true
+nodejs_ver: "22" # 2027-04
+nodejs_npms: [npm-check-updates]
+nodejs_yarn: true
+
+# openldap: true
+# openldap_member: true
+# openldap_posix: samba # or account, person
+
+postgresql: true
+postgresql_dev: true
+
+redis: true
+redis_dev: true
+
+ruby: true
+ruby_ver: "3.3" # 2027-03
+ruby_dev: true
+ruby_gems: ["rubocop"]
+ruby_libs: ["bundled-gems"]
+
+samba: true
