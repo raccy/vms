@@ -7,13 +7,3 @@
 - name: Set system init
   ansible.builtin.set_fact:
     system_init: '{{ system_run_ps_1.stdout_lines | first | trim }}'
-
-- name: Check systemd-detect-virt status
-  ansible.builtin.command:
-    cmd: systemd-detect-virt
-  changed_when: false
-  register: system_run_systemd_detect_virt
-
-- name: Set system virt
-  ansible.builtin.set_fact:
-    system_virt: '{{ system_run_systemd_detect_virt.stdout_lines | first | trim }}'

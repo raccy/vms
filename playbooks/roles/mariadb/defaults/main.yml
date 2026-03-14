@@ -1,0 +1,7 @@
+mariadb_ver: # null is default, "latest" is latest stable, "x.y" is specific version
+mariadb_src: pkg
+mariadb_dev: false
+mariadb_libs: []
+mariadb_gems: []
+mariadb_charset: utf8mb4
+mariadb_collation: utf8mb4_general_ci

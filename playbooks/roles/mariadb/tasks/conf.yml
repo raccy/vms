@@ -1,0 +1,25 @@
+# cnf
+
+- name: lineinfile client.cnf default-character-set
+  become: true
+  lineinfile:
+    path: '{{ mariadb.client_cnf }}'
+    insertafter: '\[client\]'
+    regexp: '^default-character-set\s.*$'
+    line: 'default-character-set = utf8mb4'
+
+- name: lineinfile server.scnf character-set-server
+  become: true
+  lineinfile:
+    path: '{{ mariadb.server_cnf }}'
+    insertafter: '\[server\]'
+    regexp: '^character-set-server\s.*$'
+    line: 'character-set-server = utf8mb4'
+
+- name: lineinfile server.cnf cllation-server
+  become: true
+  lineinfile:
+    path: '{{ mariadb.server_cnf }}'
+    insertafter: '\[server\]'
+    regexp: '^collation-server\s.*$'
+    line: 'collation-server = utf8mb4_general_ci'

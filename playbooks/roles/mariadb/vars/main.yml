@@ -1,0 +1,27 @@
+# mariadb_files[ansible_distribution_file_variety][ansible_distribution_major_version]
+mariadb_files:
+  RedHat:
+    7:
+      socket: /var/lib/mysql/mysql.sock
+      client_cnf: /etc/my.cnf.d/client.cnf
+      server_cnf: /etc/my.cnf.d/server.cnf
+    8:
+      socket: /var/lib/mysql/mysql.sock
+      client_cnf: /etc/my.cnf.d/client.cnf
+      server_cnf: /etc/my.cnf.d/mariadb-server.cnf
+    9:
+    10:
+  Debian:
+  yum:
+    socket: /var/lib/mysql/mysql.sock
+    client_cnf: /etc/my.cnf.d/client.cnf
+    server_cnf: /etc/my.cnf.d/server.cnf
+  dnf:
+    socket: /var/lib/mysql/mysql.sock
+    client_cnf: /etc/my.cnf.d/client.cnf
+    server_cnf: /etc/my.cnf.d/mariadb-server.cnf
+  apt:
+    socket: /var/run/mysqld/mysqld.sock
+    client_cnf: /etc/mysql/mariadb.conf.d/50-client.cnf
+    server_cnf: /etc/mysql/mariadb.conf.d/50-server.cnf
+
