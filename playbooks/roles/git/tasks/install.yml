@@ -1,10 +1,19 @@
-- name: Install git package
-  become: true
-  ansible.builtin.package:
-    name: git
+- name: Task install on app for git
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: git
 
-- name: Install git-lfs package
-  become: true
-  ansible.builtin.package:
-    name: git-lfs
-  when: git_lfs
+# TODO: git lfsの場合だけで独立させる？
+- name: Task install on app for git libs by pkg only
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      pkgs: '{{ git_libs | map("regex_replace", "^", "git-") }}'
+  when:
+    - git_src == "pkg"
+    - git_libs | length > 0

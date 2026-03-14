@@ -3,27 +3,19 @@
     name: app
     tasks_from: install
   vars:
-    app_install_pkgs: ['{{ python_name }}']
-    app_install_src: '{{ python_src }}'
-    app_install_dev: '{{ python_dev }}'
-
-- name: Task install on app for pip
-  ansible.builtin.include_role:
-    name: app
-    tasks_from: install
-  vars:
-    app_install_pkgs: ['{{ python_name }}-pip']
-  when:
-    - python_src == "pkg"
-    - python_pips | length > 0
-
+    app_install:
+      name: '{{ python_name }}'
+      ver: '{{ python_ver }}'
+      src: '{{ python_src }}'
+      dev: '{{ python_dev }}'
 
 - name: Task install on app for python libs by pkg only
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
-    app_install_pkgs: '{{ python_libs | map("regex_replace", "^", python_name ~ "-") }}'
+    app_install:
+      pkgs: '{{ python_libs | map("regex_replace", "^", python_name ~ "-") }}'
   when:
     - python_src == "pkg"
-    - python_libs | length > 0
+    - python_libs

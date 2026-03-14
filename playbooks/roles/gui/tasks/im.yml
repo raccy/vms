@@ -1,7 +1,10 @@
-- name: Install IM package
-  become: true
-  ansible.builtin.apt:
-    name: '{{ gui_imf }}-{{ gui_ime }}'
+- name: Task install on app for IM
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: '{{ gui_imf }}-{{ gui_ime }}'
 
 - name: Block im in bashrc for fcitx or fcitx5
   ansible.builtin.blockinfile:

@@ -5,6 +5,7 @@
 
 # TODO: 複数の値に未対応
 # TODO: ネストしたdictに未対応
+# TODO: ansible実行環境のコピーは？
 - name: Set git config
   community.general.git_config:
     scope: global
