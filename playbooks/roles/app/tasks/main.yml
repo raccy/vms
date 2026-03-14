@@ -2,8 +2,9 @@
   ansible.builtin.include_tasks:
     file: install.yml
   vars:
-    app_install_pkgs: '{{ app_pkgs }}'
-    app_install_recommends: '{{ app_recommends }}'
+    app_install:
+      pkgs: '{{ app_pkgs }}'
+      recommends: '{{ app_recommends }}'
   when: app_pkgs | length > 0
 
 - name: Task alternatives

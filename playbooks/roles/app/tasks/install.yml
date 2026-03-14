@@ -1,9 +1,11 @@
-- name: Set default app_install_* facts
+- name: Set app_install_* facts from app_install
   ansible.builtin.set_fact:
-    app_install_src: '{{ app_install_src | default("pkg") }}'
-    app_install_pkgs: '{{ app_install_pkgs | default([]) }}'
-    app_install_recommends: '{{ app_install_recommends | default(true) }}'
-    app_install_dev: '{{ app_install_dev | default(false) }}'
+    app_install_name: '{{ app_install.name | default(None) }}'
+    app_install_ver: '{{ app_install.ver | default(None) }}'
+    app_install_pkgs: '{{ app_install.pkgs | default([]) }}'
+    app_install_src: '{{ app_install.src | default("pkg") }}'
+    app_install_recommends: '{{ app_install.recommends | default(true) }}'
+    app_install_dev: '{{ app_install.dev | default(false) }}'
 
 - name: 'Task package manager {{ ansible_pkg_mgr }}'
   ansible.builtin.include_tasks:
@@ -17,10 +19,3 @@
   ansible.builtin.include_tasks:
     file: 'install_{{ app_src }}.yml'
   when: app_install_src != "pkg"
-
-- name: Reset app_install_* facts
-  ansible.builtin.set_fact:
-    app_install_src: "pkg"
-    app_install_pkgs: []
-    app_install_recommends: true
-    app_install_dev: false
