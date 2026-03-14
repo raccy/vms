@@ -6,13 +6,13 @@
   changed_when: result_dnf_config_manager.rc == 0
   when:
     - anyenv_env == "rbenv"
-    - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version | int >= 9
+    - ansible_facts.os_family == "RedHat"
+    - ansible_facts.distribution_major_version | int >= 9
 
 - name: 'Install packages for {{ anyenv_env }}'
   become: true
   ansible.builtin.package:
-    name: '{{ anyenv_packages[anyenv_env][ansible_pkg_mgr] }}'
+    name: '{{ anyenv_packages[anyenv_env][ansible_facts.pkg_mgr] }}'
   when:
     - anyenv_packages[anyenv_env] is defined
-    - anyenv_packages[anyenv_env][ansible_pkg_mgr] is defined
+    - anyenv_packages[anyenv_env][ansible_facts.pkg_mgr] is defined

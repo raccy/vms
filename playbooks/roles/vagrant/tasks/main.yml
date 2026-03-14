@@ -7,4 +7,4 @@
 - name: Task wsl
   ansible.builtin.include_tasks:
     file: wsl.yml
-  when: ansible_virtualization_type == "wsl"
+  when: ansible_facts.virtualization_type == "wsl"

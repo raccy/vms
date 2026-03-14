@@ -4,7 +4,7 @@
 - name: Fail without apt
   ansible.builtin.fail:
     msg: support apt only
-  when: ansible_pkg_mgr != "apt"
+  when: ansible_facts.pkg_mgr != "apt"
 
 - name: Install GUI desktop
   become: true

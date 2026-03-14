@@ -17,8 +17,8 @@
     policy: targeted
     state: permissive
   when:
-    - ansible_os_family == "RedHat"
-    - ansible_virtualization_type != "wsl"
+    - ansible_facts.os_family == "RedHat"
+    - ansible_facts.virtualization_type != "wsl"
 
 - name: Set timezone
   become: true
@@ -31,5 +31,5 @@
     policy: targeted
     state: enforcing
   when:
-    - ansible_os_family == "RedHat"
-    - ansible_virtualization_type != "wsl"
+    - ansible_facts.os_family == "RedHat"
+    - ansible_facts.virtualization_type != "wsl"

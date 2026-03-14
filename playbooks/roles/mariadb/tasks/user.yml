@@ -3,21 +3,21 @@
   yum:
     state: present
     name: python2-PyMySQL
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_facts.pkg_mgr == "yum"
 
 - name: dnf install python mysql for ansible
   become: true
   dnf:
     state: present
     name: python3-PyMySQL
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_facts.pkg_mgr == "dnf"
 
 - name: apt install python mysql for ansible
   become: true
   apt:
     state: present
     name: python3-pymysql
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: set no password for root user
   become: true

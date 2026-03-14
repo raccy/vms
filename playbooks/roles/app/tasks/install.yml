@@ -7,9 +7,9 @@
     app_install_recommends: '{{ app_install.recommends | default(true) }}'
     app_install_dev: '{{ app_install.dev | default(false) }}'
 
-- name: 'Task package manager {{ ansible_pkg_mgr }}'
+- name: 'Task package manager {{ ansible_facts.pkg_mgr }}'
   ansible.builtin.include_tasks:
-    file: 'install_{{ ansible_pkg_mgr }}.yml'
+    file: 'install_{{ ansible_facts.pkg_mgr }}.yml'
   when: app_install_src == "pkg"
 
 # TODO: 他のソース

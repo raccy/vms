@@ -4,7 +4,7 @@
     name: '{{ font_fonts | map("regex_replace", "^", "fonts-") }}'
   when:
     - font_fonts | length > 0
-    - ansible_pkg_mgr == "apt"
+    - ansible_facts.pkg_mgr == "apt"
 
 - name: Install Font package by dnf
   become: true
@@ -12,7 +12,7 @@
     name: '{{ font_fonts | map("regex_replace", "$", "-fonts") }}'
   when:
     - font_fonts | length > 0
-    - ansible_pkg_mgr == "apt"
+    - ansible_facts.pkg_mgr == "apt"
 
 - name: Make /etc/fonts diretory
   become: true

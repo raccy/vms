@@ -3,13 +3,13 @@
   become: true
   ansible.builtin.apt:
     name: 'language-pack-{{ lang_package }}'
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Install language package by dnf
   become: true
   ansible.builtin.dnf:
     name: 'langpacks-{{ lang_package }}'
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_facts.pkg_mgr == "dnf"
 
 # FIXME: もしかしたらUbuntuでも必要ない？
 - name: Create locale when apt only
@@ -18,7 +18,7 @@
     name: '{{ lang_locale }}'
   when:
     - system_init == "systemd"
-    - ansible_pkg_mgr == "apt"
+    - ansible_facts.pkg_mgr == "apt"
 
 - name: Set locale
   become: true
@@ -38,4 +38,4 @@
 #     name:
 #       - 'manpages-{{ lang_package }}'
 #       - 'manpages-{{ lang_package }}-dev'
-#   when: ansible_pkg_mgr == "apt"
+#   when: ansible_facts.pkg_mgr == "apt"

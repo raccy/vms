@@ -1,7 +1,7 @@
-- name: Assert ansible_pkg_mgr is apt
+- name: Assert ansible_facts.pkg_mgr is apt
   ansible.builtin.assert:
-    that: ansible_pkg_mgr == "apt"
-    msg: "ansible_pkg_mgr is not apt, but {{ ansible_pkg_mgr }}"
+    that: ansible_facts.pkg_mgr == "apt"
+    msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
     quiet: true
 
 - name: Add docker gpg

@@ -1,6 +1,6 @@
-- name: 'Task repo_{{ ansible_pkg_mgr }}'
+- name: 'Task repo_{{ ansible_facts.pkg_mgr }}'
   ansible.builtin.include_tasks:
-    file: repo_{{ ansible_pkg_mgr }}.yml
+    file: repo_{{ ansible_facts.pkg_mgr }}.yml
 
 - name: Task install on app for vagrant
   ansible.builtin.include_role:

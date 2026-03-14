@@ -1,5 +1,5 @@
 # Package
 ---
-- name: 'Role package manager {{ ansible_pkg_mgr }}'
+- name: 'Role package manager {{ ansible_facts.pkg_mgr }}'
   ansible.builtin.include_role:
-    name: '{{ ansible_pkg_mgr }}'
+    name: '{{ ansible_facts.pkg_mgr }}'
