@@ -2,7 +2,10 @@
   ansible.builtin.include_tasks:
     file: repo_{{ ansible_pkg_mgr }}.yml
 
-- name: Install vagrant
-  become: true
-  ansible.builtin.package:
-    name: vagrant
+- name: Task install on app for vagrant
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: vagrant
