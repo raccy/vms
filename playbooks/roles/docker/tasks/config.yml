@@ -1,0 +1,16 @@
+- name: Set config
+  ansible.builtin.set_fact:
+    docker_daemon_config:
+      proxies:
+        http-proxy: '{{ proxy_env.http_proxy | default(omit) }}'
+        https-proxy: '{{ proxy_env.https_proxy | default(omit) }}'
+        no-proxy: '{{ proxy_env.no_proxy | default(omit) }}'
+
+- name: Copy daemon.json
+  become: true
+  ansible.builtin.copy:
+    content: '{{ docker_daemon_config | to_nice_json }}'
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0644'

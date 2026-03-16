@@ -3,14 +3,14 @@
   ansible.builtin.apt:
     name: '{{ app_install_name }}'
     install_recommends: '{{ app_install_recommends }}'
-  when: app_install_name
+  when: app_install_name != ""
 
 - name: Install packages by apt
   become: true
   ansible.builtin.apt:
     name: '{{ app_install_pkgs }}'
     install_recommends: '{{ app_install_recommends }}'
-  when: app_install_pkgs | length > 0
+  when: app_install_pkgs != []
 
 - name: Install build packages by apt
   become: true
@@ -24,5 +24,4 @@
   ansible.builtin.apt:
     name: '{{ app_install_name }}-dev'
     install_recommends: '{{ app_install_recommends }}'
-  when: app_install_name and app_install_dev
-
+  when: app_install_name != "" and app_install_dev

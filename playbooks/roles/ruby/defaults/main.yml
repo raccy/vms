@@ -1,4 +1,4 @@
-ruby_ver: # null is default, "latest" is latest stable, "x.y" is specific version
+ruby_ver: "" # "" is default, "latest" is latest stable, "x.y" is specific version
 ruby_src: pkg
 ruby_dev: false
 ruby_libs: []

@@ -3,21 +3,21 @@
   ansible.builtin.dnf:
     name: '@{{ app_install_name }}:{{ app_install_ver }}'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_name and app_install_ver
+  when: app_install_name != "" and app_install_ver != ""
 
 - name: Install package by dnf
   become: true
   ansible.builtin.dnf:
     name: '{{ app_install_name }}'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_name
+  when: app_install_name != ""
 
 - name: Install packages by dnf
   become: true
   ansible.builtin.dnf:
     name: '{{ app_install_pkgs }}'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_pkgs | length > 0
+  when: app_install_pkgs != []
 
 - name: Install build packages by dnf
   become: true
@@ -31,5 +31,4 @@
   ansible.builtin.dnf:
     name: '{{ app_install_name }}-devel'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_instnall_name and app_install_dev
-
+  when: app_install_name != "" and app_install_dev
