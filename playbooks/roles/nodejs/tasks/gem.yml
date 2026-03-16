@@ -1,0 +1,6 @@
+- name: Intall gem
+  community.general.gem:
+    name: '{{ item.split("@") | first }}'
+    version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
+  loop: '{{ ruby_gems }}'
+  when: ruby_gems | length > 0
