@@ -1,10 +1,4 @@
-- debug:
-    var: setup_role_name
-
-- debug:
-    var: setup_role_default
-
 - name: 'Role {{ setup_role_name }}'
   ansible.builtin.include_role:
     name: '{{ setup_role_name }}'
-  when: varnames[setup_role_name] | default(setup_role_default)
+  when: lookup("vars", setup_role_name, default=setup_role_default)

@@ -8,16 +8,13 @@ setup_essential_roles:
   - app
 setup_optional_roles:
   # tools
-  - snap
-  - docker
   - anyenv
-  - mise
-  # applications
-  - gui
+  - docker
   - git
-  - vagrant
+  - mise
+  - snap
   # services
-  # - ds
+  - ds
   - mariadb
   - nginx
   - openldap
@@ -25,10 +22,13 @@ setup_optional_roles:
   - redis
   - valkey
   # programing languages
+  - java
   - nodejs
   - php
   - python
   - ruby
-  - java
+  # applications
+  - gui
+  - vagrant
   # environments
   - vscode
