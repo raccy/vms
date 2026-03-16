@@ -1,0 +1,19 @@
+- name: Task install
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Task etc on proxy
+  ansible.builtin.include_role:
+    name: proxy
+    tasks_from: etc
+  vars:
+    proxy_etc_role_path: '{{ docker_role_path }}'
+    proxy_etc_files: '{{ docker_proxy_etc_files }}'
+  when: proxy_env != {}
+
+- name: Add default user to docker group
+  become: true
+  ansible.builtin.user:
+    name: '{{ ansible_user }}'
+    groups: docker
+    append: true

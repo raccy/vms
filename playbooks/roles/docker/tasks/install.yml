@@ -2,12 +2,15 @@
   ansible.builtin.include_tasks:
     file: repo_{{ ansible_facts.pkg_mgr }}.yml
 
-- name: Install vagrant
-  become: true
-  ansible.builtin.package:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+- name: Task install on app for docker
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      pkgs:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin

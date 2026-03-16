@@ -6,10 +6,10 @@
     msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
     quiet: true
 
-- name: Task keyrings
+- name: Task repo on apt
   ansible.builtin.import_role:
     name: apt
-    tasks_from: keyrings
+    tasks_from: repo
 
 - name: Add hashicorp gpg for apt
   become: true

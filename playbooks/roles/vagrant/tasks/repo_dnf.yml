@@ -6,10 +6,10 @@
     msg: "ansible_facts.pkg_mgr is not dnf, but {{ ansible_facts.pkg_mgr }}"
     quiet: true
 
-- name: Install gunpg2 for rpm_key module
-  become: true
-  ansible.builtin.dnf:
-    name: gnupg2
+- name: Task repo on dnf
+  ansible.builtin.import_role:
+    name: dnf
+    tasks_from: repo
 
 - name: Import hashicorp gpg for dnf
   become: true

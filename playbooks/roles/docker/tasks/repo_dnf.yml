@@ -6,7 +6,24 @@
     msg: "ansible_facts.pkg_mgr is not dnf, but {{ ansible_facts.pkg_mgr }}"
     quiet: true
 
-# TODO: まだ書いていない
-- name: Not supported dnf
-  ansible.builtin.fail:
-    msg: not support
+- name: Task repo on dnf
+  ansible.builtin.import_role:
+    name: dnf
+    tasks_from: repo
+
+- name: Import docker gpg for dnf
+  become: true
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://download.docker.com/linux/rhel/gpg
+  environment: '{{ proxy_env }}'
+
+- name: Add docker repository for dnf
+  become: true
+  ansible.builtin.command:
+    argv:
+      - dnf
+      - config-manager
+      - --add-repo
+      - https://download.docker.com/linux/rhel/docker-ce.repo
+  changed_when: true
