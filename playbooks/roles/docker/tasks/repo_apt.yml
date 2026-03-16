@@ -17,7 +17,7 @@
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: '{{ apt_keyrings_dir }}/docker.asc'
     mode: '0644'
-  # environment: '{{ proxy_env }}'
+  environment: '{{ proxy_env }}'
 
 - name: Add docker repository
   become: true

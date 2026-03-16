@@ -17,7 +17,7 @@
     url: https://apt.releases.hashicorp.com/gpg
     dest: '{{ apt_keyrings_dir }}/hashicorp.asc'
     mode: '0644'
-  # environment: '{{ proxy_env }}'
+  environment: '{{ proxy_env }}'
 
 - name: Add hashicorp repository for apt
   become: true

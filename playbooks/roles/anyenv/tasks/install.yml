@@ -1,3 +1,8 @@
+- name: Task install on git
+  ansible.builtin.import_role:
+    name: git
+    tasks_from: install
+
 - name: Git clone anyenv
   ansible.builtin.git:
     repo: https://github.com/anyenv/anyenv

@@ -5,13 +5,4 @@
   vars:
     app_install:
       name: git
-
-# TODO: git lfsの場合だけで独立させる？
-- name: Task install on app for git libs by pkg only
-  ansible.builtin.include_role:
-    name: app
-    tasks_from: install
-  vars:
-    app_install:
       pkgs: '{{ git_libs | map("regex_replace", "^", "git-") }}'
-  when: git_libs
