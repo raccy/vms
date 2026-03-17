@@ -4,10 +4,6 @@
     msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
     quiet: true
 
-- name: Task facts
-  ansible.builtin.import_tasks:
-    file: facts.yml
-
 # NOTE: Do not use role_path directly in the included role, because it will be changed to the included role's path.
 - name: Set apt_role_path fact
   ansible.builtin.set_fact:
