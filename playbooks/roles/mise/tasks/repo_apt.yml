@@ -1,32 +1,12 @@
 # https://mise.jdx.dev/getting-started.html#installing-mise-cli
-
-- name: Assert ansible_facts.pkg_mgr is apt
-  ansible.builtin.assert:
-    that: ansible_facts.pkg_mgr == "apt"
-    msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
-    quiet: true
-
-- name: Task repo on apt
+- name: Task repo on apt for mise
   ansible.builtin.import_role:
     name: apt
     tasks_from: repo
-
-- name: Add mise gpg for apt
-  become: true
-  ansible.builtin.get_url:
-    url: https://mise.jdx.dev/gpg-key.pub
-    dest: '{{ apt_keyrings_dir }}/mise.asc'
-    mode: '0644'
-  environment: '{{ proxy_env }}'
-
-- name: Add docker repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb
-      [signed-by={{ apt_keyrings_dir }}/mise.asc]
-      https://mise.jdx.dev/deb
-      stable
-      main
-    filename: mise
-    state: present
+  vars:
+    apt_repo:
+      name: mise
+      url: https://mise.jdx.dev/deb
+      suites: stable
+      component: main
+      gpg: https://mise.jdx.dev/gpg-key.pub

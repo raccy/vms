@@ -1,5 +1,11 @@
 # add repository
 ---
+- name: Assert ansible_facts.pkg_mgr is apt
+  ansible.builtin.assert:
+    that: ansible_facts.pkg_mgr == "apt"
+    msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
+    quiet: true
+
 - name: Debug apt_repo
   ansible.builtin.debug:
     var: apt_repo
@@ -9,46 +15,15 @@
   become: true
   ansible.builtin.deb822_repository:
     name: '{{ apt_repo.name }}'
+    types: '{{ app_repo.type | default("deb") }}'
     uris: '{{ apt_repo.url }}'
     suites: '{{ apt_repo.suite | default(ansible_facts.distribution_release) }}'
     components: '{{ apt_repo.component }}'
-# TODO: deb822を使うこと
+    signed_by: '{{ app_repo.gpg }}'
+  when: apt_repo is not string
 
-- name: Set apt_repo_* facts from apt_repo
-  ansible.builtin.set_fact:
-    apt_repo_name: '{{ apt_repo.name }}'
-    apt_repo_gpg_url: '{{ apt_repo.gpg_url }}'
-    apt_repo_url: '{{ apt_repo.url }}'
-    apt_repo_suite: '{{ apt_repo.suite | default(apt_release) }}'
-    apt_repo_component: '{{ apt_repo.component }}'
-# URIs: https://download.docker.com/linux/ubuntu
-# Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-# Components: stable
-# Signed-By: /etc/apt/keyrings/docker.asc
-
-- name: Make apt_keyrings_dir
-  become: true
-  ansible.builtin.file:
-    path: '{{ apt_keyrings_dir }}'
-    state: directory
-    mode: '0755'
-
-- name: Add pgp
-  become: true
-  ansible.builtin.get_url:
-    url: '{{ app_repo_gpg_url }}'
-    dest: '{{ apt_keyrings_dir }}/{{ app_repo_pgp }}.asc'
-    mode: '0644'
-  environment: '{{ proxy_env }}'
-
-- name: Add docker repository
+- name: Add apt repository
   become: true
   ansible.builtin.apt_repository:
-    repo:
-      deb
-      [arch={{ apt_architecture }} signed-by={{ apt_keyrings_dir }}/docker.asc]
-      https://download.docker.com/linux/ubuntu
-      {{ apt_release }}
-      stable
-    filename: docker
-    state: present
+    repo: '{{ apt_repo }}'
+  when: apt_repo is string

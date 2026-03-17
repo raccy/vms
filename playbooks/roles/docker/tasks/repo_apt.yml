@@ -1,32 +1,11 @@
 # https://docs.docker.com/engine/install/ubuntu/
-
-- name: Assert ansible_facts.pkg_mgr is apt
-  ansible.builtin.assert:
-    that: ansible_facts.pkg_mgr == "apt"
-    msg: "ansible_facts.pkg_mgr is not apt, but {{ ansible_facts.pkg_mgr }}"
-    quiet: true
-
-- name: Task repo on apt
+- name: Task repo on apt for docker
   ansible.builtin.import_role:
     name: apt
     tasks_from: repo
-
-- name: Add docker gpg for apt
-  become: true
-  ansible.builtin.get_url:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    dest: '{{ apt_keyrings_dir }}/docker.asc'
-    mode: '0644'
-  environment: '{{ proxy_env }}'
-
-- name: Add docker repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb
-      [arch={{ apt_architecture }} signed-by={{ apt_keyrings_dir }}/docker.asc]
-      https://download.docker.com/linux/ubuntu
-      {{ apt_release }}
-      stable
-    filename: docker
-    state: present
+  vars:
+    apt_repo:
+      name: docker
+      url: https://download.docker.com/linux/ubuntu
+      component: stable
+      gpg: https://download.docker.com/linux/ubuntu/gpg
