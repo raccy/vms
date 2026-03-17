@@ -1,3 +1,10 @@
+anyenv_shell_block: |
+  if ! [[ "$PATH" =~ "$HOME/.anyenv/bin:" ]]
+  then
+      export PATH="$HOME/.anyenv/bin:$PATH"
+  fi
+  eval "$(anyenv init -)"
+
 anyenv_pkgs:
   # https://github.com/pyenv/pyenv/wiki#suggested-build-environment
   pyenv:

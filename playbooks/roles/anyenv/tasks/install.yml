@@ -13,12 +13,7 @@
   ansible.builtin.blockinfile:
     path: ~/.bashrc
     marker: '# {mark} ANSIBLE MANAGED BLOCK anyenv'
-    block: |
-      if ! [[ "$PATH" =~ "$HOME/.anyenv/bin:" ]]
-      then
-          export PATH="$HOME/.anyenv/bin:$PATH"
-      fi
-      eval "$(anyenv init -)"
+    block: '{{ anyenv_shell_block }}'
 
 - name: Make anyenv plugins directory
   ansible.builtin.file:
@@ -34,13 +29,13 @@
   environment: '{{ proxy_env }}'
   when: anyenv_update
 
-# TODO: -iがないとUbuntuとかは.bashrcが実行されない
 - name: Run anyenv install init
   ansible.builtin.shell:
     cmd: |
-      . ~/.bashrc
-      anyenv install --force-init
+      {{ anyenv_shell_block }}
+      anyenv install --force--init
     executable: /bin/bash
+    creates: ~/.config/anyenv/anyenv-install
   register: anyenv_install_init_result
   failed_when: anyenv_install_init_result.rc >= 2
   changed_when: anyenv_install_init_result.rc == 0
