@@ -34,11 +34,13 @@
   environment: '{{ proxy_env }}'
   when: anyenv_update
 
+# TODO: -iがないとUbuntuとかは.bashrcが実行されない
 - name: Run anyenv install init
   ansible.builtin.shell:
     cmd: |
       . ~/.bashrc
       anyenv install --force-init
+    executable: /bin/bash
   register: anyenv_install_init_result
   failed_when: anyenv_install_init_result.rc >= 2
   changed_when: anyenv_install_init_result.rc == 0

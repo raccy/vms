@@ -1,0 +1,13 @@
+# https://mise.jdx.dev/getting-started.html#installing-mise-cli
+
+- name: Assert ansible_facts.pkg_mgr is dnf
+  ansible.builtin.assert:
+    that: ansible_facts.pkg_mgr == "dnf"
+    msg: "ansible_facts.pkg_mgr is not dnf, but {{ ansible_facts.pkg_mgr }}"
+    quiet: true
+
+- name: Add mise repo
+  become: true
+  community.general.copr:
+    name: '@jdxcode/mise'
+  environment: '{{ proxy_env }}'

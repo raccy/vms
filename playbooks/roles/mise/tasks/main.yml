@@ -1,0 +1,5 @@
+# Git
+---
+- name: Task install
+  ansible.builtin.import_tasks:
+    file: install.yml

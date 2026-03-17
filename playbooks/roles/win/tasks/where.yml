@@ -3,6 +3,7 @@
 - name: Run where in windows
   ansible.builtin.shell:
     cmd: '{{ win_system_bin }}/where.exe {{ win_where_name }} 2>/dev/null'
+    executable: /bin/bash
   changed_when: false
   ignore_errors: true
   register: win_run_where

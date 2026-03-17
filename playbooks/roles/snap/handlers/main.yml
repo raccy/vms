@@ -1,0 +1,7 @@
+- name: Restart snap service
+  become: true
+  ansible.builtin.service:
+    name: snap
+    state: restarted
+  when: snap_enabled
+  listen: snap_restart
