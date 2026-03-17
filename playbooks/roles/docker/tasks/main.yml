@@ -6,9 +6,6 @@
   ansible.builtin.import_tasks:
     file: config.yml
 
-- name: Add default user to docker group
-  become: true
-  ansible.builtin.user:
-    name: '{{ ansible_user }}'
-    groups: docker
-    append: true
+- name: Task user
+  ansible.builtin.import_tasks:
+    file: user.yml

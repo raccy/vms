@@ -2,9 +2,9 @@
   ansible.builtin.import_tasks:
     file: install.yml
 
-- name: Task packages
+- name: Task env
   ansible.builtin.include_tasks:
-    file: packages.yml
+    file: env.yml
   loop: '{{ anyenv_envs }}'
   loop_control:
     loop_var: anyenv_env

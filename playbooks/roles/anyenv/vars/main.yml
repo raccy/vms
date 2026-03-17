@@ -1,7 +1,7 @@
-anyenv_packages:
+anyenv_pkgs:
   # https://github.com/pyenv/pyenv/wiki#suggested-build-environment
   pyenv:
-    apt:
+    Debian:
       - build-essential
       - curl
       - git
@@ -17,7 +17,7 @@ anyenv_packages:
       - tk-dev
       - xz-utils
       - zlib1g-dev
-    dnf:
+    RedHat:
       - make
       - gcc
       - patch
@@ -36,7 +36,7 @@ anyenv_packages:
       - libnsl2
   # https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
   rbenv:
-    apt:
+    Debian:
       - autoconf
       - build-essential
       - libdb-dev
@@ -52,7 +52,7 @@ anyenv_packages:
       - rustc
       - uuid-dev
       - zlib1g-dev
-    dnf:
+    RedHat:
       - autoconf
       - gcc
       - patch

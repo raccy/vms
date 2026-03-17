@@ -33,3 +33,13 @@
     dest: ~/.anyenv/plugins/anyenv-update
   environment: '{{ proxy_env }}'
   when: anyenv_update
+
+- name: Run anyenv install init
+  ansible.builtin.shell:
+    cmd: |
+      . ~/.bashrc
+      anyenv install --force-init
+  register: anyenv_install_init_result
+  failed_when: anyenv_install_init_result.rc >= 2
+  changed_when: anyenv_install_init_result.rc == 0
+  environment: '{{ proxy_env }}'
