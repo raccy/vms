@@ -2,24 +2,25 @@ anyenv_pkgs:
   # https://github.com/pyenv/pyenv/wiki#suggested-build-environment
   pyenv:
     Debian:
+      - make
       - build-essential
-      - curl
-      - git
+      - libssl-dev
+      - zlib1g-dev
       - libbz2-dev
-      - libffi-dev
-      - liblzma-dev
-      - libncurses-dev
       - libreadline-dev
       - libsqlite3-dev
-      - libssl-dev
+      - curl
+      - git
+      - libncursesw5-dev
+      - xz-utils
+      - tk-dev
       - libxml2-dev
       - libxmlsec1-dev
-      - tk-dev
-      - xz-utils
-      - zlib1g-dev
+      - libffi-dev
+      - liblzma-dev
     RedHat:
-      - make
       - gcc
+      - make
       - patch
       - zlib-devel
       - bzip2
@@ -31,27 +32,17 @@ anyenv_pkgs:
       - tk-devel
       - libffi-devel
       - xz-devel
-      - libuuid-devel
-      - gdbm-libs
-      - libnsl2
   # https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
   rbenv:
     Debian:
-      - autoconf
       - build-essential
-      - libdb-dev
-      - libffi-dev
-      - libgdbm-dev
-      - libgdbm6
-      - libgmp-dev
-      - libncurses-dev
-      - libreadline-dev
+      - autoconf
       - libssl-dev
       - libyaml-dev
-      - patch
-      - rustc
-      - uuid-dev
       - zlib1g-dev
+      - libffi-dev
+      - libgmp-dev
+      - rustc
     RedHat:
       - autoconf
       - gcc
@@ -59,9 +50,9 @@ anyenv_pkgs:
       - bzip2
       - openssl-devel
       - libffi-devel
-      - readline
+      - readline-devel
       - zlib-devel
-      - gdbm
+      - gdbm-devel
       - ncurses-devel
       - tar
       - perl-FindBin

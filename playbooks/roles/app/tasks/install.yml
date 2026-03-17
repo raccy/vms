@@ -1,3 +1,8 @@
+- name: Debug app_install
+  ansible.builtin.debug:
+    var: app_install
+  when: debug
+
 - name: Set app_install_* facts from app_install
   ansible.builtin.set_fact:
     app_install_name: '{{ app_install.name | default("") }}'
