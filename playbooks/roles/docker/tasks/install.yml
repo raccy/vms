@@ -1,6 +1,6 @@
 # https://docs.docker.com/engine/install/ubuntu/
 - name: Task repo on apt for docker
-  ansible.builtin.import_role:
+  ansible.builtin.include_role:
     name: apt
     tasks_from: repo
   vars:
@@ -9,11 +9,24 @@
       url: https://download.docker.com/linux/ubuntu
       component: stable
       gpg: https://download.docker.com/linux/ubuntu/gpg
-  when: ansible_facts.pkg_mgr == "apt"
+  when: ansible_facts.distribution == "Ubuntu"
+
+# https://docs.docker.com/engine/install/debian/
+- name: Task repo on apt for docker
+  ansible.builtin.include_role:
+    name: apt
+    tasks_from: repo
+  vars:
+    apt_repo:
+      name: docker
+      url: https://download.docker.com/linux/debian
+      component: stable
+      gpg: https://download.docker.com/linux/debian/gpg
+  when: ansible_facts.distribution == "Debian"
 
 # https://developer.hashicorp.com/vagrant/install
 - name: Task repo on dnf for docker
-  ansible.builtin.import_role:
+  ansible.builtin.include_role:
     name: dnf
     tasks_from: repo
   vars:
@@ -23,6 +36,7 @@
   when: ansible_facts.pkg_mgr == "dnf"
 
 - name: Install docker packages
+  become: true
   ansible.builtin.package:
     name:
       - docker-ce

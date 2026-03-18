@@ -14,4 +14,4 @@
     owner: root
     group: root
     mode: '0644'
-  notify: docker_restart
+  notify: docker_restart_docker

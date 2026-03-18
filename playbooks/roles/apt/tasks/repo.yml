@@ -32,4 +32,5 @@
     suites: '{{ apt_repo.suite | default(ansible_facts.distribution_release) }}'
     components: '{{ apt_repo.component }}'
     signed_by: '{{ apt_repo.gpg }}'
+  environment: '{{ proxy_env }}'
   when: apt_repo is not string

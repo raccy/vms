@@ -23,7 +23,7 @@
     name: '{{ lang_locale }}'
   when:
     - ansible_facts.service_mgr == "systemd"
-    - ansible_facts.pkg_mgr == "apt"
+    - ansible_facts.os_family == "Debian"
 
 # FIMXE: Debianでは動かない？update-localeを使う必要がある。
 - name: Set locale
@@ -34,7 +34,18 @@
       - set-locale
       - '{{ lang_locale }}'
   changed_when: true
-  when: ansible_facts.service_mgr == "systemd"
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - ansible_facts.distribution != "Debian"
+
+- name: Set locale for Debian
+  become: true
+  ansible.builtin.command:
+    argv:
+      - update-locale
+      - 'LANG={{ lang_locale }}'
+  changed_when: true
+  when: ansible_facts.distribution == "Debian"
 
 # TODO: manpageはどうするのか？
 # # FIXME: dnfは日本語manが無い？

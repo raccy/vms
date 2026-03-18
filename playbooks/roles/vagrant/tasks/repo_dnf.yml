@@ -1,9 +1,0 @@
-# https://developer.hashicorp.com/vagrant/install
-- name: Task repo on dnf for vagrant
-  ansible.builtin.import_role:
-    name: dnf
-    tasks_from: repo
-  vars:
-    dnf_repo:
-      url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-      gpg: https://rpm.releases.hashicorp.com/gpg

@@ -1,11 +1,27 @@
-- name: 'Task repo_{{ ansible_facts.pkg_mgr }}'
-  ansible.builtin.include_tasks:
-    file: repo_{{ ansible_facts.pkg_mgr }}.yml
+# https://developer.hashicorp.com/vagrant/install
 
-- name: Task install on app for vagrant
+- name: Task repo on apt for vagrant
   ansible.builtin.include_role:
-    name: app
-    tasks_from: install
+    name: apt
+    tasks_from: repo
   vars:
-    app_install:
-      name: vagrant
+    apt_repo:
+      name: hashicorp
+      url: https://apt.releases.hashicorp.com
+      component: main
+      gpg: https://apt.releases.hashicorp.com/gpg
+  when: ansible_facts.distribution == "Debian"
+
+- name: Task repo on dnf for vagrant
+  ansible.builtin.include_role:
+    name: dnf
+    tasks_from: repo
+  vars:
+    dnf_repo:
+      url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+      gpg: https://rpm.releases.hashicorp.com/gpg
+  when: ansible_facts.os_family == "RedHat"
+
+- name: Instnall vagrant packages
+  ansible.builtin.package:
+    name: vagrant
