@@ -1,5 +1,3 @@
 # system
 ---
-- name: Task facts
-  ansible.builtin.import_tasks:
-    file: facts.yml
+# nothing

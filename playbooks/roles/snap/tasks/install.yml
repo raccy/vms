@@ -1,7 +1,4 @@
-- name: Task install on app for snap(snapd)
-  ansible.builtin.include_role:
-    name: app
-    tasks_from: install
-  vars:
-    app_install:
-      name: snapd
+- name: Install snapd
+  become: true
+  ansible.builtin.package:
+    name: snapd

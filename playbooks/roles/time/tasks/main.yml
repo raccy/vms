@@ -8,28 +8,21 @@
       - set-local-rtc
       - '{{ time_rtc_local | ternary("1", "0") }}'
   changed_when: true
-  when: system_init == "systemd"
+  when: ansible_facts.service_mgr == "systemd"
 
 # FIXME: RedHat系でタイムゾーンを変更するときに、SELinuxの許可モードに変更する必要がある。
 - name: Change permissive mode for SELinux
   become: true
   ansible.posix.selinux:
-    policy: targeted
+    policy: '{{ ansible_facts.selinux.targeted }}'
     state: permissive
+  notify: system_enforce_selinux
   when:
-    - ansible_facts.os_family == "RedHat"
-    - ansible_facts.virtualization_type != "wsl"
+    - ansible_facts.selinux is defined
+    - ansible_facts.selinux.status == "enabled"
+    - ansible_facts.selinux.mode == "enforcing"
 
 - name: Set timezone
   become: true
   community.general.timezone:
     name: '{{ time_timezone }}'
-
-- name: CHange enforcing mode for SELinux
-  become: true
-  ansible.posix.selinux:
-    policy: targeted
-    state: enforcing
-  when:
-    - ansible_facts.os_family == "RedHat"
-    - ansible_facts.virtualization_type != "wsl"

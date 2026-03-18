@@ -16,5 +16,7 @@
   vars:
     proxy_etc_role_path: '{{ snap_role_path }}'
     proxy_etc_files: '{{ snap_proxy_etc_files }}'
-  notify: snap_restart_snapd_with_daemon_reload
+  notify:
+    - system_reload_daemon
+    - snap_restart_snapd
   when: proxy_env != {}

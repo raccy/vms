@@ -1,9 +1,14 @@
-# TODO: Debianにはlanguage-pack-jaがない可能性がある。代わりにlocales-allを入れる必要があるかも。
 - name: Install language package for Ubuntu
   become: true
   ansible.builtin.apt:
     name: 'language-pack-{{ lang_package }}'
   when: ansible_facts.distribution == "Ubuntu"
+
+- name: Install language package for Debian
+  become: true
+  ansible.builtin.apt:
+    name: 'locales-all'
+  when: ansible_facts.distribution == "Deiban"
 
 - name: Install language package for RedHat family
   become: true
@@ -17,7 +22,7 @@
   community.general.locale_gen:
     name: '{{ lang_locale }}'
   when:
-    - system_init == "systemd"
+    - ansible_facts.service_mgr == "systemd"
     - ansible_facts.pkg_mgr == "apt"
 
 # FIMXE: Debianでは動かない？update-localeを使う必要がある。
@@ -29,7 +34,7 @@
       - set-locale
       - '{{ lang_locale }}'
   changed_when: true
-  when: system_init == "systemd"
+  when: ansible_facts.service_mgr == "systemd"
 
 # TODO: manpageはどうするのか？
 # # FIXME: dnfは日本語manが無い？
