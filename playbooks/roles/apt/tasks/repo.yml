@@ -11,11 +11,17 @@
     var: apt_repo
   when: debug
 
-- name: Add apt repository
   become: true
+- name: Add apt repository
   ansible.builtin.apt_repository:
     repo: '{{ apt_repo }}'
   when: apt_repo is string
+
+- name: Install python3-debian for deb822_repository
+  become: true
+  ansible.builtin.apt:
+    name: python3-debian
+  when: apt_repo is not string
 
 - name: Add deb822 repository
   become: true
@@ -25,5 +31,5 @@
     uris: '{{ apt_repo.url }}'
     suites: '{{ apt_repo.suite | default(ansible_facts.distribution_release) }}'
     components: '{{ apt_repo.component }}'
-    signed_by: '{{ app_repo.gpg }}'
+    signed_by: '{{ apt_repo.gpg }}'
   when: apt_repo is not string

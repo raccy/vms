@@ -3,5 +3,5 @@
   ansible.builtin.service:
     name: docker
     state: restarted
-  when: docker_enabled
-  listen: docker_restart
+  when: docker_auto
+  listen: docker_restart_docker

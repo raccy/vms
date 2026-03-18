@@ -4,7 +4,7 @@
     name: nginx
     state: started
     enabled: true
-  when: docker_enabled
+  when: docker_auto
 
 - name: Stop and disbale nginx service
   become: true
@@ -12,4 +12,4 @@
     name: nginx
     state: stopped
     enabled: false
-  when: not docker_enabled
+  when: not docker_auto
