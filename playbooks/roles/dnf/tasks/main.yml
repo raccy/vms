@@ -1,3 +1,5 @@
+# dnf
+---
 - name: Assert ansible_facts.pkg_mgr is dnf
   ansible.builtin.assert:
     that: ansible_facts.pkg_mgr == "dnf"

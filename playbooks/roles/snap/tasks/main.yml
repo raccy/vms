@@ -1,5 +1,9 @@
 # snap
 ---
+- name: Task install
+  ansible.builtin.import_tasks:
+    file: install.yml
+
 # NOTE: Do not use role_path directly in the included role, because it will be changed to the included role's path.
 - name: Set snap_role_path fact
   ansible.builtin.set_fact:
@@ -12,4 +16,5 @@
   vars:
     proxy_etc_role_path: '{{ snap_role_path }}'
     proxy_etc_files: '{{ snap_proxy_etc_files }}'
+  notify: snap_restart_snapd_with_daemon_reload
   when: proxy_env != {}

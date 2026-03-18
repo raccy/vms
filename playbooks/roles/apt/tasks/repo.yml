@@ -11,6 +11,12 @@
     var: apt_repo
   when: debug
 
+- name: Add apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: '{{ apt_repo }}'
+  when: apt_repo is string
+
 - name: Add deb822 repository
   become: true
   ansible.builtin.deb822_repository:
@@ -21,9 +27,3 @@
     components: '{{ apt_repo.component }}'
     signed_by: '{{ app_repo.gpg }}'
   when: apt_repo is not string
-
-- name: Add apt repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: '{{ apt_repo }}'
-  when: apt_repo is string

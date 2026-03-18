@@ -1,29 +1,9 @@
 # https://developer.hashicorp.com/vagrant/install
-
-- name: Assert ansible_facts.pkg_mgr is dnf
-  ansible.builtin.assert:
-    that: ansible_facts.pkg_mgr == "dnf"
-    msg: "ansible_facts.pkg_mgr is not dnf, but {{ ansible_facts.pkg_mgr }}"
-    quiet: true
-
-- name: Task repo on dnf
+- name: Task repo on dnf for vagrant
   ansible.builtin.import_role:
     name: dnf
     tasks_from: repo
-
-- name: Import hashicorp gpg for dnf
-  become: true
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://rpm.releases.hashicorp.com/gpg
-  environment: '{{ proxy_env }}'
-
-- name: Add hashicorp repository for dnf
-  become: true
-  ansible.builtin.command:
-    argv:
-      - dnf
-      - config-manager
-      - --add-repo
-      - https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-  changed_when: true
+  vars:
+    dnf_repo:
+      url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+      gpg: https://rpm.releases.hashicorp.com/gpg

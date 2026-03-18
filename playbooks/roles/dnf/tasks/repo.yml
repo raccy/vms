@@ -1,6 +1,42 @@
-# for repo
+# dnf repository
 ---
-- name: Install gunpg2 for rpm_key module
+- name: Assert ansible_facts.pkg_mgr is dnf
+  ansible.builtin.assert:
+    that: ansible_facts.pkg_mgr == "dnf"
+    msg: "ansible_facts.pkg_mgr is not dnf, but {{ ansible_facts.pkg_mgr }}"
+    quiet: true
+
+- name: Debug dnf_repo
+  ansible.builtin.debug:
+    var: dnf_repo
+  when: debug
+
+- name: Enable dnf repository
   become: true
-  ansible.builtin.dnf:
-    name: gnupg2
+  community.general.dnf_config_manager:
+    name: '{{ dnf_repo }}'
+  when: dnf_repo is string
+
+# - name: Install gunpg2 for rpm_key module
+#   become: true
+#   ansible.builtin.dnf:
+#     name: gnupg2
+
+- name: Import gpg for dnf
+  become: true
+  ansible.builtin.rpm_key:
+    key: '{{ dnf_repo.gpg }}'
+  environment: '{{ proxy_env }}'
+  when: dnf_repo is not string
+
+- name: Add repository for dnf
+  become: true
+  ansible.builtin.command:
+    argv:
+      - dnf
+      - config-manager
+      - --add-repo
+      - '{{ dnf_repo.url }}'
+    creates: '/etc/yum.repos.d/{{ dnf_repo.url | urlsplit("path") | basename }}'
+  changed_when: true
+  when: dnf_repo is not string
