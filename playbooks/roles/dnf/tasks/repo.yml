@@ -17,10 +17,10 @@
     name: '{{ dnf_repo }}'
   when: dnf_repo is string
 
-# - name: Install gunpg2 for rpm_key module
-#   become: true
-#   ansible.builtin.dnf:
-#     name: gnupg2
+- name: Install gunpg2 for rpm_key module
+  become: true
+  ansible.builtin.dnf:
+    name: gnupg2
 
 - name: Import gpg for dnf
   become: true

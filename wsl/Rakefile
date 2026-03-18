@@ -167,7 +167,7 @@ end
 
 task :ansible_install do
   unless wsl.run("which ansible", capture: true, exception: false)&.chomp&.length&.positive?
-    install_ansible_cmds(pkg_mgr).each do |cmd|
+    setup.install_ansible_cmds(wsl.pkg_mgr).each do |cmd|
       if cmd.start_with?("sudo ")
         wsl.run(cmd, user: "root")
       else

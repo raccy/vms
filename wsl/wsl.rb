@@ -173,6 +173,7 @@ class WSL
     wsl_cmd << "  -d #{distro}" if distro
     wsl_cmd << " -u #{user}" if user
     wsl_cmd << " --cd \"#{cd}\"" if cd
+    wsl_cmd << " --shell-type login" if user != "root"
     wsl_cmd << " -- "
     env.each { |key, value| wsl_cmd << "#{key}=#{value} " }
     wsl_cmd << cmd

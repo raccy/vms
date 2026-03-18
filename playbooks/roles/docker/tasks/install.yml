@@ -35,6 +35,7 @@
       gpg: https://download.docker.com/linux/rhel/gpg
   when: ansible_facts.pkg_mgr == "dnf"
 
+# FIXME: Debianだけレポジトリのアップデートをしておく必要がある。
 - name: Install docker packages
   become: true
   ansible.builtin.package:
