@@ -9,6 +9,7 @@ setup:
   # location: (default no location, so install deafult path for distro)
   # config: "setup.yml"
   # dir: (default is Rakefile directory)
+  # ansible: ("package" or "pip" or "pipx", default: "package")
   # playbooks: (default is Rakefile directary ../playbooks)
   # proxy: http://proxy.example.com:8080
   # http_proxy: http://proxy.example.com:8080

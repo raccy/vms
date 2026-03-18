@@ -8,6 +8,7 @@ class Setup
     password: nil,
     location: nil,
     config_file: nil,
+    ansible: "package",
     playbooks: File.expand_path("../playbooks", __dir__),
     proxy: nil,
     http_proxy: nil, # ENV http_proxy or HTTP_PROXY
@@ -132,6 +133,41 @@ class Setup
         ""
       end
   end
+
+  def install_ansible_cmds(pkg_mgr)
+    case options[:ansible]
+    in "package"
+      case pkg_mgr
+      in "apt"
+        ["sudo apt install ansible -y #{apt_opts}"]
+      in "dnf"
+        ["sudo dnf install ansible-core -y #{dnf_opts}"]
+      end
+    in "pip"
+      install_pip_cmds(pkg_mgr) + ["python3 -m pip install --user ansible"]
+    in "pipx"
+      install_pipx_cmds(pkg_mgr) + ["pipx install --include-deps ansible"]
+    end
+  end
+
+  def install_pip_cmds(pkg_mgr)
+    case pkg_mgr
+    in "apt"
+      ["sudo apt install python3-pip -y #{apt_opts}"]
+    in "dnf"
+      ["sudo dnf install python3-pip -y #{dnf_opts}"]
+    end
+  end
+
+  def install_pipx_cmds(pkg_mgr)
+    case pkg_mgr
+    in "apt"
+      ["sudo apt install pipx -y #{apt_opts}", "pipx ensurepath"]
+    in "dnf"
+      install_pip_cmds(pkg_mgr) + ["python3 -m pip install --user pipx", "python3 -m pipx ensurepath"]
+    end
+  end
+
 
   def playbooks
     File.expand_path(options[:playbooks])

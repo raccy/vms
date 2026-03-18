@@ -3,5 +3,7 @@
   ansible.builtin.service:
     name: docker
     state: restarted
-  when: docker_auto
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - docker_auto
   listen: docker_restart_docker

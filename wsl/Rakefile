@@ -146,7 +146,9 @@ task :update do
 end
 
 desc "Run Ansible playbook for WSL distribution"
-task ansible: %i[ansible_pkg] do
+task ansible: %i[ansible_playbook]
+
+task ansible_playbook: %i[ansible_install] do
   opt = String.new
   opt << " -e @#{wsl.path(setup.config_file)}" if setup.config_file
   opt <<
@@ -158,22 +160,24 @@ task ansible: %i[ansible_pkg] do
   opt << " -e '#{{git_config: setup.git_config}.to_json}'"
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
-  wsl.run("ansible-playbook wsl.yml setup_localhost.yml #{opt}", env:, cd: setup.playbooks)
+  wsl.run("ansible-playbook wsl.yml #{opt}", env:, cd: setup.playbooks)
   sh "wsl --terminate #{setup.name}"
+  wsl.run("ansible-playbook setup_localhost.yml #{opt}", env:, cd: setup.playbooks)
 end
 
-task :ansible_pkg do
+task :ansible_install do
   unless wsl.run("which ansible", capture: true, exception: false)&.chomp&.length&.positive?
-    case wsl.pkg_mgr
-    in "apt"
-      wsl.run("apt install ansible -y #{setup.apt_opts}", user: "root")
-    in "dnf"
-      wsl.run("dnf install ansible-core -y #{setup.dnf_opts}", user: "root")
+    install_ansible_cmds(pkg_mgr).each do |cmd|
+      if cmd.start_with?("sudo ")
+        wsl.run(cmd, user: "root")
+      else
+        wsl.run(cmd)
+      end
     end
   end
 
+  # install collections for user
   collection_list = wsl.run("ansible-galaxy collection list", capture: true, exception: false)
-  # for user
   ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
     next if collection_list&.include?(collection)
 
