@@ -1,11 +1,5 @@
 # snap
 ---
-- name: Assert systemd
-  ansible.builtin.assert:
-    that: ansible_facts.service_mgr == "systemd"
-    msg: "required systemd, but ansible_facts.service_mgr is {{ ansible_facts.service_mgr }}"
-    quiet: true
-
 - name: Task install
   ansible.builtin.import_tasks:
     file: install.yml
@@ -17,3 +11,4 @@
 - name: Task serivce
   ansible.builtin.import_tasks:
     file: service.yml
+  when: ansible_facts.service_mgr == "systemd"

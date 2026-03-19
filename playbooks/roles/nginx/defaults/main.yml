@@ -2,5 +2,4 @@ nginx_ver: # null is default, "latest" is latest stable, "x.y" is specific versi
 nginx_src: pkg
 nginx_dev: false
 nginx_libs: []
-nginx_gems: []
-nginx_srv: false
+nginx_auto: false

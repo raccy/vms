@@ -1,9 +1,5 @@
-- name: Assert systemd
-  ansible.builtin.assert:
-    that: ansible_facts.service_mgr == "systemd"
-    msg: "require systemd, but ansible_facts.service_mgr is {{ ansible_facts.service_mgr }}"
-    quiet: true
-
+# docker
+---
 - name: Task install
   ansible.builtin.import_tasks:
     file: install.yml

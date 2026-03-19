@@ -4,7 +4,7 @@
     name: nginx
     state: started
     enabled: true
-  when: nginx_srv
+  when: nginx_auto
 
 - name: Stop and disbale nginx service
   become: true
@@ -12,4 +12,4 @@
     name: nginx
     state: stopped
     enabled: false
-  when: not nginx_srv
+  when: not nginx_auto

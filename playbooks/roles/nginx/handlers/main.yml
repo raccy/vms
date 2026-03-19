@@ -3,5 +3,7 @@
   ansible.builtin.service:
     name: nginx
     state: restarted
-  when: nginx_srv
-  listen: nginx_restart
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - nginx_auto
+  listen: nginx_restart_nginx

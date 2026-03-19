@@ -3,6 +3,7 @@
   ansible.builtin.service:
     name: snapd
     state: restarted
-    daemon_reload: true
-  when: snap_auto
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - snap_auto
   listen: snap_restart_snapd
