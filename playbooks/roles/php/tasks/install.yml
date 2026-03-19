@@ -1,0 +1,11 @@
+- name: Task install on app for php
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: '{{ php_name }}'
+      version: '{{ php_version }}'
+      source: '{{ php_source }}'
+      devel: '{{ php_devel }}'
+      pkgs: '{{ php_libs | map("regex_replace", "^", php_name ~ "-") }}'

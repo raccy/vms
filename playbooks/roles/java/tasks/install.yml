@@ -1,0 +1,11 @@
+- name: Task install on app for java
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: '{{ java_name }}'
+      version: '{{ java_version }}'
+      source: '{{ java_source }}'
+      devel: '{{ java_devel }}'
+      pkgs: '{{ java_libs | map("regex_replace", "^", java_name ~ "-") }}'

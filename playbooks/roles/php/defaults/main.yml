@@ -1,0 +1,5 @@
+php_name: php
+php_version: ""
+php_source: pkg
+php_devel: false
+php_libs: []

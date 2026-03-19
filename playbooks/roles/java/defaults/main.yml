@@ -1,0 +1,5 @@
+java_name: '{{ (ansible_facts.pkg_mgr == "dnf") | ternary("java-latest-openjdk", "default-jdk") }}'
+java_version: ""
+java_source: pkg
+java_devel: false
+java_libs: []

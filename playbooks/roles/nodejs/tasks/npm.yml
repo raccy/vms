@@ -1,0 +1,7 @@
+- name: Intall npm
+  community.general.npm:
+    name: '{{ item.split("@") | first }}'
+    version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
+    global: true
+  loop: '{{ nodejs_npms }}'
+  when: nodejs_npms | length > 0

@@ -4,8 +4,8 @@
     tasks_from: install
   vars:
     app_install:
-      name: ruby
+      name: '{{ ruby_name }}'
       version: '{{ ruby_version }}'
       source: '{{ ruby_source }}'
       devel: '{{ ruby_devel }}'
-      pkgs: '{{ ruby_libs | map("regex_replace", "^", "ruby-") }}'
+      pkgs: '{{ ruby_libs | map("regex_replace", "^", ruby_name ~ "-") }}'

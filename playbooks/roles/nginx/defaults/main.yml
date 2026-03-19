@@ -1,5 +1,5 @@
 nginx_name: nginx
-nginx_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+nginx_version: ""
 nginx_source: pkg
 nginx_devel: false
 nginx_libs: []

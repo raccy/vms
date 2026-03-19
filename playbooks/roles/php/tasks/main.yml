@@ -1,7 +1,3 @@
 - name: Task install
   ansible.builtin.import_tasks:
     file: install.yml
-
-- name: Task npm
-  ansible.builtin.import_tasks:
-    file: npm.yml

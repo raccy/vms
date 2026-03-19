@@ -1,5 +1,5 @@
 python_name: python3
-python_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+python_version: ""
 python_source: pkg
 python_devel: false
 python_libs: []

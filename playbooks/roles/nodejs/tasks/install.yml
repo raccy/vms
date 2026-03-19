@@ -1,21 +1,11 @@
-- name: Task install on app for ruby
+- name: Task install on app for nodejs
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: ruby
-      version: '{{ ruby_version }}'
-      source: '{{ ruby_source }}'
-      devel: '{{ ruby_devel }}'
-
-- name: Task install on app for ruby libs by pkg only
-  ansible.builtin.include_role:
-    name: app
-    tasks_from: install
-  vars:
-    app_install:
-      pkgs: '{{ ruby_libs | map("regex_replace", "^", "ruby-") }}'
-  when:
-    - ruby_source == "pkg"
-    - ruby_libs | length > 0
+      name: '{{ nodejs_name }}'
+      version: '{{ nodejs_version }}'
+      source: '{{ nodejs_source }}'
+      devel: '{{ nodejs_devel }}'
+      pkgs: '{{ nodejs_libs | map("regex_replace", "^", nodejs_name ~ "-") }}'

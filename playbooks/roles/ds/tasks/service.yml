@@ -1,15 +1,15 @@
-- name: Start and enable nginx service
+- name: Start and enable 389 ds service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ ds_service_name }}'
     state: started
     enabled: true
-  when: nginx_srv
+  when: ds_sevice_auto
 
-- name: Stop and disbale nginx service
+- name: Stop and disbale ds service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ ds_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_srv
+  when: not ds_sevice_auto
