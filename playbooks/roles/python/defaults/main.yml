@@ -1,6 +1,6 @@
 python_name: python3
-python_ver: "" # "" is default, "latest" is latest stable, "x.y" is specific version
-python_src: pkg
-python_dev: false
+python_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+python_source: pkg
+python_devel: false
 python_libs: []
 python_pips: []

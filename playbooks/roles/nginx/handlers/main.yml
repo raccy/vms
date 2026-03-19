@@ -1,9 +1,9 @@
 - name: Restart nginx service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ nginx_service_name }}'
     state: restarted
   when:
     - ansible_facts.service_mgr == "systemd"
-    - nginx_auto
-  listen: nginx_restart_nginx
+    - nginx_service_auto
+  listen: nginx restart service

@@ -1,5 +1,5 @@
-ruby_ver: "" # "" is default, "latest" is latest stable, "x.y" is specific version
-ruby_src: pkg
-ruby_dev: false
+ruby_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+ruby_source: pkg
+ruby_devel: false
 ruby_libs: []
 ruby_gems: []

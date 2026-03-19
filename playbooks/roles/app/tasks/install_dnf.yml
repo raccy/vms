@@ -1,9 +1,16 @@
+- name: Assert app_install_name is not empyty when app_install_version is not empty
+  ansible.builtin.assert:
+    that: app_install_name != ""
+    fail_msg: "app_install_name is required when app_install_version is specified"
+    quiet: true
+  when: app_install_version != ""
+
 - name: Install version by dnf
   become: true
   ansible.builtin.dnf:
-    name: '@{{ app_install_name }}:{{ app_install_ver }}'
+    name: '@{{ app_install_name }}:{{ app_install_version }}'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_name != "" and app_install_ver != ""
+  when: app_install_version != ""
 
 - name: Install package by dnf
   become: true
@@ -24,11 +31,11 @@
   ansible.builtin.dnf:
     name: '@Development Tools'
     install_weak_deps: false
-  when: app_install_dev
+  when: app_install_devel
 
 - name: Install dev packages by dnf
   become: true
   ansible.builtin.dnf:
     name: '{{ app_install_name }}-devel'
     install_weak_deps: '{{ app_install_recommends }}'
-  when: app_install_name != "" and app_install_dev
+  when: app_install_name != "" and app_install_devel

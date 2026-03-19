@@ -1,6 +1,7 @@
-nginx_ver: # null is default, "latest" is latest stable, "x.y" is specific version
-nginx_src: pkg
-nginx_dev: false
-nginx_libs: []
-nginx_gems: []
-nginx_srv: false
+ds_name: '{{ ansible_facts.pkg_mgr == "dnf" | ternary("389-ds-base", "389-ds") }}'
+ds_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+ds_source: pkg
+ds_devel: false
+ds_libs: []
+ds_service_name: dirsrv@localhost.service
+ds_service_auto: false

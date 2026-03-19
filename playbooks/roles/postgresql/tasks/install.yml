@@ -5,7 +5,7 @@
   vars:
     app_install:
       name: nginx
-      ver: '{{ nginx_ver }}'
-      src: '{{ nginx_src }}'
-      dev: '{{ nginx_dev }}'
+      version: '{{ nginx_version }}'
+      source: '{{ nginx_source }}'
+      devel: '{{ nginx_devel }}'
       pkgs: '{{ nginx_libs | map("regex_replace", "^", "nginx-") }}'

@@ -1,11 +1,11 @@
-- name: Task install on app for nginx
+- name: Task install on app for ds
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: nginx
-      ver: '{{ nginx_ver }}'
-      src: '{{ nginx_src }}'
-      dev: '{{ nginx_dev }}'
-      pkgs: '{{ nginx_libs | map("regex_replace", "^", "nginx-") }}'
+      name: '{{ ds_name }}'
+      version: '{{ ds_version }}'
+      source: '{{ ds_source }}'
+      devel: '{{ ds_devel }}'
+      pkgs: '{{ ds_libs | map("regex_replace", "^", ds_name ~ "-") }}'

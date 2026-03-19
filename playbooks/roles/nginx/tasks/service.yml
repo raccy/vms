@@ -1,15 +1,15 @@
 - name: Start and enable nginx service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ nginx_service_name }}'
     state: started
     enabled: true
-  when: nginx_auto
+  when: nginx_sevice_auto
 
 - name: Stop and disbale nginx service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ nginx_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_auto
+  when: not nginx_sevice_auto

@@ -1,3 +1,9 @@
+- name: Assert app_install_version is empty when apt is used
+  ansible.builtin.assert:
+    that: app_install_version == ""
+    fail_msg: "app_install_version is not supported when apt is used"
+    quiet: true
+
 - name: Install package by apt
   become: true
   ansible.builtin.apt:
@@ -17,11 +23,11 @@
   ansible.builtin.apt:
     name: build-essential
     install_recommends: false
-  when: app_install_dev
+  when: app_install_devel
 
 - name: Install dev package by apt
   become: true
   ansible.builtin.apt:
     name: '{{ app_install_name }}-dev'
     install_recommends: '{{ app_install_recommends }}'
-  when: app_install_name != "" and app_install_dev
+  when: app_install_name != "" and app_install_devel

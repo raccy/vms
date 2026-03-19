@@ -1,5 +1,7 @@
-nginx_ver: # null is default, "latest" is latest stable, "x.y" is specific version
-nginx_src: pkg
-nginx_dev: false
+nginx_name: nginx
+nginx_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+nginx_source: pkg
+nginx_devel: false
 nginx_libs: []
-nginx_auto: false
+nginx_service_name: nginx.service
+nginx_service_auto: false

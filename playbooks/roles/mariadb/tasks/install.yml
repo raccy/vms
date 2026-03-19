@@ -5,9 +5,9 @@
   vars:
     app_install:
       name: mariadb
-      ver: '{{ mariadb_ver }}'
-      src: '{{ mariadb_src }}'
-      dev: '{{ mariadb_dev }}'
+      version: '{{ mariadb_version }}'
+      source: '{{ mariadb_source }}'
+      devel: '{{ mariadb_devel }}'
 
 - name: Task install on app for mariadb libs by pkg only
   ansible.builtin.include_role:
@@ -17,5 +17,5 @@
     app_install:
       pkgs: '{{ mariadb_libs | map("regex_replace", "^", "mariadb-") }}'
   when:
-    - mariadb_src == "pkg"
+    - mariadb_source == "pkg"
     - mariadb_libs | length > 0

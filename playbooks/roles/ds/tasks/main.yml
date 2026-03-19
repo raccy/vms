@@ -5,3 +5,12 @@
 - name: Task config
   ansible.builtin.import_tasks:
     file: config.yml
+
+- name: Task config
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Task serivce
+  ansible.builtin.import_tasks:
+    file: service.yml
+  when: ansible_facts.service_mgr == "systemd"

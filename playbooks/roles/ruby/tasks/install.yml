@@ -5,7 +5,7 @@
   vars:
     app_install:
       name: ruby
-      ver: '{{ ruby_ver }}'
-      src: '{{ ruby_src }}'
-      dev: '{{ ruby_dev }}'
+      version: '{{ ruby_version }}'
+      source: '{{ ruby_source }}'
+      devel: '{{ ruby_devel }}'
       pkgs: '{{ ruby_libs | map("regex_replace", "^", "ruby-") }}'

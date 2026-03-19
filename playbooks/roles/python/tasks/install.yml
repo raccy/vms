@@ -5,9 +5,9 @@
   vars:
     app_install:
       name: '{{ python_name }}'
-      ver: '{{ python_ver }}'
-      src: '{{ python_src }}'
-      dev: '{{ python_dev }}'
+      version: '{{ python_version }}'
+      source: '{{ python_source }}'
+      devel: '{{ python_devel }}'
 
 - name: Task install on app for python libs by pkg only
   ansible.builtin.include_role:
@@ -17,5 +17,5 @@
     app_install:
       pkgs: '{{ python_libs | map("regex_replace", "^", python_name ~ "-") }}'
   when:
-    - python_src == "pkg"
+    - python_source == "pkg"
     - python_libs
