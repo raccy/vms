@@ -1,3 +1,23 @@
+- name: Set gui imf
+  ansible.builtin.set_fact:
+    gui_imf: >-
+      {{
+        gui_default_imf[ansible_facts.distribution ~ ansible_facts.distribution_major_version]
+          | default(gui_default_imf[ansible_facts.distribution]
+            | default(gui_default_imf[ansible_facts.os_family]))
+      }}
+  when: gui_imf is not defined
+
+- name: Set gui ime
+  ansible.builtin.set_fact:
+    gui_ime: >-
+      {{
+        gui_default_ime[ansible_facts.distribution ~ ansible_facts.distribution_major_version]
+          | default(gui_default_ime[ansible_facts.distribution]
+            | default(gui_default_ime[ansible_facts.os_family]))
+      }}
+  when: gui_ime is not defined
+
 - name: Task install on app for IM
   ansible.builtin.include_role:
     name: app

@@ -1,0 +1,9 @@
+gui_default_desktop:
+  Debian: task-desktop
+  RedHat: '@gnome-desktop'
+gui_default_imf:
+  Debian:: fcitx
+  RedHat: ibus
+gui_default_ime:
+  Debian: mozc
+  RedHat: anthy

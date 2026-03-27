@@ -1,4 +1,5 @@
-gui_desktop: ubuntu-desktop-minimal
+# gui_desktop: task-desktop
 gui_pkgs: []
-gui_ime: mozc
-gui_imf: fcitx
+gui_im: false
+# gui_imf: fcitx
+# gui_ime: mozc

@@ -1,16 +1,22 @@
-# TODO: dnfは未対応
-# TODO: WSL以外はよくわかっていない。
+- name: Set gui deskotp
+  ansible.builtin.set_fact:
+    gui_desktop: >-
+      {{
+        gui_default_desktop[ansible_facts.distribution ~ ansible_facts.distribution_major_version]
+          | default(gui_default_desktop[ansible_facts.distribution]
+            | default(gui_default_desktop[ansible_facts.os_family]
+              | default("")))
+      }}
+  when: gui_desktop is not defined
 
-- name: Fail without apt
-  ansible.builtin.fail:
-    msg: support apt only
-  when: ansible_facts.pkg_mgr != "apt"
-
-- name: Install GUI desktop
-  become: true
-  ansible.builtin.apt:
-    name: '{{ gui_desktop }}'
-  when: gui_desktop
+- name: Task install on app for gui
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      name: '{{ gui_desktop }}'
+      pkgs: '{{ gui_pkgs }}'
 
 # https://github.com/microsoft/wslg/issues/960
 - name: Stop and disable serivce for GDM
@@ -19,22 +25,6 @@
     name: gdm
     enabled: false
     state: stopped
-  loop: '{{ gui_packages }}'
-  when: gui_desktop
-
-- name: Install GUI package
-  become: true
-  ansible.builtin.apt:
-    name: '{{ item }}'
-  loop: '{{ gui_packages }}'
-  when: gui_packages
-
-- name: Task install on app for gui pkgs
-  ansible.builtin.include_role:
-    name: app
-    tasks_from: install
-  vars:
-    app_install:
-      pkgs: '{{ gui_pkgs }}'
-  when: gui_pkgs
-
+  when:
+    - ansible_facts.virtualization_type == "wsl"
+    - ansible_facts.distribution == "Ubuntu"
