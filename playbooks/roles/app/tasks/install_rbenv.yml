@@ -19,7 +19,7 @@
   register: anyenv_install_rbenv_result_install
   changed_when: anyenv_install_rbenv_result_install.stdout != ""
 
-- name: Get global ruby version of rbenv
+- name: Get global ruby version for rbenv
   ansible.builtin.shell:
     cmd: |
       {{ anyenv_shell_block }}
@@ -28,11 +28,11 @@
   register: anyenv_install_rbenv_result_global
   changed_when: false
 
-- name: Set global version of rbenv
+- name: Set global ruby version for rbenv
   ansible.builtin.shell:
     cmd: |
       {{ anyenv_shell_block }}
-      {{ rbenv_path }} global {{ ruby.version }}
+      rbenv global {{ app_install_version }}
     executable: /bin/bash
   changed_when: true
   when: anyenv_install_rbenv_result_global.stdout | trim != app_install_version
