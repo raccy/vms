@@ -1,0 +1,13 @@
+- name: Install package by snap with classic and specified version
+  become: true
+  community.general.snap:
+    name: '{{ app_install_name }}'
+    channel: '{{ (app_install_version != "") | ternary(app_install_version ~ "/stable", omit) }}'
+    classic: true
+  when: app_install_name != ""
+
+- name: Install packages by snap
+  become: true
+  community.general.snap:
+    name: '{{ app_install_pkgs }}'
+  when: app_install_pkgs != []

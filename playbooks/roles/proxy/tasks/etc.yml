@@ -18,4 +18,11 @@
     owner: root
     group: root
     mode: '0644'
+  notify: '{{ proxy_etc_notify | default([]) }}'
   loop: '{{ proxy_etc_files }}'
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    proxy_etc_role_path: '{{ role_path }}'
+    proxy_etc_files: []
+    proxy_etc_notify: []
