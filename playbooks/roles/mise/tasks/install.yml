@@ -1,8 +1,10 @@
 # use mise.run
+
 - name: Run mise.run
-  become: true
   ansible.builtin.shell:
-    cmd: '{{ lookup("ansible.builtin.url", "https://mise.run") }}'
-    executable: /bin/sh
+    cmd: |
+      set -o pipefail
+      curl https://mise.run | sh
+    executable: /bin/bash
     creates: ~/.local/bin/mise
   environment: '{{ proxy_env }}'
