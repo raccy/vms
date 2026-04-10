@@ -1,3 +1,24 @@
+- name: Add ruby_build_pkgs to ruby_dep_pkgs
+  ansible.builtin.set_fact:
+    ruby_dep_pkgs: >-
+      {{
+        ruby_dep_pkgs
+        | union(ruby_build_pkgs[ansible_facts.distribution ~ ansible_facts.distribution_major_version] | default([]))
+        | union(ruby_build_pkgs[ansible_facts.distribution] | default([]))
+        | union(ruby_build_pkgs[ansible_facts.os_family] | default([]))
+      }}
+  when: ruby_build
+
+- name: Task install on app for ruby dependent packagesl
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      pkgs: '{{ ruby_dep_pkgs }}'
+  when: ruby_dep_pkgs != []
+
+
 - name: Task install on app for ruby
   ansible.builtin.include_role:
     name: app

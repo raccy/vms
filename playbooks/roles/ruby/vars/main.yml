@@ -1,0 +1,29 @@
+# ansible_facts.distribution ~ ansible_facts.distribution_major_version
+# ansible_facts.distribution
+# ansible_facts.os_family
+# https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
+ruby_build_pkgs:
+  Debian:
+    - build-essential
+    - autoconf
+    - libssl-dev
+    - libyaml-dev
+    - zlib1g-dev
+    - libffi-dev
+    - libgmp-dev
+    - rustc
+  RedHat:
+    - autoconf
+    - gcc
+    - patch
+    - bzip2
+    - openssl-devel
+    - libffi-devel
+    - readline-devel
+    - zlib-devel
+    - gdbm-devel
+    - ncurses-devel
+    - tar
+    - perl-FindBin
+    - libyaml-devel
+    - rust

@@ -1,0 +1,38 @@
+# mise
+- name: Asssert mise is required
+  ansible.builtin.assert:
+    that: mise
+    fail_msg: mise is required
+    quiet: true
+
+- name: Task facts on mise
+  ansible.builtin.import_role:
+    name: mise
+    tasks_from: facts
+
+- name: Install package by mise
+  ansible.builtin.shell:
+    cmd: |
+      {{ mise_shell_block }}
+      mise install {{ app_install_name }}{{ (app_install_version != "") | ternary("@" ~ app_install_version, "") }}
+    executable: /bin/bash
+  register: app_install_mise_result_install
+  changed_when: app_install_mise_result_install.stdout != ""
+
+# - name: Get global version for mise
+#   ansible.builtin.shell:
+#     cmd: |
+#       {{ mise_shell_block }}
+#       {{ app_install_name }} global
+#     executable: /bin/bash
+#   register: app_install_mise_result_global
+#   changed_when: false
+
+# - name: Set global version for mise
+#   ansible.builtin.shell:
+#     cmd: |
+#       {{ mise_shell_block }}
+#       {{ app_install_name }} global {{ app_install_version }}
+#     executable: /bin/bash
+#   changed_when: true
+#   when: app_install_mise_result_global.stdout | trim != app_install_version | string

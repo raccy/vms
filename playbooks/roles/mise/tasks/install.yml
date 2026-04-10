@@ -8,3 +8,9 @@
     executable: /bin/bash
     creates: ~/.local/bin/mise
   environment: '{{ proxy_env }}'
+
+- name: Block mise in bashrc
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK mise'
+    block: '{{ mise_shell_block }}'
