@@ -28,6 +28,6 @@
   ansible.builtin.shell:
     cmd: |
       {{ mise_shell_block }}
-      mise use {{ app_install_name }}@{{ app_install_version }}
+      mise use -g {{ app_install_name }}@{{ app_install_version }}
     executable: /bin/bash
   changed_when: true
