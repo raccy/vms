@@ -6,4 +6,4 @@
   when:
     - ansible_facts.service_mgr == "systemd"
     - nginx_service_auto
-  listen: nginx restart service
+  listen: nginx_restart_nginx

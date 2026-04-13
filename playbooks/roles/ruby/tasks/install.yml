@@ -18,7 +18,6 @@
       pkgs: '{{ ruby_dep_pkgs }}'
   when: ruby_dep_pkgs != []
 
-
 - name: Task install on app for ruby
   ansible.builtin.include_role:
     name: app

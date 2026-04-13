@@ -1,7 +1,21 @@
-- name: restart mariadb
+- name: Start and enable mariadb service
   become: true
-  systemd:
-    name: mariadb.service
-    daemon_reload: true
+  ansible.builtin.service:
+    name: '{{ mariadb_service_name }}'
+    state: started
     enabled: true
-    state: restarted
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - mariadb_service
+    - mariadb_service_auto
+
+- name: Stop and disbale mariadb service
+  become: true
+  ansible.builtin.service:
+    name: '{{ mariadb_service_name }}'
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.service_mgr == "systemd"
+    - mariadb_service
+    - not mariadb_service_auto
