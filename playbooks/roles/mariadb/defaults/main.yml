@@ -11,3 +11,5 @@ mariadb_config_collation: utf8mb4_general_ci
 mariadb_service: false
 mariadb_service_name: mariadb.service
 mariadb_service_auto: false
+# user
+mariadb_user: false

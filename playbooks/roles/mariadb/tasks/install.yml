@@ -13,3 +13,22 @@
           mariadb_libs | map("regex_replace", "^", mariadb_name ~ "-")
           | union(mariadb_server | ternary([mariadb_name ~ "-server"], []))
         }}
+
+- name: Install on app for mariadb ansible packages
+  ansible.builtin.set_fact:
+    mariadb_dep_pkgs: >-
+  when: mariadb_build
+
+- name: Task install on app to control mariadb
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      pkgs: >-
+        {{
+          mariadb_ansible_pkgs[ansible_facts.distribution ~ ansible_facts.distribution_major_version] | default([])
+          | union(mariadb_ansible_pkgs[ansible_facts.distribution] | default([]))
+          | union(mariadb_ansible_pkgs[ansible_facts.os_family] | default([]))
+        }}
+  when: mariadb_user

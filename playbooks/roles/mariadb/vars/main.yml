@@ -1,4 +1,3 @@
-# mariadb_files[ansible_facts.distribution_file_variety][ansible_facts.distribution_major_version]
 mariadb_files:
   RedHat:
     7:
@@ -24,4 +23,11 @@ mariadb_files:
     socket: /var/run/mysqld/mysqld.sock
     client_cnf: /etc/mysql/mariadb.conf.d/50-client.cnf
     server_cnf: /etc/mysql/mariadb.conf.d/50-server.cnf
-
+mariadb_server_socket:
+  Debian: /var/run/mysqld/mysqld.sock
+  RedHat: /var/lib/mysql/mysql.sock
+mariadb_ansible_pkgs:
+  Debian:
+    - python3-pymysql
+  RedHat:
+    - python3-PyMySQL
