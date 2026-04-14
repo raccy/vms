@@ -4,20 +4,28 @@
     tasks_from: install
   vars:
     app_install:
-      name: '{{ mariadb_name }}'
+      name: '{{ (ansible_facts.pkg_mgr == "apt" and mariadb_source == "pkg") | ternary("", mariadb_name) }}'
       version: '{{ mariadb_version }}'
       source: '{{ mariadb_source }}'
       devel: '{{ mariadb_devel }}'
       pkgs: >-
         {{
           mariadb_libs | map("regex_replace", "^", mariadb_name ~ "-")
+          | union((ansible_facts.pkg_mgr == "apt" and mariadb_source == "pkg")
+            | ternary([mariadb_name ~ "-client"], []))
           | union(mariadb_server | ternary([mariadb_name ~ "-server"], []))
         }}
 
-- name: Install on app for mariadb ansible packages
+- name: Task list on os for mariadb_control_pkgs
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: list
+  vars:
+    os_list_os: '{{ mariadb_control_pkgs_os }}'
+
+- name: Set mariadb_control_pkgs from os_list
   ansible.builtin.set_fact:
-    mariadb_dep_pkgs: >-
-  when: mariadb_build
+    mariadb_control_pkgs: '{{ os_list }}'
 
 - name: Task install on app to control mariadb
   ansible.builtin.include_role:
@@ -25,10 +33,5 @@
     tasks_from: install
   vars:
     app_install:
-      pkgs: >-
-        {{
-          mariadb_ansible_pkgs[ansible_facts.distribution ~ ansible_facts.distribution_major_version] | default([])
-          | union(mariadb_ansible_pkgs[ansible_facts.distribution] | default([]))
-          | union(mariadb_ansible_pkgs[ansible_facts.os_family] | default([]))
-        }}
+      pkgs: '{{ mariadb_control_pkgs }}'
   when: mariadb_user

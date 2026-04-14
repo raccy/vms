@@ -1,0 +1,3 @@
+os_family: '{{ ansible_facts.os_family }}'
+os_distro: '{{ ansible_facts.distribution }}'
+os_distro_version: '{{ ansible_facts.distribution ~ ansible_facts.distribution_major_version }}'

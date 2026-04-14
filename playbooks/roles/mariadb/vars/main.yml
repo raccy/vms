@@ -1,32 +1,14 @@
-mariadb_files:
+mariadb_config_files_os:
   RedHat:
-    7:
-      socket: /var/lib/mysql/mysql.sock
-      client_cnf: /etc/my.cnf.d/client.cnf
-      server_cnf: /etc/my.cnf.d/server.cnf
-    8:
-      socket: /var/lib/mysql/mysql.sock
-      client_cnf: /etc/my.cnf.d/client.cnf
-      server_cnf: /etc/my.cnf.d/mariadb-server.cnf
-    9:
-    10:
+    client: /etc/my.cnf.d/client.cnf
+    server: /etc/my.cnf.d/mariadb-server.cnf
   Debian:
-  yum:
-    socket: /var/lib/mysql/mysql.sock
-    client_cnf: /etc/my.cnf.d/client.cnf
-    server_cnf: /etc/my.cnf.d/server.cnf
-  dnf:
-    socket: /var/lib/mysql/mysql.sock
-    client_cnf: /etc/my.cnf.d/client.cnf
-    server_cnf: /etc/my.cnf.d/mariadb-server.cnf
-  apt:
-    socket: /var/run/mysqld/mysqld.sock
-    client_cnf: /etc/mysql/mariadb.conf.d/50-client.cnf
-    server_cnf: /etc/mysql/mariadb.conf.d/50-server.cnf
-mariadb_server_socket:
+    client: /etc/mysql/mariadb.conf.d/50-client.cnf
+    server: /etc/mysql/mariadb.conf.d/50-server.cnf
+mariadb_server_socket_os:
   Debian: /var/run/mysqld/mysqld.sock
   RedHat: /var/lib/mysql/mysql.sock
-mariadb_ansible_pkgs:
+mariadb_control_pkgs_os:
   Debian:
     - python3-pymysql
   RedHat:

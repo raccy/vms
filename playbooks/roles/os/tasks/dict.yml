@@ -1,0 +1,8 @@
+- name: Set os_dict
+  ansible.builtin.set_fact:
+    os_dict: >-
+      {{
+        os_dict_os[os_family] | default({})
+        | combine(os_dict_os[os_distro] | default({}), list_merge="prepend_rp", recursive=True)
+        | combine(os_dict_os[os_distro_version] | default({}), list_merge="prepend_rp", recursive=True)
+      }}
