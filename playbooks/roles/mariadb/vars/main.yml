@@ -6,7 +6,7 @@ mariadb_config_files_os:
     client: /etc/mysql/mariadb.conf.d/50-client.cnf
     server: /etc/mysql/mariadb.conf.d/50-server.cnf
 mariadb_server_socket_os:
-  Debian: /var/run/mysqld/mysqld.sock
+  Debian: /run/mysqld/mysqld.sock
   RedHat: /var/lib/mysql/mysql.sock
 mariadb_control_pkgs_os:
   Debian:

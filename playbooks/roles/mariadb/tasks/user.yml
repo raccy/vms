@@ -1,29 +1,46 @@
-- name: Set no password for root user
+- name: Task value on os for mariadb_server_socket
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ mariadb_server_socket_os }}'
+  when: mariadb_server_socket is not defined
+
+- name: Set mariadb_server_socket from os_value
+  ansible.builtin.set_fact:
+    mariadb_server_socket: '{{ os_value }}'
+  when: mariadb_server_socket is not defined
+
+- name: Start mariadb service
+  become: true
+  ansible.builtin.service:
+    name: '{{ mariadb_service_name }}'
+    state: started
+
+- name: Set password for root user
   become: true
   community.mysql.mysql_query:
-    login_unix_socket: '{{ mariadb.socket }}'
+    login_unix_socket: '{{ mariadb_server_socket }}'
     login_user: root
     query:
-      - ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+      - ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mariadb_user_root_password }}';
       - FLUSH PRIVILEGES;
 
 - name: Create admin user
   become: true
   community.mysql.mysql_user:
-    login_unix_socket: '{{ mariadb.socket }}'
+    login_unix_socket: '{{ mariadb_server_socket }}'
     login_user: root
     state: present
-    name: '{{ mariadb.admin.name }}'
+    name: '{{ mariadb_user_admin_name }}'
     host: localhost
-    password: '{{ mariadb.admin.password }}'
+    password: '{{ mariadb_user_admin_password | default(omit) }}'
     priv: '*.*:ALL'
+  when: mariadb_user_admin_name != ""
 
-- name: Create ansible user
+- name: Stop mariadb service
   become: true
-  community.mysql.mysql_user:
-    login_unix_socket: '{{ mariadb.socket }}'
-    login_user: root
-    state: present
-    name: '{{ ansible_user }}'
-    host: localhost
-    priv: '*.*:ALL'
+  ansible.builtin.service:
+    name: '{{ mariadb_service_name }}'
+    state: stopped
+  when: not mariadb_service_auto

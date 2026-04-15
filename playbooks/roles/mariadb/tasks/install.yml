@@ -34,4 +34,3 @@
   vars:
     app_install:
       pkgs: '{{ mariadb_control_pkgs }}'
-  when: mariadb_user

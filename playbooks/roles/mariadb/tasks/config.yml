@@ -7,51 +7,41 @@
     tasks_from: dict
   vars:
     os_dict_os: '{{ mariadb_config_files_os }}'
+  when: mariadb_config_files is not defined
 
 - name: Set mariadb_config_files from os_dict
   ansible.builtin.set_fact:
     mariadb_config_files: '{{ os_dict }}'
+  when: mariadb_config_files is not defined
 
 - name: Modify mariadb client config file
+  become: true
   community.general.ini_file:
     create: false
     path: '{{ mariadb_config_files.client }}'
     section: client
     option: '{{ item.key }}'
-    value: '{{ db_character_set }}'
-  loop:
-    - { name: default-character-set, value: '{{ db_character_set }}' }
-  notify: mariadb_restart_mariadb
+    value: '{{ item.value }}'
+  loop: >-
+    {{
+      {"default-character-set": mariadb_config_charset}
+      | combine(mariadb_config_client)
+      | dict2items
+    }}
 
-- name: Line in mysqld conf
-  ansible.builtin.lineinfile:
-    path: "/etc/my.cnf.d/mariadb-server.cnf"
-    insertafter: '\[mysqld\]'
-    regexp: '^#?{{ item.name }}\s*=.*$'
-    line: '{{ item.name }}={{ item.value }}'
-  loop:
-    - { name: log-bin, value: mysql-bin }
-    - { name: expire_logs_days, value: 7 }
-    - { name: sync_binlog, value: 0 }
+- name: Modify mariadb server config file
+  become: true
+  community.general.ini_file:
+    create: false
+    path: '{{ mariadb_config_files.server }}'
+    section: server
+    option: '{{ item.key }}'
+    value: '{{ item.value }}'
+  loop: >-
+    {{
+      {"character-set-server": mariadb_config_charset, "collation-server": mariadb_config_collation}
+      | combine(mariadb_config_client)
+      | dict2items
+    }}
   notify: mariadb_restart_mariadb
-
-- name: Line in client conf
-  ansible.builtin.lineinfile:
-    path: "/etc/my.cnf.d/client.cnf"
-    insertafter: '\[client\]'
-    regexp: '^#?{{ item.name }}\s*=.*$'
-    line: '{{ item.name }}={{ item.value }}'
-  loop:
-    - { name: default-character-set, value: '{{ db_character_set }}' }
-  notify: mariadb_restart_mariadb
-
-- name: Line in server conf
-  ansible.builtin.lineinfile:
-    path: "/etc/my.cnf.d/mariadb-server.cnf"
-    insertafter: '\[server\]'
-    regexp: '^#?{{ item.name }}\s*=.*$'
-    line: '{{ item.name }}={{ item.value }}'
-  loop:
-    - { name: character-set-server, value: '{{ db_character_set }}' }
-    - { name: collation-server, value: '{{ db_collation }}' }
-  notify: mariadb_restart_mariadb
+  when: mariadb_server

@@ -7,9 +7,12 @@ mariadb_server: false
 # config
 mariadb_config_charset: utf8mb4
 mariadb_config_collation: utf8mb4_general_ci
+mariadb_config_client: {}
+mariadb_config_server: {}
 # service
-mariadb_service: false
 mariadb_service_name: mariadb.service
 mariadb_service_auto: false
 # user
-mariadb_user: false
+mariadb_user_root_password: ""
+mariadb_user_admin_name: '{{ ansible_user }}'
+# mariadb_user_admin_password: ""
