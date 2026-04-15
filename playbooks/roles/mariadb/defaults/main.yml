@@ -13,6 +13,6 @@ mariadb_config_server: {}
 mariadb_service_name: mariadb.service
 mariadb_service_auto: false
 # user
-mariadb_user_root_password: ""
-mariadb_user_admin_name: '{{ ansible_user }}'
-# mariadb_user_admin_password: ""
+mariadb_user_root_password: ''
+mariadb_user_admin_name: '{{ ansible_facts.user_id }}'
+mariadb_user_admin_password: ''
