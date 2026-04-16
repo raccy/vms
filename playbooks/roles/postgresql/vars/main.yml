@@ -1,0 +1,11 @@
+postgresql_server_datadir_os:
+  RedHat: /var/lib/pgsql/data
+  Debian: /var/lib/pgsql/data
+postgresql_server_socket_os:
+  Debian: /run/mysqld/mysqld.sock
+  RedHat: /var/lib/mysql/mysql.sock
+postgresql_control_pkgs_os:
+  Debian:
+    - python3-psycopg2
+  RedHat:
+    - python3-psycopg2

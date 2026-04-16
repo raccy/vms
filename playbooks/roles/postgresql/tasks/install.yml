@@ -1,11 +1,36 @@
-- name: Task install on app for nginx
+- name: Task install on app for postgresql
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: nginx
-      version: '{{ nginx_version }}'
-      source: '{{ nginx_source }}'
-      devel: '{{ nginx_devel }}'
-      pkgs: '{{ nginx_libs | map("regex_replace", "^", "nginx-") }}'
+      name: '{{ (ansible_facts.pkg_mgr == "apt" and postgresql_source == "pkg") | ternary("", postgresql_name) }}'
+      version: '{{ postgresql_version }}'
+      source: '{{ postgresql_source }}'
+      devel: '{{ postgresql_devel }}'
+      pkgs: >-
+        {{
+          postgresql_libs | map("regex_replace", "^", postgresql_name ~ "-")
+          | union((ansible_facts.pkg_mgr == "apt" and postgresql_source == "pkg")
+            | ternary([postgresql_name ~ "-client"], []))
+          | union(postgresql_server | ternary([postgresql_name ~ "-server"], []))
+        }}
+
+- name: Task list on os for postgresql_control_pkgs
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: list
+  vars:
+    os_list_os: '{{ postgresql_control_pkgs_os }}'
+
+- name: Set postgresql_control_pkgs from os_list
+  ansible.builtin.set_fact:
+    postgresql_control_pkgs: '{{ os_list }}'
+
+- name: Task install on app to control postgresql
+  ansible.builtin.include_role:
+    name: app
+    tasks_from: install
+  vars:
+    app_install:
+      pkgs: '{{ postgresql_control_pkgs }}'

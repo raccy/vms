@@ -1,11 +1,47 @@
-- name: Copy nginx config file
+# config
+#   modify *.cnf
+---
+- name: Task dict on os for postgresql_config_files
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: dict
+  vars:
+    os_dict_os: '{{ postgresql_config_files_os }}'
+  when: postgresql_config_files is not defined
+
+- name: Set postgresql_config_files from os_dict
+  ansible.builtin.set_fact:
+    postgresql_config_files: '{{ os_dict }}'
+  when: postgresql_config_files is not defined
+
+- name: Modify postgresql client config file
   become: true
-  ansible.builtin.template:
-    src: '{{ item }}.j2'
-    dest: '/etc/{{ item }}'
-    owner: root
-    group: root
-    mode: '0644'
-  loop:
-    - nginx/nginx.conf.j2
-  notify: nginx_restart
+  community.general.ini_file:
+    create: false
+    path: '{{ postgresql_config_files.client }}'
+    section: client
+    option: '{{ item.key }}'
+    value: '{{ item.value }}'
+  loop: >-
+    {{
+      {"default-character-set": postgresql_config_charset}
+      | combine(postgresql_config_client)
+      | dict2items
+    }}
+
+- name: Modify postgresql server config file
+  become: true
+  community.general.ini_file:
+    create: false
+    path: '{{ postgresql_config_files.server }}'
+    section: server
+    option: '{{ item.key }}'
+    value: '{{ item.value }}'
+  loop: >-
+    {{
+      {"character-set-server": postgresql_config_charset, "collation-server": postgresql_config_collation}
+      | combine(postgresql_config_client)
+      | dict2items
+    }}
+  notify: postgresql_restart_postgresql
+  when: postgresql_server

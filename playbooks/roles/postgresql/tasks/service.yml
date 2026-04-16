@@ -1,15 +1,15 @@
-- name: Start and enable nginx service
+- name: Start and enable postgresql service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ postgresql_service_name }}'
     state: started
     enabled: true
-  when: nginx_srv
+  when: postgresql_service_auto
 
-- name: Stop and disbale nginx service
+- name: Stop and disbale postgresql service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ postgresql_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_srv
+  when: not postgresql_service_auto

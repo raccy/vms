@@ -1,0 +1,46 @@
+- name: Task value on os for postgresql_server_socket
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ postgresql_server_socket_os }}'
+  when: postgresql_server_socket is not defined
+
+- name: Set postgresql_server_socket from os_value
+  ansible.builtin.set_fact:
+    postgresql_server_socket: '{{ os_value }}'
+  when: postgresql_server_socket is not defined
+
+- name: Start postgresql service
+  become: true
+  ansible.builtin.service:
+    name: '{{ postgresql_service_name }}'
+    state: started
+
+- name: Set password for root user
+  become: true
+  community.mysql.mysql_query:
+    login_unix_socket: '{{ postgresql_server_socket }}'
+    login_user: root
+    query:
+      - ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ postgresql_user_root_password }}';
+      - FLUSH PRIVILEGES;
+
+- name: Create admin user
+  become: true
+  community.mysql.mysql_user:
+    login_unix_socket: '{{ postgresql_server_socket }}'
+    login_user: root
+    state: present
+    name: '{{ postgresql_user_admin_name }}'
+    host: localhost
+    password: '{{ postgresql_user_admin_password | default(omit) }}'
+    priv: '*.*:ALL'
+  when: postgresql_user_admin_name != ""
+
+- name: Stop postgresql service
+  become: true
+  ansible.builtin.service:
+    name: '{{ postgresql_service_name }}'
+    state: stopped
+  when: not postgresql_service_auto

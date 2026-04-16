@@ -1,6 +1,18 @@
-nginx_version: # null is default, "latest" is latest stable, "x.y" is specific version
-nginx_source: pkg
-nginx_devel: false
-nginx_libs: []
-nginx_gems: []
-nginx_srv: false
+postgresql_name: postgresql
+postgresql_version: ""
+postgresql_source: pkg
+postgresql_devel: false
+postgresql_libs: []
+postgresql_server: false
+# config
+postgresql_config_charset: utf8mb4
+postgresql_config_collation: utf8mb4_general_ci
+postgresql_config_client: {}
+postgresql_config_server: {}
+# service
+postgresql_service_name: postgresql.service
+postgresql_service_auto: false
+# user
+postgresql_user_root_password: ''
+postgresql_user_admin_name: '{{ ansible_facts.user_id }}'
+postgresql_user_admin_password: ''
