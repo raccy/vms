@@ -1,15 +1,15 @@
-- name: Start and enable nginx service
+- name: Start and enable valkey service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ valkey_service_name }}'
     state: started
     enabled: true
-  when: nginx_srv
+  when: valkey_service
 
-- name: Stop and disbale nginx service
+- name: Stop and disbale valkey service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ valkey_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_srv
+  when: not valkey_service

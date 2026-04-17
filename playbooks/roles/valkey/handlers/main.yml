@@ -1,7 +1,7 @@
-- name: Restart nginx service
+- name: Restart valkey service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ valkey_service_name }}'
     state: restarted
-  when: nginx_srv
-  listen: nginx_restart
+  when: valkey_service
+  listen: valkey_restart_valkey

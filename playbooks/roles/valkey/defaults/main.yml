@@ -1,6 +1,8 @@
-nginx_version: # null is default, "latest" is latest stable, "x.y" is specific version
-nginx_source: pkg
-nginx_devel: false
-nginx_libs: []
-nginx_gems: []
-nginx_srv: false
+valkey_name: valkey
+valkey_version: ""
+valkey_source: pkg
+valkey_devel: false
+valkey_libs: []
+# service
+valkey_service: false
+valkey_service_name: valkey.service

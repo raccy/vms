@@ -2,6 +2,6 @@
   ansible.builtin.import_tasks:
     file: install.yml
 
-- name: Task config
+- name: Task serivce
   ansible.builtin.import_tasks:
-    file: config.yml
+    file: service.yml

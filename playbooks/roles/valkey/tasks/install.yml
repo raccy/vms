@@ -1,11 +1,11 @@
-- name: Task install on app for nginx
+- name: Task install on app for valkey
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: nginx
-      version: '{{ nginx_version }}'
-      source: '{{ nginx_source }}'
-      devel: '{{ nginx_devel }}'
-      pkgs: '{{ nginx_libs | map("regex_replace", "^", "nginx-") }}'
+      name: '{{ valkey_name }}'
+      version: '{{ valkey_version }}'
+      source: '{{ valkey_source }}'
+      devel: '{{ valkey_devel }}'
+      pkgs: '{{ valkey_libs | map("regex_replace", "^", "valkey-") }}'
