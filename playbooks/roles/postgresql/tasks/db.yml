@@ -21,9 +21,9 @@
   become: true
   become_user: postgres
   community.postgresql.postgresql_alter_system:
-    name: listen_addresses
-    value: '*'
-  when: postgresql_config_allow_loopback_md5
+    param: listen_addresses
+    value: '"*"'
+  when: postgresql_config_allow_all_md5
 
 - name: Create admin user
   become: true

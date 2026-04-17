@@ -11,7 +11,7 @@
     file: service.yml
   when: mariadb_server
 
-- name: Task user
+- name: Task db
   ansible.builtin.import_tasks:
-    file: user.yml
+    file: db.yml
   when: mariadb_server
