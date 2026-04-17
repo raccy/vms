@@ -1,6 +1,8 @@
-nginx_version: # null is default, "latest" is latest stable, "x.y" is specific version
-nginx_source: pkg
-nginx_devel: false
-nginx_libs: []
-nginx_gems: []
-nginx_srv: false
+redis_name: redis
+redis_version: ""
+redis_source: pkg
+redis_devel: false
+redis_libs: []
+# service
+redis_service_name: redis.service
+redis_service_auto: false

@@ -1,7 +1,7 @@
-- name: Restart nginx service
+- name: Restart redis service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ redis_service_name }}'
     state: restarted
-  when: nginx_srv
-  listen: nginx_restart
+  when: redis_service_auto
+  listen: redis_restart_redis
