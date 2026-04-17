@@ -2,16 +2,16 @@
   ansible.builtin.import_tasks:
     file: install.yml
 
-# - name: Task config
-#   ansible.builtin.import_tasks:
-#     file: config.yml
+- name: Task config
+  ansible.builtin.import_tasks:
+    file: config.yml
 
 - name: Task serivce
   ansible.builtin.import_tasks:
     file: service.yml
-  when: mariadb_server
+  when: postgresql_server
 
-# - name: Task user
-#   ansible.builtin.import_tasks:
-#     file: user.yml
-#   when: mariadb_server
+- name: Task db
+  ansible.builtin.import_tasks:
+    file: db.yml
+  when: postgresql_server

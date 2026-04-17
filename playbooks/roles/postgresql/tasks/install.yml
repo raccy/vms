@@ -1,20 +1,49 @@
+- name: Set postgresql_install_name is empty string when apt
+  ansible.builtin.set_fact:
+    postgresql_install_name: ''
+  when:
+    - postgresql_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Set postgresql_install_pkgs
+  ansible.builtin.set_fact:
+    postgresql_install_pkgs: '{{ postgresql_libs | map("regex_replace", "^", postgresql_name ~ "-") }}'
+  when: postgresql_source == "pkg"
+
+- name: Add client package to postgresql_install_pkgs when apt
+  ansible.builtin.set_fact:
+    postgresql_install_pkgs: '{{ postgresql_install_pkgs | union([postgresql_name ~ "-client"]) }}'
+  when:
+    - postgresql_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Add server package to postgresql_install_pkgs when apt
+  ansible.builtin.set_fact:
+    postgresql_install_pkgs: '{{ postgresql_install_pkgs | union([postgresql_name]) }}'
+  when:
+    - postgresql_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+    - postgresql_server
+
+- name: Add server package to postgresql_install_pkgs when dnf
+  ansible.builtin.set_fact:
+    postgresql_install_pkgs: '{{ postgresql_install_pkgs | union([postgresql_name ~ "-server"]) }}'
+  when:
+    - postgresql_source == "pkg"
+    - ansible_facts.pkg_mgr == "dnf"
+    - postgresql_server
+
 - name: Task install on app for postgresql
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: '{{ (ansible_facts.pkg_mgr == "apt" and postgresql_source == "pkg") | ternary("", postgresql_name) }}'
+      name: '{{ postgresql_install_name | default(postgresql_name) }}'
       version: '{{ postgresql_version }}'
       source: '{{ postgresql_source }}'
       devel: '{{ postgresql_devel }}'
-      pkgs: >-
-        {{
-          postgresql_libs | map("regex_replace", "^", postgresql_name ~ "-")
-          | union((ansible_facts.pkg_mgr == "apt" and postgresql_source == "pkg")
-            | ternary([postgresql_name ~ "-client"], []))
-          | union(postgresql_server | ternary([postgresql_name ~ "-server"], []))
-        }}
+      pkgs: '{{ postgresql_install_pkgs | default([]) }}'
 
 - name: Task list on os for postgresql_control_pkgs
   ansible.builtin.include_role:

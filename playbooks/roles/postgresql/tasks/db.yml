@@ -1,0 +1,43 @@
+# - name: Task value on os for postgresql_server_socket
+#   ansible.builtin.include_role:
+#     name: os
+#     tasks_from: value
+#   vars:
+#     os_value_os: '{{ postgresql_server_socket_os }}'
+#   when: postgresql_server_socket is not defined
+
+# - name: Set postgresql_server_socket from os_value
+#   ansible.builtin.set_fact:
+#     postgresql_server_socket: '{{ os_value }}'
+#   when: postgresql_server_socket is not defined
+
+- name: Start postgresql service
+  become: true
+  ansible.builtin.service:
+    name: '{{ postgresql_service_name }}'
+    state: started
+
+- name: Alter system listening address to allow loopback md5
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_alter_system:
+    name: listen_addresses
+    value: '*'
+  when: postgresql_config_allow_loopback_md5
+
+- name: Create admin user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    state: present
+    name: '{{ postgresql_user_admin_name }}'
+    password: '{{ postgresql_user_admin_password | default(omit) }}'
+    role_attr_flags: SUPERUSER
+  when: postgresql_user_admin_name != ""
+
+- name: Stop postgresql service
+  become: true
+  ansible.builtin.service:
+    name: '{{ postgresql_service_name }}'
+    state: stopped
+  when: not postgresql_service_auto

@@ -1,47 +1,41 @@
 # config
-#   modify *.cnf
+#   modify data directory
+# TODO: Ubuntuはまだ
 ---
-- name: Task dict on os for postgresql_config_files
-  ansible.builtin.include_role:
-    name: os
-    tasks_from: dict
-  vars:
-    os_dict_os: '{{ postgresql_config_files_os }}'
-  when: postgresql_config_files is not defined
-
-- name: Set postgresql_config_files from os_dict
-  ansible.builtin.set_fact:
-    postgresql_config_files: '{{ os_dict }}'
-  when: postgresql_config_files is not defined
-
-- name: Modify postgresql client config file
+- name: Create postgresql data directory
   become: true
-  community.general.ini_file:
-    create: false
-    path: '{{ postgresql_config_files.client }}'
-    section: client
-    option: '{{ item.key }}'
-    value: '{{ item.value }}'
-  loop: >-
-    {{
-      {"default-character-set": postgresql_config_charset}
-      | combine(postgresql_config_client)
-      | dict2items
-    }}
-
-- name: Modify postgresql server config file
-  become: true
-  community.general.ini_file:
-    create: false
-    path: '{{ postgresql_config_files.server }}'
-    section: server
-    option: '{{ item.key }}'
-    value: '{{ item.value }}'
-  loop: >-
-    {{
-      {"character-set-server": postgresql_config_charset, "collation-server": postgresql_config_collation}
-      | combine(postgresql_config_client)
-      | dict2items
-    }}
-  notify: postgresql_restart_postgresql
+  ansible.builtin.command:
+    cmd: '{{ postgresql_server_setup }}'
+    creates: '{{ postgresql_server_data }}/PG_VERSION'
   when: postgresql_server
+
+- name: Set loopback md5 in pg_hba.conf
+  become: true
+  community.postgresql.postgresql_pg_hba:
+    dest: '{{ postgresql_server_data }}/pg_hba.conf'
+    contype: host
+    databases: all
+    users: all
+    address: '{{ item }}'
+    method: md5
+  loop:
+    - "127.0.0.1/32"
+    - "::1/128"
+  notify: postgresql_restart_postgresql
+  when:
+    - postgresql_server
+    - postgresql_config_allow_loopback_md5
+
+- name: Set all md5 in pg_hba.conf
+  become: true
+  community.postgresql.postgresql_pg_hba:
+    dest: '{{ postgresql_server_data }}/pg_hba.conf'
+    contype: host
+    databases: all
+    users: all
+    address: all
+    method: md5
+  notify: postgresql_restart_postgresql
+  when:
+    - postgresql_server
+    - postgresql_config_allow_all_md5
