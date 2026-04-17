@@ -3,5 +3,6 @@ nginx_version: ""
 nginx_source: pkg
 nginx_devel: false
 nginx_libs: []
+# service
+nginx_service: false
 nginx_service_name: nginx.service
-nginx_service_auto: false

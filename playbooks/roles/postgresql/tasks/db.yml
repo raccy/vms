@@ -40,4 +40,4 @@
   ansible.builtin.service:
     name: '{{ postgresql_service_name }}'
     state: stopped
-  when: not postgresql_service_auto
+  when: not postgresql_service

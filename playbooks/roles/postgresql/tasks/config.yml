@@ -7,7 +7,6 @@
   ansible.builtin.command:
     cmd: '{{ postgresql_server_setup }}'
     creates: '{{ postgresql_server_data }}/PG_VERSION'
-  when: postgresql_server
 
 - name: Set loopback md5 in pg_hba.conf
   become: true
@@ -22,9 +21,7 @@
     - "127.0.0.1/32"
     - "::1/128"
   notify: postgresql_restart_postgresql
-  when:
-    - postgresql_server
-    - postgresql_config_allow_loopback_md5
+  when: postgresql_config_allow_loopback_md5
 
 - name: Set all md5 in pg_hba.conf
   become: true
@@ -36,6 +33,4 @@
     address: all
     method: md5
   notify: postgresql_restart_postgresql
-  when:
-    - postgresql_server
-    - postgresql_config_allow_all_md5
+  when: postgresql_config_allow_all_md5

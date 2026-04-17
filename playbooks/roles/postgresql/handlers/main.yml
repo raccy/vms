@@ -3,5 +3,5 @@
   ansible.builtin.service:
     name: '{{ postgresql_service_name }}'
     state: restarted
-  when: postgresql_service_auto
+  when: postgresql_service
   listen: postgresql_restart_postgresql

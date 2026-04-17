@@ -3,5 +3,5 @@ ds_version: "" # "" is default, "latest" is latest stable, "x.y" is specific ver
 ds_source: pkg
 ds_devel: false
 ds_libs: []
+ds_service: false
 ds_service_name: dirsrv@localhost.service
-ds_service_auto: false

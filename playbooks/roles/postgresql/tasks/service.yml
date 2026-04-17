@@ -4,7 +4,7 @@
     name: '{{ postgresql_service_name }}'
     state: started
     enabled: true
-  when: postgresql_service_auto
+  when: postgresql_service
 
 - name: Stop and disbale postgresql service
   become: true
@@ -12,4 +12,4 @@
     name: '{{ postgresql_service_name }}'
     state: stopped
     enabled: false
-  when: not postgresql_service_auto
+  when: not postgresql_service

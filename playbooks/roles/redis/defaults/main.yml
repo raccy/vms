@@ -4,5 +4,5 @@ redis_source: pkg
 redis_devel: false
 redis_libs: []
 # service
+redis_service: false
 redis_service_name: redis.service
-redis_service_auto: false

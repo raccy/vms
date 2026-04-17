@@ -4,7 +4,7 @@
     name: '{{ nginx_service_name }}'
     state: started
     enabled: true
-  when: nginx_service_auto
+  when: nginx_service
 
 - name: Stop and disbale nginx service
   become: true
@@ -12,4 +12,4 @@
     name: '{{ nginx_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_service_auto
+  when: not nginx_service

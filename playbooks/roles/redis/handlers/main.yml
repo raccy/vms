@@ -3,5 +3,5 @@
   ansible.builtin.service:
     name: '{{ redis_service_name }}'
     state: restarted
-  when: redis_service_auto
+  when: redis_service
   listen: redis_restart_redis

@@ -5,5 +5,5 @@
     state: restarted
   when:
     - ansible_facts.service_mgr == "systemd"
-    - nginx_service_auto
+    - nginx_service
   listen: nginx_restart_nginx

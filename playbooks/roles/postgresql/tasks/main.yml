@@ -9,9 +9,7 @@
 - name: Task serivce
   ansible.builtin.import_tasks:
     file: service.yml
-  when: postgresql_server
 
 - name: Task db
   ansible.builtin.import_tasks:
     file: db.yml
-  when: postgresql_server

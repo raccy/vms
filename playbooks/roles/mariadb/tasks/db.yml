@@ -43,4 +43,4 @@
   ansible.builtin.service:
     name: '{{ mariadb_service_name }}'
     state: stopped
-  when: not mariadb_service_auto
+  when: not mariadb_service

@@ -3,15 +3,14 @@ postgresql_version: ""
 postgresql_source: pkg
 postgresql_devel: false
 postgresql_libs: []
-postgresql_server: false
 postgresql_server_data: /var/lib/pgsql/data
 postgresql_server_setup: /usr/bin/postgresql-setup --initdb
 # config
 postgresql_config_allow_loopback_md5: false
 postgresql_config_allow_all_md5: false
 # service
+postgresql_service: false
 postgresql_service_name: postgresql.service
-postgresql_service_auto: false
 # user
 postgresql_user_admin_name: '{{ ansible_facts.user_id }}'
 postgresql_user_admin_password: ''

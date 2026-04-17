@@ -9,9 +9,7 @@
 - name: Task serivce
   ansible.builtin.import_tasks:
     file: service.yml
-  when: mariadb_server
 
 - name: Task db
   ansible.builtin.import_tasks:
     file: db.yml
-  when: mariadb_server

@@ -1,20 +1,40 @@
+- name: Set mariadb_install_name is empty string when apt
+  ansible.builtin.set_fact:
+    mariadb_install_name: ''
+  when:
+    - mariadb_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Set mariadb_install_pkgs
+  ansible.builtin.set_fact:
+    mariadb_install_pkgs: '{{ mariadb_libs | map("regex_replace", "^", mariadb_name ~ "-") }}'
+  when: mariadb_source == "pkg"
+
+- name: Add client package to mariadb_install_pkgs when apt
+  ansible.builtin.set_fact:
+    mariadb_install_pkgs: '{{ mariadb_install_pkgs | union([mariadb_name ~ "-client", mariadb_name ~ "-server"]) }}'
+  when:
+    - mariadb_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Add server package to mariadb_install_pkgs when dnf
+  ansible.builtin.set_fact:
+    mariadb_install_pkgs: '{{ mariadb_install_pkgs | union([mariadb_name ~ "-server"]) }}'
+  when:
+    - mariadb_source == "pkg"
+    - ansible_facts.pkg_mgr == "dnf"
+
 - name: Task install on app for mariadb
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: '{{ (ansible_facts.pkg_mgr == "apt" and mariadb_source == "pkg") | ternary("", mariadb_name) }}'
+      name: '{{ mariadb_install_name | default(mariadb_name) }}'
       version: '{{ mariadb_version }}'
       source: '{{ mariadb_source }}'
       devel: '{{ mariadb_devel }}'
-      pkgs: >-
-        {{
-          mariadb_libs | map("regex_replace", "^", mariadb_name ~ "-")
-          | union((ansible_facts.pkg_mgr == "apt" and mariadb_source == "pkg")
-            | ternary([mariadb_name ~ "-client"], []))
-          | union(mariadb_server | ternary([mariadb_name ~ "-server"], []))
-        }}
+      pkgs: '{{ mariadb_install_pkgs | default([]) }}'
 
 - name: Task list on os for mariadb_control_pkgs
   ansible.builtin.include_role:

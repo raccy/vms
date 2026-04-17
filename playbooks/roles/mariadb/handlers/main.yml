@@ -3,5 +3,5 @@
   ansible.builtin.service:
     name: '{{ mariadb_service_name }}'
     state: restarted
-  when: mariadb_service_auto
+  when: mariadb_service
   listen: mariadb_restart_mariadb

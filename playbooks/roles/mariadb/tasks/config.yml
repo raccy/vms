@@ -40,8 +40,7 @@
   loop: >-
     {{
       {"character-set-server": mariadb_config_charset, "collation-server": mariadb_config_collation}
-      | combine(mariadb_config_client)
+      | combine(mariadb_config_server)
       | dict2items
     }}
   notify: mariadb_restart_mariadb
-  when: mariadb_server
