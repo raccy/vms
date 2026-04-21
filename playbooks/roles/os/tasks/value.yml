@@ -1,3 +1,8 @@
+- name: Debug os_value_os
+  ansible.builtin.debug:
+    var: os_value_os
+  when: debug
+
 - name: Set os_value
   ansible.builtin.set_fact:
     os_value: >-
@@ -7,3 +12,8 @@
           | default(os_value_os[os_family]
             | default("")))
       }}
+
+- name: Debug os_value
+  ansible.builtin.debug:
+    var: os_value
+  when: debug

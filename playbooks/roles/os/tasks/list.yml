@@ -1,3 +1,8 @@
+- name: Debug os_list_os
+  ansible.builtin.debug:
+    var: os_list_os
+  when: debug
+
 - name: Set os_list
   ansible.builtin.set_fact:
     os_list: >-
@@ -6,3 +11,8 @@
         | union(os_list_os[os_distro] | default([]))
         | union(os_list_os[os_family] | default([]))
       }}
+
+- name: Debug os_list
+  ansible.builtin.debug:
+    var: os_list
+  when: debug
