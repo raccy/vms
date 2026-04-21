@@ -24,12 +24,6 @@
     gui_ime: '{{ os_value }}'
   when: gui_ime is not defined
 
-- debug:
-    var: gui_imf
-
-- debug:
-    var: gui_ime
-
 - name: Task install on app for IM
   ansible.builtin.include_role:
     name: app
