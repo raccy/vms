@@ -2,7 +2,7 @@ gui_desktop_os:
   Debian: task-desktop
   RedHat: '@gnome-desktop'
 gui_imf_os:
-  Debian:: fcitx
+  Debian: fcitx
   RedHat: ibus
 gui_ime_os:
   Debian: mozc
