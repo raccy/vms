@@ -1,12 +1,14 @@
-- name: Set gui deskotp
+- name: Task value on os for gui_desktop
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ gui_desktop_os }}'
+  when: gui_desktop is not defined
+
+- name: Set gui_desktop from os_value
   ansible.builtin.set_fact:
-    gui_desktop: >-
-      {{
-        gui_default_desktop[ansible_facts.distribution ~ ansible_facts.distribution_major_version]
-          | default(gui_default_desktop[ansible_facts.distribution]
-            | default(gui_default_desktop[ansible_facts.os_family]
-              | default("")))
-      }}
+    gui_desktop: '{{ os_value }}'
   when: gui_desktop is not defined
 
 - name: Task install on app for gui

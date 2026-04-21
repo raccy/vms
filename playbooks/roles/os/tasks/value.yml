@@ -5,5 +5,5 @@
         os_value_os[os_distro_version]
         | default(os_value_os[os_distro]
           | default(os_value_os[os_family]
-            | default({})))
+            | default("")))
       }}
