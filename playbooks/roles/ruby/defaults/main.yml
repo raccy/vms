@@ -5,4 +5,4 @@ ruby_devel: false
 ruby_libs: []
 ruby_gems: []
 ruby_build: false
-ruby_dep_pkgs: []
+# ruby_dep_pkgs: []

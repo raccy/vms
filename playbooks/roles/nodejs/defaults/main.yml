@@ -4,3 +4,5 @@ nodejs_source: pkg
 nodejs_devel: false
 nodejs_libs: []
 nodejs_npms: []
+nodejs_build: false
+# nodejs_dep_pkgs: []

@@ -1,0 +1,19 @@
+# ansible_facts.distribution ~ ansible_facts.distribution_major_version
+# ansible_facts.distribution
+# ansible_facts.os_family
+nodejs_dep_pkgs_os:
+  Debian:
+    - libatomic1
+# https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
+nodejs_build_pkgs_os:
+  Debian:
+    - python3
+    - g++
+    - gcc
+    - make
+    - python3-pip
+  RedHat:
+    - python3
+    - gcc-c++
+    - make
+    - python3-pip

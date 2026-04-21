@@ -22,6 +22,7 @@
       {{ anyenv_shell_block }}
       {{ app_install_name }} install -s {{ app_install_version }}
     executable: /bin/bash
+  environment: '{{ proxy_env }}'
   register: app_install_anyenv_result_install
   changed_when: app_install_anyenv_result_install.stdout != ""
 

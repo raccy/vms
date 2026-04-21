@@ -1,8 +1,9 @@
 # ansible_facts.distribution ~ ansible_facts.distribution_major_version
 # ansible_facts.distribution
 # ansible_facts.os_family
+ruby_dep_pkgs_os: {}
 # https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
-ruby_build_pkgs:
+ruby_build_pkgs_os:
   Debian:
     - build-essential
     - autoconf
