@@ -1,41 +1,45 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-setup: {}
-  # pkgs:
-    # - "vim"
-    # - "rsync"
-    # - "@Development Tools"
-# app:
-#   # ds:
-#   #   posix: "samba" # or "account", "person"
-#   #   member: true
-#   git:
-#     copy_config: 
-#       - user.name
-#       - user.email
-#   mariadb:
-#     verison: "10.11" # 2028-03
-#     dev: true
-#   nginx: {}
-#   nodejs:
-#     version: "22" # 2027-04
-#     yarn: true
-#     npms:
-#       "npm-check-updates"
-#   # openldap:
-#   #   posix: "samba" # or "account", "person"
-#   #   member: true
-#   postgresql:
-#     dev: true
-#   redis:
-#     dev: true
-#   ruby:
-#     version: "3.3" # 2027-03
-#     dev: true
-#     pkgs:
-#       - "rubygem-irb"
-#       - "rubygem-rake"
-#       - "rubygem-bundler"
-#     gems:
-#       "rubocop"
-#   samba: {}
+{}
+# app_pkgs:
+#   - "vim"
+#   - "rsync"
+#   - "@Development Tools"
+
+# ds: true
+# ds_posix: "samba" # or "account", "person"
+# ds_member: true
+
+# git: true
+
+# mariadb: true
+# mariadb_verison: "10.11" # 2028-03
+# mariadb_dev: true
+
+# nginx: true
+
+# nodejs: true
+# nodejs_version: "22" # 2027-04
+# nodejs_yarn: true
+# nodejs_npms:
+#   - "npm-check-updates"
+
+# openldap: true
+# openldap_posix: "samba" # or "account", "person"
+# openladp_member: true
+
+# postgresql: true
+# postgresql_dev: true
+
+# redis: true
+# redis_dev: true
+
+# ruby: true
+# ruby_version: "3.3" # 2027-03
+# ruby_dev: true
+# ruby_libs:
+#   - bundled-gems
+# ruby_gems:
+#   - "rubocop"
+
+# samba: true

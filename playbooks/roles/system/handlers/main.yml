@@ -8,7 +8,7 @@
 - name: Enforce SELinux
   become: true
   ansible.posix.selinux:
-    policy: '{{ ansible_facts.selinux.targeted }}'
+    policy: '{{ ansible_facts.selinux.type }}'
     state: enforcing
   when:
     - ansible_facts.selinux is defined

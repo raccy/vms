@@ -14,7 +14,7 @@
 - name: Change permissive mode for SELinux
   become: true
   ansible.posix.selinux:
-    policy: '{{ ansible_facts.selinux.targeted }}'
+    policy: '{{ ansible_facts.selinux.type }}'
     state: permissive
   notify: system_enforce_selinux
   when:
