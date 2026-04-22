@@ -1,6 +1,5 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-{}
 # app_pkgs:
 #   - "vim"
 #   - "rsync"
@@ -10,17 +9,26 @@
 # ds_posix: "samba" # or "account", "person"
 # ds_member: true
 
-# git: true
+git: true
 
-# mariadb: true
-# mariadb_verison: "10.11" # 2028-03
-# mariadb_dev: true
+mariadb: true
+mariadb_verison: "10.11" # 2028-03
+# mariadb_devel: true
+mariadb_service: true
 
-# nginx: true
+nginx: true
+nginx_service: true
 
-# nodejs: true
-# nodejs_version: "22" # 2027-04
-# nodejs_yarn: true
+postgresql: true
+# postgresql_devel: true
+postgresql_service: true
+
+redis: true
+# redis_devel: true
+redis_service: true
+
+nodejs: true
+nodejs_version: "22" # 2027-04
 # nodejs_npms:
 #   - "npm-check-updates"
 
@@ -28,18 +36,11 @@
 # openldap_posix: "samba" # or "account", "person"
 # openladp_member: true
 
-# postgresql: true
-# postgresql_dev: true
+ruby: true
+ruby_version: "3.3" # 2027-03
+ruby_devel: true
+ruby_libs:
+  - bundled-gems
+ruby_gems:
+  - "rubocop"
 
-# redis: true
-# redis_dev: true
-
-# ruby: true
-# ruby_version: "3.3" # 2027-03
-# ruby_dev: true
-# ruby_libs:
-#   - bundled-gems
-# ruby_gems:
-#   - "rubocop"
-
-# samba: true
