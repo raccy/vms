@@ -24,6 +24,22 @@
     - mariadb_source == "pkg"
     - ansible_facts.pkg_mgr == "dnf"
 
+- name: Add devel package to mariadb_install_pkgs when apt
+  ansible.builtin.set_fact:
+    mariadb_install_pkgs: '{{ mariadb_install_pkgs | union(["lib" ~ mariadb_name ~ "-dev"]) }}'
+  when:
+    - mariadb_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+    - mariadb_devel
+
+- name: Add devel package to mariadb_install_pkgs when dnf
+  ansible.builtin.set_fact:
+    mariadb_install_pkgs: '{{ mariadb_install_pkgs | union([mariadb_name ~ "-connector-c-devel"]) }}'
+  when:
+    - mariadb_source == "pkg"
+    - ansible_facts.pkg_mgr == "dnf"
+    - mariadb_devel
+
 - name: Task install on app for mariadb
   ansible.builtin.include_role:
     name: app
@@ -33,7 +49,6 @@
       name: '{{ mariadb_install_name | default(mariadb_name) }}'
       version: '{{ mariadb_version }}'
       source: '{{ mariadb_source }}'
-      devel: '{{ mariadb_devel }}'
       pkgs: '{{ mariadb_install_pkgs | default([]) }}'
 
 - name: Task list on os for mariadb_control_pkgs

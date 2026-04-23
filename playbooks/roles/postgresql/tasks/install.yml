@@ -17,6 +17,13 @@
     - postgresql_source == "pkg"
     - ansible_facts.pkg_mgr == "dnf"
 
+- name: Add devel package to postgresql_install_pkgs
+  ansible.builtin.set_fact:
+    postgresql_install_pkgs: '{{ postgresql_install_pkgs | union(["libpq-devel"]) }}'
+  when:
+    - postgresql_source == "pkg"
+    - postgresql_devel
+
 - name: Task install on app for postgresql
   ansible.builtin.include_role:
     name: app
@@ -26,7 +33,6 @@
       name: '{{ postgresql_name }}'
       version: '{{ postgresql_version }}'
       source: '{{ postgresql_source }}'
-      devel: '{{ postgresql_devel }}'
       pkgs: '{{ postgresql_install_pkgs | default([]) }}'
 
 - name: Task list on os for postgresql_control_pkgs
