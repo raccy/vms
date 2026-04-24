@@ -3,7 +3,7 @@
 app_pkgs:
   - "vim"
   - "rsync"
-  - "@development"
+#   - "build-essential"
 
 git: true
 
@@ -12,7 +12,6 @@ git: true
 # ds_member: true
 
 mariadb: true
-mariadb_verison: "10.11" # 2028-03
 mariadb_devel: true
 mariadb_service: true
 
@@ -28,7 +27,6 @@ redis_devel: true
 redis_service: true
 
 nodejs: true
-nodejs_version: "22" # 2027-04
 nodejs_npms:
   - "npm-check-updates"
 
@@ -37,7 +35,6 @@ nodejs_npms:
 # openladp_member: true
 
 ruby: true
-ruby_version: "3.3" # 2027-03
 ruby_devel: true
 ruby_libs:
   - bundled-gems

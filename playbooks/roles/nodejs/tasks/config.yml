@@ -1,0 +1,10 @@
+- name: Get npm config prefix
+  ansible.builtin.command:
+    cmd: npm config get prefix
+  register: nodejso_config_npm_prefix
+  changed_when: false
+
+- name: Set npm config prefix
+  ansible.builtin.command:
+    cmd: npm config set prefix=~/.local
+  when: nodejso_config_npm_prefix.stdout | trim == "/usr/local"
