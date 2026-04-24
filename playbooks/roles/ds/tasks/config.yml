@@ -1,11 +1,39 @@
-- name: Copy nginx config file
-  become: true
+- name: Stat localhost dirsrv
+  ansible.builtin.stat:
+    path: /etc/dirsrv/slapd-localhost
+  register: ds_config_dirsrv_stat
+
+- name: Crate temp directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: ds_config_tempdir
+  when: not ds_config_dirsrv_stat.stat.exists
+
+- name: Create 389 DS setup file
   ansible.builtin.template:
-    src: '{{ item }}.j2'
-    dest: '/etc/{{ item }}'
-    owner: root
-    group: root
+    src: 'localhost.inf.j2'
+    dest: '{{ ds_config_tempdir.path }}/localhost.inf'
     mode: '0644'
-  loop:
-    - nginx/nginx.conf.j2
-  notify: nginx_restart
+  when: not ds_config_dirsrv_stat.stat.exists
+
+- name: Run dscreate
+  become: true
+  ansible.builtin.command:
+    argv:
+      - dscreate
+      - from-file
+      - '{{ ds_config_tempdir.path }}/localhost.inf'
+    creates: /etc/dirsrv/slapd-localhost
+
+# TODO: スキーマの指定等
+# - name: Copy samba schema
+#   become: true
+#   ansible.builtin.copy:
+#     src: samba-schema-FDS.ldif
+#     dest: /etc/dirsrv/slapd-localhost/schema/60samba.ldif
+#   when: ds_schema_samba
+
+# - name: dsctl restart
+#   become: true
+#   command:
+#     cmd: 'dsctl slapd-localhost restart'

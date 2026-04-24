@@ -1,6 +1,8 @@
+# FIXME: .gemrcにプロキシを設定しているのに、何故かうまくいかない。~./gremrcを見に行っていないのか？
 - name: Intall gem
   community.general.gem:
     name: '{{ item.split("@") | first }}'
     version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
+  environment: '{{ proxy_env }}'
   loop: '{{ ruby_gems }}'
   when: ruby_gems | length > 0

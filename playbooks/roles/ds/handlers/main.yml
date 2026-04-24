@@ -1,7 +1,7 @@
-- name: Restart nginx service
+- name: Restart 389-ds service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ ds_service_name }}'
     state: restarted
-  when: nginx_srv
-  listen: nginx_restart
+  when: ds_service
+  listen: ds_restart_ds

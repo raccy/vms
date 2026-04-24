@@ -1,7 +1,12 @@
 ds_name: '{{ (ansible_facts.pkg_mgr == "dnf") | ternary("389-ds-base", "389-ds") }}'
-ds_version: "" # "" is default, "latest" is latest stable, "x.y" is specific version
+ds_version: ""
 ds_source: pkg
 ds_devel: false
 ds_libs: []
 ds_service: false
 ds_service_name: dirsrv@localhost.service
+ds_schema_samba: false
+ds_config_suffix: 'dc=example,dc=com'
+ds_config_root_dn: 'cn=admin'
+ds_config_root_password: 'password'
+ds_config_sample_entries: false
