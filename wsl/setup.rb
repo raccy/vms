@@ -168,7 +168,6 @@ class Setup
     end
   end
 
-
   def playbooks
     File.expand_path(options[:playbooks])
   end

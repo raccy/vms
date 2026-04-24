@@ -88,9 +88,7 @@ if ENV["VAGRANT_WSL_ENABLE_WINDOWS_ACCESS"].to_i.positive?
   end
 end
 
-if Vagrant.has_plugin?("vagrant-proxyconf")
-  require_relative "fix_vagrant_proxyconf"
-end
+require_relative "fix_vagrant_proxyconf" if Vagrant.has_plugin?("vagrant-proxyconf")
 
 def calc_port(name, range: (10_000..30_000))
   range.begin + (Digest::MD5.digest(name).unpack1("L") % range.size)
@@ -99,14 +97,14 @@ end
 def get_proxy
   protocols = %i[all http https ftp].to_h do |name|
     value = ["VAGRANT_#{name.upcase}_PROXY", "#{name.upcase}_PROXY", "#{name}_proxy"]
-            .map { |key| ENV.fetch(key, nil) }.find(&:itself)
+      .map { |key| ENV.fetch(key, nil) }.find(&:itself)
     [name, value]
   end.compact
   all_proxy = %i[all http https ftp].map { |name| protocols[name] }.find(&:itself)
   return if all_proxy.nil?
 
   no_proxy = ["VAGRANT_NO_PROXY", "NO_PROXY", "no_proxy"]
-             .map { |key| ENV.fetch(key, nil) }.find(&:itself)
+    .map { |key| ENV.fetch(key, nil) }.find(&:itself)
 
   proxy_env = {
     ALL_PROXY: all_proxy,

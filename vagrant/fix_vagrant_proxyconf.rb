@@ -5,10 +5,8 @@ module VagrantPlugins
   module ProxyConf
     class Action
       class ConfigureYumProxy < Base
-        private
-
-        def configure_machine
-          return if !supported?
+        private def configure_machine
+          return unless supported?
 
           tmp = "/tmp/vagrant-proxyconf"
           path = config_path
@@ -24,8 +22,8 @@ module VagrantPlugins
           true
         end
 
-        def unconfigure_machine
-          return if !supported?
+        private def unconfigure_machine
+          return unless supported?
 
           @machine.communicate.tap do |comm|
             if comm.test("grep '^proxy' #{config_path}")
