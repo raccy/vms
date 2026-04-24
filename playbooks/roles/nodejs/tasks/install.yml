@@ -52,4 +52,4 @@
       version: '{{ nodejs_version }}'
       source: '{{ nodejs_source }}'
       devel: '{{ nodejs_devel }}'
-      pkgs: '{{ nodejs_libs | map("regex_replace", "^", nodejs_name ~ "-") }}'
+      pkgs: '{{ ["npm"] + nodejs_libs | map("regex_replace", "^", nodejs_name ~ "-") }}'
