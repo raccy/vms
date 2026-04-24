@@ -247,7 +247,7 @@ def common_config(config, dir: Dir.pwd)
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode = "2.0"
     ansible.playbook = File.join(PLAYBOOKS_DIR, "setup.yml")
-    ansible.extra_vars = load_vars(File.join(dir, "vars.yml"))
+    ansible.extra_vars = load_vars(File.join(dir, "setup.yml"))
   end
 
   if File.exist?("local.yml")
