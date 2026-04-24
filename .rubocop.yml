@@ -103,7 +103,7 @@ Style/SafeNavigationChainLength:
   Enabled: false
 
 Style/SpecialGlobalVars:
-  EnforcedStyle: use_builtin_english_names
+  EnforcedStyle: use_perl_names
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
