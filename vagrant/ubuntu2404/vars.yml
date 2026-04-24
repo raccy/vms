@@ -1,47 +1,47 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-app_pkgs:
-  - "vim"
-  - "rsync"
+# app_pkgs:
+#   - "vim"
+#   - "rsync"
 #   - "build-essential"
 
-git: true
+# git: true
 
 # ds: true
 # ds_posix: "samba" # or "account", "person"
 # ds_member: true
 
-mariadb: true
-mariadb_devel: true
-mariadb_service: true
+# mariadb: true
+# mariadb_devel: true
+# mariadb_service: true
 
-nginx: true
-nginx_service: true
+# nginx: true
+# nginx_service: true
 
-postgresql: true
-postgresql_devel: true
-postgresql_service: true
+# postgresql: true
+# postgresql_devel: true
+# postgresql_service: true
 
-redis: true
-redis_devel: true
-redis_service: true
+# redis: true
+# redis_devel: true
+# redis_service: true
 
-nodejs: true
-nodejs_npms:
-  - "npm-check-updates"
+# nodejs: true
+# nodejs_npms:
+#   - "npm-check-updates"
 
 # openldap: true
 # openldap_posix: "samba" # or "account", "person"
 # openladp_member: true
 
-ruby: true
-ruby_devel: true
-ruby_libs:
-  - bundled-gems
-ruby_gems:
-  - rubocop
-  - mysql2
-  - trilogy
-  - pg
-  - sqlite3
-  - redis
+# ruby: true
+# ruby_devel: true
+# ruby_libs:
+#   - bundled-gems
+# ruby_gems:
+#   - rubocop
+#   - mysql2
+#   - trilogy
+#   - pg
+#   - sqlite3
+#   - redis
