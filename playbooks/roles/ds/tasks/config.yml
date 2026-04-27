@@ -24,6 +24,7 @@
       - from-file
       - '{{ ds_config_tempdir.path }}/localhost.inf'
     creates: /etc/dirsrv/slapd-localhost
+  when: not ds_config_dirsrv_stat.stat.exists
 
 # TODO: スキーマの指定等
 # - name: Copy samba schema

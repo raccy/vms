@@ -3,5 +3,6 @@
     name: '{{ item.split("@") | first }}'
     version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
     global: true
+  environment: '{{ proxy_env }}'
   loop: '{{ nodejs_npms }}'
   when: nodejs_npms | length > 0

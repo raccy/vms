@@ -9,21 +9,3 @@
     cmd: npm config set prefix=~/.local
   when: nodejso_config_npm_prefix.stdout | trim == "/usr/local"
   changed_when: true
-
-- name: Set npm config proxy
-  ansible.builtin.command:
-    cmd: npm config set proxy={{ proxy_env.http_proxy }}
-  when: proxy_env.http_proxy is defined
-  changed_when: true
-
-- name: Set npm config https-proxy
-  ansible.builtin.command:
-    cmd: npm config set https-proxy={{ proxy_env.https_proxy }}
-  when: proxy_env.https_proxy is defined
-  changed_when: true
-
-- name: Set npm config noproxy
-  ansible.builtin.command:
-    cmd: npm config set noproxy={{ proxy_env.no_proxy }}
-  when: proxy_env.no_proxy is defined
-  changed_when: true
