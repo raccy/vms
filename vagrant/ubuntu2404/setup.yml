@@ -1,9 +1,20 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
+## Essential
+
+env: false
+pkg: false
+update: false
+time: false
+lang: false
+fant: false
+app: false
 # app_pkgs:
 #   - "vim"
 #   - "rsync"
 #   - "build-essential"
+
+## Tools
 
 # git: true
 

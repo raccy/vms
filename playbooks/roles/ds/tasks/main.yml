@@ -12,4 +12,9 @@
 
 - name: Role ldap
   ansible.builtin.import_role:
-    name: openldap
+    name: ldap
+  vars:
+    ldap_server_uri: 'ldap://localhost'
+    ldap_bind_dn: '{{ ds_config_root_dn }}'
+    ldap_bind_pw: '{{ ds_config_root_password }}'
+    ldap_base: '{{ ds_config_suffix }}'

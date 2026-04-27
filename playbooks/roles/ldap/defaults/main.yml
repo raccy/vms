@@ -1,7 +1,9 @@
-ldap_server_uri: ldap://localhost
-ldap_bind_dn: 'cn=admin{{ ldap_base }}'
-ldap_bind_pw: 'password'
+# ldap_server_uri: ldap://localhost
+# ldap_bind_dn: 'cn=admin,{{ ldap_base }}'
+# ldap_bind_pw: 'password'
 ldap_base: 'dc=example,dc=com'
-ldap_organization: 'Example'
-ldap_account: 'person' # person or account or samba
+ldap_organization: 'Example Inc.'
+ldap_posix: 'person' # person or account or samba
 ldap_member: false
+ldap_user_ou: 'ou=people,{{ ldap_base }}'
+ldap_group_ou: 'ou=groups,{{ ldap_base }}'

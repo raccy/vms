@@ -2,6 +2,13 @@
 ---
 ## Essential
 
+env: false
+pkg: false
+update: false
+time: false
+lang: false
+fant: false
+app: false
 # app_pkgs:
 #   - "vim"
 #   - "rsync"

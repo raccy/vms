@@ -1,0 +1,65 @@
+- name: Add ldap entry base
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_server_uri | default(omit) }}'
+    bind_dn: '{{ ldap_bind_dn | default(omit) }}'
+    bind_pw: '{{ ldap_bind_pw | default(omit) }}'
+    dn: '{{ ldap_base }}'
+    objectClass: '{{ ldap_object_classes.dc }}'
+    attributes:
+      dc: '{{ ldap_base | split(",") | first | split("=") | last }}'
+      o: '{{ ldap_organization }}'
+
+- name: Add ldap entry ou
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_server_uri | default(omit) }}'
+    bind_dn: '{{ ldap_bind_dn | default(omit) }}'
+    bind_pw: '{{ ldap_bind_pw | default(omit) }}'
+    dn: '{{ item }}'
+    objectClass: '{{ ldap_object_classes.ou }}'
+    attributes:
+      ou: '{{ item | split(",") | first | split("=") | last }}'
+  loop:
+    - '{{ ldap_user_ou }}'
+    - '{{ ldap_group_ou }}'
+
+- name: Add posix ldap entry user
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_server_uri | default(omit) }}'
+    bind_dn: '{{ ldap_bind_dn | default(omit) }}'
+    bind_pw: '{{ ldap_bind_pw | default(omit) }}'
+    dn: 'uid={{ item.key }},{{ ldap_user_ou }}'
+    objectClass: '{{ ldap_object_classes.user }}'
+    attributes: '{{ {"uid": item.key} | combine(item.value) }}'
+  loop: '{{ ldap_users | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+
+- name: Add posix ldap entry group
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_server_uri | default(omit) }}'
+    bind_dn: '{{ ldap_bind_dn | default(omit) }}'
+    bind_pw: '{{ ldap_bind_pw | default(omit) }}'
+    dn: 'cn={{ item.key }},{{ ldap_group_ou }}'
+    objectClass: '{{ ldap_object_classes.group }}'
+    attributes: '{{ {"cn": item.key} | combine(item.value) }}'
+  loop: '{{ ldap_groups | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+
+
+# - name: Task user
+#   ansible.builtin.import_tasks:
+#     file: user.yml
+
+# - name: Task group
+#   ansible.builtin.import_tasks:
+#     file: group.yml
+
+# - name: Task posix person
+#   ansible.builtin.include_tasks:
+#     file: 'posix_{{ ldap_posix }}.yml'
+
+# - name: Task member
+#   ansible.builtin.include_tasks:
+#     file: member.yml
+#   when: ldap_member

@@ -1,3 +1,7 @@
-- name: Task ldap
+- name: Task install
   ansible.builtin.import_tasks:
-    file: ldap.yml
+    file: install.yml
+
+- name: Task entry
+  ansible.builtin.import_tasks:
+    file: entry.yml
