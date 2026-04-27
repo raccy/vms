@@ -1,0 +1,67 @@
+#
+# jaPerson Object Class Specification (2009-06-10)
+# jaOrganization Object Class Specification (2009-06-10)
+# gakuninPerson Object Class Specification (2011-08-18)
+#
+# See https://meatwiki.nii.ac.jp/confluence/pages/viewpage.action?pageId=12158166 for background and usage
+#
+# jaPerson/jaOrganization/gakuninPerson are an effort of NII and GakuNin
+# Specifications of the EXPERIMENTAL objectclasses/attributes may be changed in future
+#
+#           .1 = gakunin related work (GakuNin schema)
+#           .1.1 = attributes
+#           .1.1.1 = jasn
+#           .1.1.2 = ...
+#           .1.2 = objectclasses
+#           .1.2.1 = jaPerson
+#           .1.2.2 = jaOrganization
+#           .1.2.3 = gakuninPerson
+#
+# Surname in Japanese
+attributetype ( 1.3.6.1.4.1.32264.1.1.1
+    NAME ( 'jasn' 'jaSurname' )
+    SUP sn )
+
+# Given Name in Japanese
+attributetype ( 1.3.6.1.4.1.32264.1.1.2
+    NAME ( 'jaGivenName' )
+    SUP givenName )
+
+# Display Name in Japanese
+attributetype ( 1.3.6.1.4.1.32264.1.1.3
+    NAME ( 'jaDisplayName' )
+    SUP displayName )
+
+# Home Organization in Japanese
+attributetype ( 1.3.6.1.4.1.32264.1.1.4
+    NAME ( 'jao' 'jaOrganizationName' )
+    SUP o )
+
+# Organizational Unit Name in Japanese
+attributetype ( 1.3.6.1.4.1.32264.1.1.5
+    NAME ( 'jaou' 'jaOrganizationalUnitName' )
+    SUP ou )
+
+# Unique code assigned by each organization with scope (EXPERIMENTAL)
+# format: affiliation:unique_code@organization
+attributetype ( 1.3.6.1.4.1.32264.1.1.6
+    NAME ( 'gakuninScopedPersonalUniqueCode' )
+    EQUALITY caseIgnoreMatch
+    SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+# objectclasses defined for GakuNin
+objectclass ( 1.3.6.1.4.1.32264.1.2.1
+    NAME 'jaPerson'
+    AUXILIARY
+    MUST jasn
+    MAY ( jaGivenName $ jaDisplayName $ gakuninScopedPersonalUniqueCode $ jao $ jaou ) )
+
+objectclass ( 1.3.6.1.4.1.32264.1.2.2
+    NAME 'jaOrganization'
+    AUXILIARY
+    MAY ( jao $ jaou ) )
+
+objectclass ( 1.3.6.1.4.1.32264.1.2.3
+    NAME 'gakuninPerson'
+    AUXILIARY
+    MAY ( gakuninScopedPersonalUniqueCode ) )

@@ -9,3 +9,7 @@
 - name: Task serivce
   ansible.builtin.import_tasks:
     file: service.yml
+
+- name: Role ldap
+  ansible.builtin.import_role:
+    name: openldap

@@ -10,14 +10,14 @@
     mariadb_install_pkgs: '{{ mariadb_libs | map("regex_replace", "^", mariadb_name ~ "-") }}'
   when: mariadb_source == "pkg"
 
-- name: Add client package to mariadb_install_pkgs when apt
+- name: Add packages to mariadb_install_pkgs when apt
   ansible.builtin.set_fact:
     mariadb_install_pkgs: '{{ mariadb_install_pkgs | union([mariadb_name ~ "-client", mariadb_name ~ "-server"]) }}'
   when:
     - mariadb_source == "pkg"
     - ansible_facts.pkg_mgr == "apt"
 
-- name: Add server package to mariadb_install_pkgs when dnf
+- name: Add packages to mariadb_install_pkgs when dnf
   ansible.builtin.set_fact:
     mariadb_install_pkgs: '{{ mariadb_install_pkgs | union([mariadb_name ~ "-server"]) }}'
   when:

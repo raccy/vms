@@ -1,0 +1,49 @@
+ldap_control_pkgs_os:
+  Debian:
+    - python3-ldap
+  RedHat:
+    - python3-ldap
+ldap_object_classes:
+  ou:
+    - top
+    - organizationalUnit
+  user:
+    member:
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+      - eduPerson
+      - mozillaAbPersonAlpha
+    posix_person:
+      - top
+      - inetOrgPerson
+      - organizationalPerson
+      - person
+      - posixAccount
+      - shadowAccount
+    posix_account:
+      - top
+      - account
+      - posixAccount
+      - shadowAccount
+    posix_samba:
+      - top
+      - account
+      - posixAccount
+      - shadowAccount
+      - sambaSamAccount
+  group:
+    member:
+      - top
+      - groupOfNames
+    posix_person:
+      - top
+      - posixGroup
+    posix_account:
+      - top
+      - posixGroup
+    posix_samba:
+      - top
+      - posixGroup
+      - sambaGroupMapping

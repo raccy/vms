@@ -1,9 +1,13 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
+## Essential
+
 # app_pkgs:
 #   - "vim"
 #   - "rsync"
 #   - "@development"
+
+## Tools
 
 # git: true
 
@@ -17,8 +21,8 @@
 
 ds: true
 ds_service: true
-ds_posix: "samba" # or "account", "person"
-ds_member: true
+# ds_posix: "samba" # or "account", "person"
+# ds_member: true
 
 # openldap: true
 # openldap_posix: "samba" # or "account", "person"

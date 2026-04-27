@@ -1,0 +1,167 @@
+# Posix users and groups
+# user objectClass: account, posixAccount
+
+- name: posix ldap entry ou
+  community.general.ldap_entry:
+    dn: 'ou={{ item }},{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.ou }}'
+    attributes:
+      ou: '{{ item }}'
+  args: '{{ ldap.connect }}'
+  loop:
+    - people
+    - groups
+
+- name: posix ldap entry group admin
+  community.general.ldap_entry:
+    dn: 'cn=admin,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: 1
+      description: administrator
+      description;lang-ja: 管理者
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry group staff
+  community.general.ldap_entry:
+    dn: 'cn=staff,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: 10
+      description: staff
+      description;lang-ja: スタッフ
+      memberUid: user01
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry group user
+  community.general.ldap_entry:
+    dn: 'cn=user,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: 100
+      description: general user
+      description;lang-ja: 一般ユーザー
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry group other
+  community.general.ldap_entry:
+    dn: 'cn=other,ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: 1001
+      description: other
+      description;lang-ja: その他
+      memberUid: user04
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user admin
+  community.general.ldap_entry:
+    dn: 'uid=admin,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: admin
+      userPassword: pass+admin42
+      uidNumber: 1
+      gidNumber: 1
+      homeDirectory: /home/admin
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user01
+  community.general.ldap_entry:
+    dn: uid=user01,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user01
+      userPassword: pass0001
+      uidNumber: 1001
+      gidNumber: 100
+      homeDirectory: /home/user01
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user02
+  community.general.ldap_entry:
+    dn: uid=user02,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user02
+      userPassword: pass0002
+      uidNumber: 1002
+      gidNumber: 10
+      homeDirectory: /home/user02
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user03
+  community.general.ldap_entry:
+    dn: uid=user03,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user03
+      userPassword: pass0003
+      uidNumber: 1003
+      gidNumber: 100
+      homeDirectory: /home/user03
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user04
+  community.general.ldap_entry:
+    dn: uid=user04,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user04
+      userPassword: pass0004
+      uidNumber: 1004
+      gidNumber: 100
+      homeDirectory: /home/user04
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user05
+  community.general.ldap_entry:
+    dn: uid=user05,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user05
+      userPassword: pass0005
+      uidNumber: 1005
+      gidNumber: 1001
+      homeDirectory: /home/user05
+  args: '{{ ldap.connect }}'
+
+- name: posix ldap entry user user06
+  community.general.ldap_entry:
+    dn: uid=user06,ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: user06
+      userPassword: pass0006
+      uidNumber: 1006
+      gidNumber: 100
+      homeDirectory: /home/user06
+  args: '{{ ldap.connect }}'
+
+# 大量のユーザーとグループ
+
+- name: posix ldap entry many users
+  community.general.ldap_entry:
+    dn: 'uid=test{{ item }},ou=people,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.user.posix_account }}'
+    attributes:
+      cn: 'test{{ item }}'
+      userPassword: 'pass0{{ item }}'
+      uidNumber: '{{ 1000 + item }}'
+      gidNumber: 100
+      homeDirectory: '/home/test{{ item }}'
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'
+
+- name: posix ldap entry many groups
+  community.general.ldap_entry:
+    dn: 'cn=test{{ item }},ou=groups,{{ ldap.base }}'
+    objectClass: '{{ ldap_oc.group.posix_account }}'
+    attributes:
+      gidNumber: '{{ 1000 + item }}'
+      memberUid:
+        - 'test{{ item }}'
+      description: TestGroup
+      description;lang-ja: テストグループ
+  args: '{{ ldap.connect }}'
+  loop: '{{ range(100, 200) | list }}'

@@ -1,23 +1,23 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-app_pkgs:
-  - "vim"
-  - "rsync"
-  - "build-essential"
+# app_pkgs:
+#   - "vim"
+#   - "rsync"
+#   - "build-essential"
 
-git: true
+# git: true
 
 ## Service
 
-nginx: true
-# nginx_version: "1.26" # 2028-03
-nginx_service: true
+# nginx: true
+# nginx_service: true
 
 ## LDAP
 
-# ds: true
-# ds_posix: "samba" # or "account", "person"
-# ds_member: true
+ds: true
+ds_service: true
+ds_posix: "samba" # or "account", "person"
+ds_member: true
 
 # openldap: true
 # openldap_posix: "samba" # or "account", "person"
@@ -25,40 +25,34 @@ nginx_service: true
 
 ## Database
 
-mariadb: true
-# mariadb_verison: "10.11" # 2028-03
-mariadb_devel: true
-mariadb_service: true
+# mariadb: true
+# mariadb_devel: true
+# mariadb_service: true
 
 # postgresql: true
-# # postgresql_version: "16" # 2029-03
 # postgresql_devel: true
 # postgresql_service: true
 
-redis: true
-# redise_version: "7" # 2026-11
-redis_service: true
+# redis: true
+# redis_service: true
 
 ## Language
 
-nodejs: true
-# nodejs_version: "24" # 2028-04
-nodejs_npms:
-  - "npm-check-updates"
+# nodejs: true
+# nodejs_npms:
+#   - "npm-check-updates"
 
-python: true
-# python_name: "python3.12" # 2027-04
-python_devel: true
+# python: true
+# python_devel: true
 
-ruby: true
-# ruby_version: "3.3" # 2027-03
-ruby_devel: true
+# ruby: true
+# ruby_devel: true
 # ruby_libs:
-#   - bundled-gems
-ruby_gems:
-  - rubocop
-  - mysql2
-  - trilogy
-  - pg
-  - sqlite3
-  - redis
+#   - bundler
+# ruby_gems:
+#   - rubocop
+#   - mysql2
+#   - trilogy
+#   - pg
+#   - sqlite3
+#   - redis

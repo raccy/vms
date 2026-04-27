@@ -4,3 +4,10 @@ nginx_devel: false
 nginx_libs: []
 nginx_gems: []
 nginx_srv: false
+
+openldap_name: openldap
+openldap_version: ""
+openldap_source: pkg
+openldap_devel: false
+openldap_libs: []
+openldap_service: false

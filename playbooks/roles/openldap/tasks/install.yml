@@ -1,11 +1,62 @@
-- name: Task install on app for nginx
+- name: Set openldap_install_name is empty string when apt
+  ansible.builtin.set_fact:
+    openldap_install_name: ''
+  when:
+    - openldap_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Set openldap_install_pkgs
+  ansible.builtin.set_fact:
+    openldap_install_pkgs: '{{ openldap_libs | map("regex_replace", "^", openldap_name ~ "-") }}'
+  when: openldap_source == "pkg"
+
+- name: Add packages to openldap_install_pkgs when apt
+  ansible.builtin.set_fact:
+    openldap_install_pkgs: '{{ openldap_install_pkgs | union(["ldap-utils", "slapd"]) }}'
+  when:
+    - openldap_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
+- name: Add packages to openldap_install_pkgs when dnf
+  ansible.builtin.set_fact:
+    openldap_install_pkgs: '{{ openldap_install_pkgs | union([openldap_name ~ "-server"]) }}'
+  loop:
+    - clients
+    - servers
+  when:
+    - openldap_source == "pkg"
+    - ansible_facts.pkg_mgr == "dnf"
+
+- name: Add devel package to openldap_install_pkgs when apt
+  ansible.builtin.set_fact:
+    openldap_install_pkgs: '{{ openldap_install_pkgs | union(["libldap-dev"]) }}'
+  when:
+    - openldap_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+    - openldap_devel
+
+- name: Task install on app for openldap
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      name: nginx
-      version: '{{ nginx_version }}'
-      source: '{{ nginx_source }}'
-      devel: '{{ nginx_devel }}'
-      pkgs: '{{ nginx_libs | map("regex_replace", "^", "nginx-") }}'
+      name: '{{ openldap_install_name | default(openldap_name) }}'
+      version: '{{ openldap_version }}'
+      source: '{{ openldap_source }}'
+      pkgs: '{{ openldap_install_pkgs | default([]) }}'
+      devel: '{{ (ansible_facts.pkg_mgr == "dnf") | ternary(openldap_devel, omit) }}'
+
+
+# - name: debconf slapd/password dummy password
+#   become: true
+#   debconf:
+#     name: slapd
+#     question: '{{ item }}'
+#     value: 'password'
+#     vtype: password
+#   loop:
+#     - slapd/password1
+#     - slapd/password2
+#   when: openldap.type == "apt"
+

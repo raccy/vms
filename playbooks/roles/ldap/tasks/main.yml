@@ -1,0 +1,3 @@
+- name: Task ldap
+  ansible.builtin.import_tasks:
+    file: ldap.yml

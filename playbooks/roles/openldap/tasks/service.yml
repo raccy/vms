@@ -1,15 +1,15 @@
-- name: Start and enable nginx service
+- name: Start and enable openldap service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ openldap_service_name }}'
     state: started
     enabled: true
-  when: nginx_srv
+  when: openldap_service
 
-- name: Stop and disbale nginx service
+- name: Stop and disbale openldap service
   become: true
   ansible.builtin.service:
-    name: nginx
+    name: '{{ openldap_service_name }}'
     state: stopped
     enabled: false
-  when: not nginx_srv
+  when: not openldap_service

@@ -1,4 +1,5 @@
 - name: Stat localhost dirsrv
+  become: true
   ansible.builtin.stat:
     path: /etc/dirsrv/slapd-localhost
   register: ds_config_dirsrv_stat
