@@ -245,6 +245,7 @@ def common_config(config, dir: Dir.pwd)
   end
 
   config.vm.provision "ansible" do |ansible|
+    # ansible.verbose = "vvv"
     ansible.compatibility_mode = "2.0"
     ansible.playbook = File.join(PLAYBOOKS_DIR, "setup.yml")
     ansible.extra_vars = load_vars(File.join(dir, "setup.yml"))
@@ -252,6 +253,7 @@ def common_config(config, dir: Dir.pwd)
 
   if File.exist?("local.yml")
     config.vm.provision "local", type: "ansible" do |ansible|
+      # ansible.verbose = "vvv"
       ansible.compatibility_mode = "2.0"
       ansible.playbook = File.join(dir, "local.yml")
     end

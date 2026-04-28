@@ -107,9 +107,9 @@
             "sambaSID": ldap_samba_sid ~ "-" ~ (1001 + item.value.posix.gid * 2),
           }, {}),
           ldap_member | ternary({"member":
-            ldap_users | dict2items | selectattr("value.primary_group", "equalto", item.key) | map("key")
-            | union(item.value.members)
-            | map("regex_replace", "^(.*)$", "cn=\\1," ~ ldap_user_ou) | list
+            ldap_users | dict2items | selectattr("value.primary_group", "eq", item.key) | map(attribute="key")
+            | union(item.value.members | default([]))
+            | map("regex_replace", "^(.*)$", "uid=\1," ~ ldap_user_ou) | list
           }, {}),
           item.value.attributes | default({}))
       }}
