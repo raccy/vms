@@ -6,13 +6,13 @@ ldap_root_pw: 'password'
 ldap_domain: 'example.jp'
 ldap_base: '{{ ldap_domain | split(".") | map("regex_replace", "^", "dc=") | join(",") }}'
 ldap_organization: 'Example Inc.'
-ldap_posix: false
+ldap_posix: true
+ldap_shadow: true
 ldap_samba: false
-ldap_shadow: false
-ldap_member: false
+ldap_member: true
 ldap_user_ou: 'ou=people,{{ ldap_base }}'
 ldap_group_ou: 'ou=groups,{{ ldap_base }}'
-ldap_attribute_ja: false
+ldap_attribute_ja: true
 ldap_samba_sid: 'S-1-5-21-0-0-0'
 # users and groups
 ldap_users:
@@ -59,6 +59,7 @@ ldap_users:
     posix:
       uid: 1005
   user06:
+    password: pass0006
     name: Yoko Suzuki
     name_ja: 鈴木　陽子
     primary_group: user

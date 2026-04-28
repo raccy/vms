@@ -10,8 +10,7 @@
   ansible.builtin.import_tasks:
     file: service.yml
 
-- name: Task entries on ldap
-  ansible.builtin.import_role:
-    name: ldap
-    tasks_from: entries
-  when: ds_create_entries
+- name: Task setup
+  ansible.builtin.import_tasks:
+    file: setup.yml
+  when: ds_setup

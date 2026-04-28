@@ -26,14 +26,18 @@ app: false
 
 ## LDAP
 
+# ldap_posix: false
+# ldap_shadow: false
+# ldap_samba: true
+# ldap_member: false
+
 ds: true
 ds_service: true
-# ds_posix: "samba" # or "account", "person"
-# ds_member: true
+ds_setup: true
 
 # openldap: true
-# openldap_posix: "samba" # or "account", "person"
-# openladp_member: true
+# openldap_service: true
+# openldap_setup: true
 
 ## Database
 

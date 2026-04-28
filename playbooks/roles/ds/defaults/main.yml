@@ -8,4 +8,4 @@ ds_instance_name: localhost
 ds_service_name: 'dirsrv@{{ ds_instance_name }}.service'
 ds_config_create_suffix_entry: false
 ds_config_sample_entries: false
-ds_create_entries: true
+ds_setup: true

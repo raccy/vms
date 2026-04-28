@@ -1,0 +1,17 @@
+- name: Start and enable 389-ds service
+  become: true
+  ansible.builtin.service:
+    name: '{{ ds_service_name }}'
+    state: started
+
+- name: Task entries on ldap
+  ansible.builtin.import_role:
+    name: ldap
+    tasks_from: entries
+
+- name: Stop and disbale 389-ds service
+  become: true
+  ansible.builtin.service:
+    name: '{{ ds_service_name }}'
+    state: stopped
+  when: not ds_service

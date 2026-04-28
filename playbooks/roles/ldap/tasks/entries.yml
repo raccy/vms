@@ -48,7 +48,7 @@
           ldap_attribute_ja | ternary({
             "displayName;lang-ja": item.value.name_ja,
             "sn;lang-ja": item.value.name_ja | split("　") | first,
-            "givenName;lang-ja": item.value_ja | split("　") | last,
+            "givenName;lang-ja": item.value.name_ja | split("　") | last,
           }, {}),
           ldap_posix | ternary({
             "cn": item.value.posix.name | default(item.key),
@@ -109,7 +109,7 @@
           ldap_member | ternary({"member":
             ldap_users | dict2items | selectattr("value.primary_group", "equalto", item.key) | map("key")
             | union(item.value.members)
-            | map("regex_replace", "^(.*)$", "cn=\\1,{{ ldap_user_ou }}") | list
+            | map("regex_replace", "^(.*)$", "cn=\\1," ~ ldap_user_ou) | list
           }, {}),
           item.value.attributes | default({}))
       }}
