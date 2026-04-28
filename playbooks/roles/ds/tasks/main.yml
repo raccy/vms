@@ -10,11 +10,8 @@
   ansible.builtin.import_tasks:
     file: service.yml
 
-- name: Role ldap
+- name: Task entries on ldap
   ansible.builtin.import_role:
     name: ldap
-  vars:
-    ldap_server_uri: 'ldap://localhost'
-    ldap_bind_dn: '{{ ds_config_root_dn }}'
-    ldap_bind_pw: '{{ ds_config_root_password }}'
-    ldap_base: '{{ ds_config_suffix }}'
+    tasks_from: entries
+  when: ds_create_entries

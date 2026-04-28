@@ -4,10 +4,8 @@ ds_source: pkg
 ds_devel: false
 ds_libs: []
 ds_service: false
-ds_service_name: dirsrv@localhost.service
-ds_schema_samba: false
-ds_config_suffix: 'dc=example,dc=com'
-ds_config_root_dn: 'cn=admin,{{ ds_config_suffix }}'
-ds_config_root_password: 'password'
+ds_instance_name: localhost
+ds_service_name: 'dirsrv@{{ ds_instance_name }}.service'
+ds_config_create_suffix_entry: false
 ds_config_sample_entries: false
-ds_server_socket: '/run/slapd-localhost.socket'
+ds_create_entries: true

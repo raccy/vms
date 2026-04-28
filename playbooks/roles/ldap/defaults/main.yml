@@ -1,9 +1,91 @@
-# ldap_server_uri: ldap://localhost
-# ldap_bind_dn: 'cn=admin,{{ ldap_base }}'
-# ldap_bind_pw: 'password'
-ldap_base: 'dc=example,dc=com'
+# connection settings
+ldap_uri: ldap://localhost
+ldap_root_dn: 'cn=admin'
+ldap_root_pw: 'password'
+# entry settings
+ldap_domain: 'example.jp'
+ldap_base: '{{ ldap_domain | split(".") | map("regex_replace", "^", "dc=") | join(",") }}'
 ldap_organization: 'Example Inc.'
-ldap_posix: 'person' # person or account or samba
+ldap_posix: false
+ldap_samba: false
+ldap_shadow: false
 ldap_member: false
 ldap_user_ou: 'ou=people,{{ ldap_base }}'
 ldap_group_ou: 'ou=groups,{{ ldap_base }}'
+ldap_attribute_ja: false
+ldap_samba_sid: 'S-1-5-21-0-0-0'
+# users and groups
+ldap_users:
+  admin:
+    password: pass+admin42
+    name: Ichiro Kanri
+    name_ja: 管理　一郎
+    primary_group: admin
+    posix:
+      uid: 1
+  user01:
+    password: pass0001
+    name: Taro Yuza
+    name_ja: 湯座　太郎
+    primary_group: staff
+    posix:
+      uid: 1001
+  user02:
+    password: pass0002
+    name: Jiro Yuza
+    name_ja: 湯座　次郎
+    primary_group: staff
+    posix:
+      uid: 1002
+  user03:
+    password: pass0003
+    name: Hanako Yuza
+    name_ja: 湯座　花子
+    primary_group: user
+    posix:
+      uid: 1003
+  user04:
+    password: pass0004
+    name: Gonbee Nanashi
+    name_ja: 名無し　権兵衛
+    primary_group: user
+    posix:
+      uid: 1004
+  user05:
+    password: pass0005
+    name: Tsuyoshi Suzuki
+    name_ja: 鈴木　剛
+    primary_group: other
+    posix:
+      uid: 1005
+  user06:
+    name: Yoko Suzuki
+    name_ja: 鈴木　陽子
+    primary_group: user
+    posix:
+      uid: 1006
+ldap_groups:
+  admin:
+    name: administrator
+    name_ja: 管理者
+    posix:
+      gid: 1
+  staff:
+    name: staff
+    name_ja: スタッフ
+    members:
+      - user01
+    posix:
+      gid: 10
+  user:
+    name: general user
+    name_ja: 一般ユーザー
+    posix:
+      gid: 100
+  other:
+    name: other
+    name_ja: その他
+    members:
+      - user04
+    posix:
+      gid: 1001

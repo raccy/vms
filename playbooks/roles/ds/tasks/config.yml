@@ -1,7 +1,7 @@
 - name: Stat localhost dirsrv
   become: true
   ansible.builtin.stat:
-    path: /etc/dirsrv/slapd-localhost
+    path: '/etc/dirsrv/slapd-{{ ds_instance_name }}'
   register: ds_config_dirsrv_stat
 
 - name: Crate temp directory
@@ -12,8 +12,8 @@
 
 - name: Create 389 DS setup file
   ansible.builtin.template:
-    src: 'localhost.inf.j2'
-    dest: '{{ ds_config_tempdir.path }}/localhost.inf'
+    src: '389ds.inf.j2'
+    dest: '{{ ds_config_tempdir.path }}/389ds.inf'
     mode: '0644'
   when: not ds_config_dirsrv_stat.stat.exists
 
@@ -23,8 +23,8 @@
     argv:
       - dscreate
       - from-file
-      - '{{ ds_config_tempdir.path }}/localhost.inf'
-    creates: /etc/dirsrv/slapd-localhost
+      - '{{ ds_config_tempdir.path }}/389ds.inf'
+  changed_when: true
   when: not ds_config_dirsrv_stat.stat.exists
 
 # TODO: スキーマの指定等

@@ -1,0 +1,118 @@
+- name: Add ldap entry base
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_uri }}'
+    bind_dn: '{{ ldap_root_dn }}'
+    bind_pw: '{{ ldap_root_pw }}'
+    dn: '{{ ldap_base }}'
+    objectClass: ["domain"]
+    attributes:
+      dc: '{{ ldap_base | split(",") | first | split("=") | last }}'
+      o: '{{ ldap_organization }}'
+
+- name: Add ldap entry ou
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_uri }}'
+    bind_dn: '{{ ldap_root_dn }}'
+    bind_pw: '{{ ldap_root_pw }}'
+    dn: '{{ item }}'
+    objectClass: ["organizationalUnit"]
+    attributes:
+      ou: '{{ item | split(",") | first | split("=") | last }}'
+  loop:
+    - '{{ ldap_user_ou }}'
+    - '{{ ldap_group_ou }}'
+
+- name: Add posix ldap entry user
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_uri }}'
+    bind_dn: '{{ ldap_root_dn }}'
+    bind_pw: '{{ ldap_root_pw }}'
+    dn: 'uid={{ item.key }},{{ ldap_user_ou }}'
+    objectClass: >-
+      {{
+        ["inetOrgPerson"]
+        | union(ldap_posix | ternary(["posixAccount"], []))
+        | union(ldap_samba | ternary(["sambaSamAccount"], []))
+        | union(ldap_shadow | ternary(["shadowAccount"], []))
+      }}
+    attributes: >-
+      {{
+        {"uid": item.key} | combine(
+          {
+            "userPassword": item.value.password,
+            "mail": item.key ~ "@" ~ ldap_domain,
+            "displayName": item.value.name,
+            "sn": item.value.name | split(" ") | last,
+            "givenName": item.value.name | split(" ") | first,
+          },
+          ldap_attribute_ja | ternary({
+            "displayName;lang-ja": item.value.name_ja,
+            "sn;lang-ja": item.value.name_ja | split("　") | first,
+            "givenName;lang-ja": item.value_ja | split("　") | last,
+          }, {}),
+          ldap_posix | ternary({
+            "cn": item.value.posix.name | default(item.key),
+            "uidNumber": item.value.posix.uid,
+            "gidNumber": ldap_groups[item.value.primary_group].posix.gid,
+            "gecos": item.value.posix.gecos | default(item.value.name ~ ",,,"),
+            "homeDirectory": item.value.posix.dir | default("/home/" ~ item.key),
+            "loginShell": item.value.posix.shell | default("/bin/bash"),
+          }, {}),
+          ldap_samba | ternary({
+            "sambaSID": ldap_samba_sid ~ "-" ~ (1000 + item.value.posix.uid * 2),
+            "sambaPrimaryGroupSID": ldap_samba_sid ~ "-513",
+          }, {}),
+          ldap_shadow | ternary({
+            "shadowLastChange": 0,
+            "shadowMin": 0,
+            "shadowMax": 99999,
+            "shadowWarning": 7,
+            "shadowInactive": -1,
+            "shadowExpire": -1,
+          }, {}),
+          item.value.attributes | default({}))
+      }}
+  loop: '{{ ldap_users | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+
+- name: Add posix ldap entry group
+  community.general.ldap_entry:
+    server_uri: '{{ ldap_uri }}'
+    bind_dn: '{{ ldap_root_dn }}'
+    bind_pw: '{{ ldap_root_pw }}'
+    dn: 'cn={{ item.key }},{{ ldap_group_ou }}'
+    objectClass: >-
+      {{
+        []
+        | union(ldap_member | ternary(["groupOfNames"], []))
+        | union(ldap_posix | ternary(["posixGroup"], []))
+        | union(ldap_samba | ternary(["sambaGroupMapping"], []))
+      }}
+    attributes: >-
+      {{
+        {"cn": item.key} | combine(
+          {
+            "description": item.value.name,
+          },
+          ldap_attribute_ja | ternary({
+            "description;lang-ja": item.value.name_ja,
+          }, {}),
+          ldap_posix | ternary({
+            "gidNumber": item.value.posix.gid,
+            "memberUid": item.value.members | default([]),
+          }, {}),
+          ldap_samba | ternary({
+            "sambaGroupType": 2,
+            "sambaSID": ldap_samba_sid ~ "-" ~ (1001 + item.value.posix.gid * 2),
+          }, {}),
+          ldap_member | ternary({"member":
+            ldap_users | dict2items | selectattr("value.primary_group", "equalto", item.key) | map("key")
+            | union(item.value.members)
+            | map("regex_replace", "^(.*)$", "cn=\\1,{{ ldap_user_ou }}") | list
+          }, {}),
+          item.value.attributes | default({}))
+      }}
+  loop: '{{ ldap_groups | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
