@@ -1,5 +1,5 @@
 - name: Create .gemrc
-  ansible.builtin.template:
-    src: gemrc.j2
+  ansible.builtin.copy:
+    src: gemrc
     dest: ~/.gemrc
     mode: '0644'
