@@ -1,0 +1,6 @@
+cert_update_cmd_os:
+  Debian: update-ca-certificates
+  RedHat: update-ca-trust
+cert_ca_dir_os:
+  Debian: /usr/local/share/ca-certificates
+  RedHat: /etc/pki/ca-trust/source/anchors

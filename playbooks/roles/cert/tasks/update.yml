@@ -1,0 +1,28 @@
+- name: Make cert_ca_dir directory
+  become: true
+  ansible.builtin.file:
+    path: '{{ cert_ca_dir }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create tursted CA certificate
+  become: true
+  ansible.builtin.copy:
+    content: '{{ item.value }}'
+    dest: '{{ cert_ca_dir }}/{{ item.key }}'
+    owner: root
+    group: root
+    mode: '0644'
+  register: cert_create_trusted_cas
+  loop: '{{ cert_trusted_cas | dict2items}}'
+  loop_control:
+    label: '{{ item.key }}'
+
+- name: Update CA trust
+  become: true
+  ansible.builtin.command:
+    cmd: '{{ cert_update_cmd }}'
+  changed_when: true
+  when: cert_create_trusted_cas is changed

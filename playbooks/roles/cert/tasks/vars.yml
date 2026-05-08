@@ -1,0 +1,25 @@
+- name: Task value on os for cert_update_cmd
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ cert_update_cmd_os }}'
+  when: cert_update_cmd is not defined
+
+- name: Set cert_update_cmd from os_value
+  ansible.builtin.set_fact:
+    cert_update_cmd: '{{ os_value }}'
+  when: cert_update_cmd is not defined
+
+- name: Task value on os for cert_ca_dir
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ cert_ca_dir_os }}'
+  when: cert_ca_dir is not defined
+
+- name: Set cert_ca_dir from os_value
+  ansible.builtin.set_fact:
+    cert_ca_dir: '{{ os_value }}'
+  when: cert_ca_dir is not defined

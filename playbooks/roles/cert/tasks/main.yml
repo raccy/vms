@@ -1,0 +1,9 @@
+- name: Task vars
+  ansible.builtin.include_tasks:
+    file: vars.yml
+  when: cert_trusted_cas != {}
+
+- name: Task update
+  ansible.builtin.include_tasks:
+    file: update.yml
+  when: cert_trusted_cas != {}

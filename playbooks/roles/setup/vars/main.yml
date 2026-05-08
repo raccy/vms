@@ -1,4 +1,5 @@
 setup_essential_roles:
+  - cert
   - env
   - pkg
   - update
