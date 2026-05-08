@@ -15,6 +15,7 @@
 - name: Add apt repository
   ansible.builtin.apt_repository:
     repo: '{{ apt_repo }}'
+  register: apt_repo_add_result
   when: apt_repo is string
 
 - name: Install python3-debian for deb822_repository
@@ -33,4 +34,11 @@
     components: '{{ apt_repo.component }}'
     signed_by: '{{ apt_repo.gpg }}'
   environment: '{{ proxy_env }}'
+  register: apt_repo_add_result
   when: apt_repo is not string
+
+- name: Update repositories
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  when: apt_repo_add_result is changed
