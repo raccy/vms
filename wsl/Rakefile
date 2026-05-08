@@ -181,6 +181,6 @@ task :ansible_install do
   ["community.general", "community.mysql", "community.postgresql", "ansible.posix"].each do |collection|
     next if collection_list&.include?(collection)
 
-    wsl.run("ansible-galaxy collection install #{collection}", env: setup.proxy_env)
+    wsl.run("ansible-galaxy collection install #{setup.ansible_galaxy_opts} #{collection}", env: setup.proxy_env)
   end
 end

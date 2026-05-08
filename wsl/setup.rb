@@ -138,6 +138,15 @@ class Setup
     end.map { |key, value| "--setopt=#{key}=#{value}" }.join(" ")
   end
 
+  def ansible_galaxy_opts
+    @ansible_galaxy_opts ||=
+      if options[:disable_ssl_verify]
+        "--ignore-certs"
+      else
+        ""
+      end
+  end
+
   def install_ansible_cmds(pkg_mgr)
     case options[:ansible]
     in "package"
