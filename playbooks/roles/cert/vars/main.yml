@@ -4,3 +4,6 @@ cert_update_cmd_os:
 cert_ca_dir_os:
   Debian: /usr/local/share/ca-certificates
   RedHat: /etc/pki/ca-trust/source/anchors
+cert_ca_file_os:
+  Debian: /etc/ssl/certs/ca-certificates.crt
+  RedHat: /etc/pki/tls/certs/ca-bundle.crt

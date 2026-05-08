@@ -12,3 +12,14 @@
   when:
     - nodejs_source == "pkg"
     - nodejso_config_npm_prefix.stdout | trim == "/usr/local"
+
+- name: Set npm config cafile for mise
+  ansible.builtin.shell:
+    cmd: |
+      {{ mise_shell_block }}
+      npm config set cafile {{ cert_ca_file }}
+    executable: /bin/bash
+  changed_when: true
+  when:
+    - nodejs_source == "mise"
+    - cert_trusted_cas != {}

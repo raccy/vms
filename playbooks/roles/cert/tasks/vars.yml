@@ -23,3 +23,16 @@
   ansible.builtin.set_fact:
     cert_ca_dir: '{{ os_value }}'
   when: cert_ca_dir is not defined
+
+- name: Task value on os for cert_ca_file
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: value
+  vars:
+    os_value_os: '{{ cert_ca_file_os }}'
+  when: cert_ca_file is not defined
+
+- name: Set cert_ca_file from os_value
+  ansible.builtin.set_fact:
+    cert_ca_file: '{{ os_value }}'
+  when: cert_ca_file is not defined
