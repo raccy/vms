@@ -15,6 +15,7 @@ class Setup
     https_proxy: nil, # ENV https_proxy or HTTPS_PROXY
     ftp_proxy: nil, # ENV ftp_proxy or FTP_PROXY
     no_proxy: nil, # ENV no_proxy or NO_PROXY
+    disable_ssl_verify: false,
     skip_update: false,
     skip_ansible: false,
   }.freeze
@@ -113,25 +114,28 @@ class Setup
   end
 
   def apt_opts
-    @apt_opts ||=
+    @apt_opts ||= {}.tap do |opts|
       if proxy_required?
-        ["http", "https", "ftp"]
-          .map { |proto| [proto, options[:"#{proto}_proxy"]] }
-          .select { |_, value| value }
-          .map { |proto, value| "-o Acquire::#{proto}::Proxy=\"#{value}\" -o Acquire::#{proto}::Timeout=600" }
-          .join(" ")
-      else
-        ""
+        ["http", "https", "ftp"].each do |proto|
+          proxy = options[:"#{proto}_proxy"]
+          next unless proxy
+
+          opts["Acquire::#{proto}::Proxy"] = proxy
+          opts["Acquire::#{proto}::Timeout"] = 600
+        end
       end
+      opts["Acquire::https::Verify-Peer"] = false if options[:disable_ssl_verify]
+    end.map { |key, value| "--option #{key}=#{value}" }.join(" ")
   end
 
   def dnf_opts
-    @dnf_opts ||=
+    @dnf_opts ||= {}.tap do |opts|
       if proxy_required?
-        "--setopt=proxy=#{proxy_uri} --setopt=timeout=600"
-      else
-        ""
+        opts["proxy"] = proxy_uri
+        opts["timeout"] = 600
       end
+      opts["sslverify"] = false if options[:disable_ssl_verify]
+    end.map { |key, value| "--setopt=#{key}=#{value}" }.join(" ")
   end
 
   def install_ansible_cmds(pkg_mgr)
