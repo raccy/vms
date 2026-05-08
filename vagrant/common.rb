@@ -206,6 +206,10 @@ end
 
 def common_config(config, dir: Dir.pwd)
   config.vm.box_check_update = true
+  config.vm.box_download_ca_cert = [
+    "/etc/pki/tls/certs/ca-bundle.crt",
+    "/etc/ssl/certs/ca-certificates.crt",
+  ].find { |path| File.exist?(path) }
 
   hostname = File.basename(File.absolute_path(dir)).gsub("_", "-")
   ssh_port = calc_port(hostname)
