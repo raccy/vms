@@ -9,7 +9,7 @@
 - name: Debug dnf_repo
   ansible.builtin.debug:
     var: dnf_repo
-  when: debug
+  when: debug | default(false)
 
 - name: Enable dnf repository
   become: true

@@ -9,7 +9,7 @@
 - name: Debug apt_repo
   ansible.builtin.debug:
     var: apt_repo
-  when: debug
+  when: debug | default(false)
 
   become: true
 - name: Add apt repository

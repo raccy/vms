@@ -1,7 +1,7 @@
 - name: Debug os_list_os
   ansible.builtin.debug:
     var: os_list_os
-  when: debug
+  when: debug | default(false)
 
 - name: Set os_list
   ansible.builtin.set_fact:
@@ -15,4 +15,4 @@
 - name: Debug os_list
   ansible.builtin.debug:
     var: os_list
-  when: debug
+  when: debug | default(false)
