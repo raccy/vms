@@ -1,8 +1,0 @@
-- name: set fact postgresql
-  set_fact:
-    postgresql: '{{ {"type": ansible_pkg_mgr} | combine(postgresql, app.postgresql, recursive=True) }}'
-
-- name: set fact postgresql
-  set_fact:
-    postgresql: '{{ postgresql_types[postgresql.type] | combine(postgresql, recursive=True) }}'
-  when: postgresql_types[postgresql.type] is defined

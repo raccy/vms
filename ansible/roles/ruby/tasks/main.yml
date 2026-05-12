@@ -1,8 +1,0 @@
-- import_tasks: vars.yml
-
-- import_tasks: install.yml
-
-- import_tasks: gem.yml
-
-# bundleで全体入れるとひどいことになる。
-# - import_tasks: bundler.yml

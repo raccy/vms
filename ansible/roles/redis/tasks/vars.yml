@@ -1,3 +1,0 @@
-- name: set fact redis
-  set_fact:
-    redis: '{{ {"type": ansible_pkg_mgr} | combine(redis, app.redis, recursive=True) }}'

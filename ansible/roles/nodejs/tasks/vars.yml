@@ -1,3 +1,0 @@
-- name: set fact nodejs
-  set_fact:
-    nodejs: '{{ {"type": ansible_pkg_mgr} | combine(nodejs, app.nodejs, recursive=True) }}'

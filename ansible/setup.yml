@@ -1,6 +1,0 @@
-- name: Setup
-  hosts: all
-  roles:
-    # - init
-    - setup
-    - app

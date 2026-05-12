@@ -1,3 +1,0 @@
-- name: set fact ruby
-  set_fact:
-    ruby: '{{ {"type": ansible_pkg_mgr} | combine(ruby, app.ruby, recursive=True) }}'
