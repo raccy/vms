@@ -8,14 +8,11 @@ ds_setup: true
 ## Database
 mariadb: true
 mariadb_version: "10.11" # 2028-03
-mariadb_devel: true
 mariadb_service: true
 postgresql: true
 postgresql_version: "16" # 2029-03
-postgresql_devel: true
 postgresql_service: true
 valkey: true
-valkey_devel: true
 valkey_service: true
 ## Language
 nodejs: true

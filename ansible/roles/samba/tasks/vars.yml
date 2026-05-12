@@ -1,3 +1,0 @@
-- name: set fact samba
-  set_fact:
-    samba: '{{ {"type": ansible_pkg_mgr} | combine(samba, app.samba, recursive=True) }}'
