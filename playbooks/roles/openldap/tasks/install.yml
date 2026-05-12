@@ -35,6 +35,20 @@
     - ansible_facts.pkg_mgr == "apt"
     - openldap_devel
 
+- name: Set debconf slapd/password dummy password
+  become: true
+  ansible.builtin.debconf:
+    name: slapd
+    question: '{{ item }}'
+    value: 'password'
+    vtype: password
+  loop:
+    - slapd/password1
+    - slapd/password2
+  when:
+    - openldap_source == "pkg"
+    - ansible_facts.pkg_mgr == "apt"
+
 - name: Task install on app for openldap
   ansible.builtin.include_role:
     name: app
@@ -47,16 +61,4 @@
       pkgs: '{{ openldap_install_pkgs | default([]) }}'
       devel: '{{ (ansible_facts.pkg_mgr == "dnf") | ternary(openldap_devel, omit) }}'
 
-
-# - name: debconf slapd/password dummy password
-#   become: true
-#   debconf:
-#     name: slapd
-#     question: '{{ item }}'
-#     value: 'password'
-#     vtype: password
-#   loop:
-#     - slapd/password1
-#     - slapd/password2
-#   when: openldap.type == "apt"
 

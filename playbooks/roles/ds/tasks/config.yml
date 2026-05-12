@@ -26,16 +26,3 @@
       - '{{ ds_config_tempdir.path }}/389ds.inf'
   changed_when: true
   when: not ds_config_dirsrv_stat.stat.exists
-
-# TODO: スキーマの指定等
-# - name: Copy samba schema
-#   become: true
-#   ansible.builtin.copy:
-#     src: samba-schema-FDS.ldif
-#     dest: /etc/dirsrv/slapd-localhost/schema/60samba.ldif
-#   when: ds_schema_samba
-
-# - name: dsctl restart
-#   become: true
-#   command:
-#     cmd: 'dsctl slapd-localhost restart'

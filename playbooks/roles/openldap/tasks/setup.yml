@@ -4,6 +4,7 @@
     name: '{{ ds_service_name }}'
     state: started
 
+# TODO: ここまで
 - name: Run dsconf plugin memberof
   become: true
   ansible.builtin.command:

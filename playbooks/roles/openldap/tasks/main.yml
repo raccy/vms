@@ -9,3 +9,8 @@
 # - name: Task serivce
 #   ansible.builtin.import_tasks:
 #     file: service.yml
+
+# - name: Task setup
+#   ansible.builtin.import_tasks:
+#     file: setup.yml
+#   when: openldap_setup
