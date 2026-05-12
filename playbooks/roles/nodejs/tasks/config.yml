@@ -1,7 +1,7 @@
 - name: Get npm config prefix
   ansible.builtin.command:
     cmd: npm config get prefix
-  register: nodejso_config_npm_prefix
+  register: nodejs_config_npm_prefix
   changed_when: false
   when: nodejs_source == "pkg"
 
@@ -11,7 +11,7 @@
   changed_when: true
   when:
     - nodejs_source == "pkg"
-    - nodejso_config_npm_prefix.stdout | trim == "/usr/local"
+    - nodejs_config_npm_prefix.stdout | trim == "/usr/local"
 
 - name: Set npm config cafile for mise
   ansible.builtin.shell:

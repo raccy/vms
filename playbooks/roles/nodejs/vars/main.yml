@@ -17,3 +17,6 @@ nodejs_build_pkgs_os:
     - gcc-c++
     - make
     - python3-pip
+nodejs_bun_shell_block: |
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"

@@ -1,3 +1,7 @@
+- name: Task vars
+  ansible.builtin.import_tasks:
+    file: vars.yml
+
 - name: Task install
   ansible.builtin.import_tasks:
     file: install.yml
@@ -5,6 +9,10 @@
 - name: Task config
   ansible.builtin.import_tasks:
     file: config.yml
+
+- name: Task pkg_mgr
+  ansible.builtin.import_tasks:
+    file: pkg_mgr.yml
 
 - name: Task npm
   ansible.builtin.import_tasks:

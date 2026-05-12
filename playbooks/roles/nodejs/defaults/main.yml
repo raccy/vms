@@ -6,3 +6,4 @@ nodejs_libs: []
 nodejs_npms: []
 nodejs_build: false
 # nodejs_dep_pkgs: []
+nodejs_pkg_mgr: "npm" # yarn, pnpm, bun

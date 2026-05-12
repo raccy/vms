@@ -2,39 +2,43 @@
 ---
 ## Essential
 
-env: false
-pkg: false
-update: false
-time: false
-lang: false
-fant: false
-app: false
-# app_pkgs:
-#   - "vim"
+# cert: false
+# env: false
+# pkg: false
+# update: false
+# time: false
+# lang: false
+# font: false
+# app: false
+app_pkgs:
+  - "vim"
 #   - "rsync"
-#   - "build-essential"
 
 ## Tools
 
-# git: true
+# anyenv: true
+# docker: true
+git: true
+# mise: true
+snap: true
 
 ## Service
 
 # nginx: true
 # nginx_service: true
 
-## LDAP
+### LDAP
 
-ds: true
-ds_service: true
-ds_posix: "samba" # or "account", "person"
-ds_member: true
+# ds: true
+# ds_service: true
+# ds_posix: "samba" # or "account", "person"
+# ds_member: true
 
 # openldap: true
 # openldap_posix: "samba" # or "account", "person"
 # openladp_member: true
 
-## Database
+### Database
 
 # mariadb: true
 # mariadb_devel: true
@@ -67,3 +71,7 @@ ds_member: true
 #   - pg
 #   - sqlite3
 #   - redis
+
+## Environments
+
+vscode: true

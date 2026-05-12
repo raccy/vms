@@ -1,65 +1,58 @@
 # for libmyal-devel
 - name: def config-manager set enabled crb
   become: yes
-  command:
+  ansible.builtin.command:
     cmd: dnf config-manager --set-enabled crb
   changed_when: true
 
 # 新しいpsychをコンパイルすためにlibyamlが必要
 - name: Install libyaml-devel
   become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: libyaml-devel
 
-- name: git clone ikamail
-  git:
+- name: Clone git repository ikamail
+  ansible.builtin.git:
     repo: https://github.com/kue-ipc/ikamail.git
     dest: ~/ikamail
     version: main
 
-# - name: bundle config
+- name: Run bundle install
+  ansible.builtin.shell:
+    cmd: bundle install
+    executable: /bin/bash
+    chdir: ~/ikamail
+
+- name: Run rails yarn:install
+  ansible.builtin.shell:
+    cmd: bin/rails yarn:install
+    executable: /bin/bash
+    chdir: ~/ikamail
+
+# - name: check rails db version
+#   ansible.builtin.shell:
+#     cmd: bin/rails yarn:install
+#     executable: /bin/bash
+#     chdir: ~/ikamail
+
 #   command:
 #     argv:
-#       - bundle
-#       - config
-#       - set
-#       - '{{ item.name }}'
-#       - '{{ item.value }}'
+#       - bash
+#       - '-lic'
+#       - bin/rails db:version
 #     chdir: ~/ikamail
-#   loop:
-#     - {name: path, value: vendor/bundle}
+#   ignore_errors: yes
+#   register: rails_db_version_result
 
-- name: bundle install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bundle install
+- name: Run rails db:setup
+  ansible.builtin.shell:
+    cmd: bin/rails db:setup
+    executable: /bin/bash
     chdir: ~/ikamail
-
-- name: rails yarn:install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails yarn:install
-    chdir: ~/ikamail
-
-- name: check rails db version
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails db:version
-    chdir: ~/ikamail
-  ignore_errors: yes
-  register: rails_db_version_result
-
-- name: rails db:setup
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails db:setup
-    chdir: ~/ikamail
-  when: rails_db_version_result.rc != 0
+  # command:
+  #   argv:
+  #     - bash
+  #     - '-lic'
+  #     - 
+  #   chdir: ~/ikamail
+  # when: rails_db_version_result.rc != 0

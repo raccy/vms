@@ -15,14 +15,16 @@ setup_optional_roles:
   - mise
   - snap
   # services
-  - ds
-  - mariadb
   - nginx
+  ## ldap
+  - ds
   - openldap
+  ## dasabase
+  - mariadb
   - postgresql
   - redis
   - valkey
-  # programing languages
+  # languages
   - java
   - nodejs
   - php

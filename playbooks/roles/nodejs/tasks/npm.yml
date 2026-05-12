@@ -1,8 +1,16 @@
-- name: Intall npm
+- name: Intall npm package
   community.general.npm:
     name: '{{ item.split("@") | first }}'
     version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
     global: true
   environment: '{{ proxy_env }}'
   loop: '{{ nodejs_npms }}'
-  when: nodejs_npms | length > 0
+  when: nodejs_pkg_mgr != "bun"
+
+- name: Intall npm package with bun
+  ansible.builtin.shell:
+    cmd: |
+      {{ nodejs_bun_shell_block }}
+      bun install -g {{ item }}
+  environment: '{{ proxy_env }}'
+  when: nodejs_pkg_mgr == "bun"

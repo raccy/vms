@@ -7,7 +7,7 @@
 # update: false
 # time: false
 # lang: false
-# fant: false
+# font: false
 # app: false
 app_pkgs:
   - "vim"
@@ -26,14 +26,14 @@ git: true
 
 ## LDAP
 
-# ldap_posix: false
-# ldap_shadow: false
-# ldap_samba: true
-# ldap_member: false
+ldap_posix: true
+ldap_shadow: true
+ldap_samba: true
+ldap_member: true
 
-# ds: true
-# ds_service: true
-# ds_setup: true
+ds: true
+ds_service: true
+ds_setup: true
 
 # openldap: true
 # openldap_service: true
@@ -42,32 +42,47 @@ git: true
 ## Database
 
 # mariadb: true
+# mariadb_version: "" # 10.5 full
 # mariadb_version: "10.11" # 2028-03
 # mariadb_devel: true
 # mariadb_service: true
-# postgresql: true
 
+# postgresql: true
+# postgresql_version: "" # 13 full
+# postgresql_version: "15" # 2028-05
 # postgresql_version: "16" # 2029-03
 # postgresql_devel: true
 # postgresql_service: true
 
 # redis: true
+# redise_version: "" # 6 full
 # redise_version: "7" # 2026-11
 # redis_devel: true
 # redis_service: true
 
+# valkey: true
+## valkey_version: # default "8" 2029-05
+# valkey_devel: true
+# valkey_service: true
+
 ## Language
 
 # nodejs: true
+# nodejs_version: "" # 16 2024-04
+# nodejs_version: "22" # 2027-04
 # nodejs_version: "24" # 2028-04
 # nodejs_npms:
 #   - "npm-check-updates"
 
 # python: true
+# python_name: "python" # 3.9 full
+# python_name: "python3.11" # 2026-05
 # python_name: "python3.12" # 2027-04
 # python_devel: true
 
 # ruby: true
+# ruby_version: "" # 3.0 full
+# ruby_version: "3.1" # 2025-03
 # ruby_version: "3.3" # 2027-03
 # ruby_devel: true
 # ruby_libs:

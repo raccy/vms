@@ -1,0 +1,25 @@
+- name: Task list on os for nodejs_dep_pkgs
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: list
+  vars:
+    os_list_os: '{{ nodejs_dep_pkgs_os }}'
+  when: nodejs_dep_pkgs is not defined
+
+- name: Set nodejs_dep_pkgs from os_list
+  ansible.builtin.set_fact:
+    nodejs_dep_pkgs: '{{ os_list }}'
+  when: nodejs_dep_pkgs is not defined
+
+- name: Task list on os for nodejs_dep_pkgs
+  ansible.builtin.include_role:
+    name: os
+    tasks_from: list
+  vars:
+    os_list_os: '{{ nodejs_build_pkgs_os }}'
+  when: nodejs_build_pkgs is not defined
+
+- name: Set nodejs_build_pkgs from os_list
+  ansible.builtin.set_fact:
+    nodejs_build_pkgs: '{{ os_list }}'
+  when: nodejs_build_pkgs is not defined

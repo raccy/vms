@@ -1,46 +1,23 @@
-- name: Task list on os for nodejs_dep_pkgs
-  ansible.builtin.include_role:
-    name: os
-    tasks_from: list
-  vars:
-    os_list_os: '{{ nodejs_dep_pkgs_os }}'
-  when: nodejs_dep_pkgs is not defined
-
-- name: Set nodejs_dep_pkgs from os_list
-  ansible.builtin.set_fact:
-    nodejs_dep_pkgs: '{{ os_list }}'
-  when: nodejs_dep_pkgs is not defined
-
-- name: Task list on os for nodejs_dep_pkgs
-  ansible.builtin.include_role:
-    name: os
-    tasks_from: list
-  vars:
-    os_list_os: '{{ nodejs_build_pkgs_os }}'
-  when: nodejs_build_pkgs is not defined
-
-- name: Set nodejs_build_pkgs from os_list
-  ansible.builtin.set_fact:
-    nodejs_build_pkgs: '{{ os_list }}'
-  when: nodejs_build_pkgs is not defined
-
-- name: Add nodejs_build_pkgs to nodejs_dep_pkgs
-  ansible.builtin.set_fact:
-    nodejs_dep_pkgs: >-
-      {{
-        nodejs_dep_pkgs
-        | union(nodejs_build_pkgs)
-      }}
-  when: nodejs_build
-
 - name: Task install on app for nodejs dependent packagesl
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      pkgs: '{{ nodejs_dep_pkgs }}'
-  when: nodejs_dep_pkgs != []
+      pkgs: '{{ nodejs_dep_pkgs | union(nodejs_build | ternary(nodejs_build_pkgs, [])) }}'
+  when: nodejs_dep_pkgs != [] or nodejs_build
+
+- name: Set nodejs_install_pkgs
+  ansible.builtin.set_fact:
+    nodejs_install_pkgs: '{{ nodejs_libs | map("regex_replace", "^", nodejs_name ~ "-") }}'
+  when: nodejs_source == "pkg"
+
+- name: Add packages to nodejs_install_pkgs
+  ansible.builtin.set_fact:
+    nodejs_install_pkgs: '{{ nodejs_install_pkgs | union(["npm"]) }}'
+  when:
+    - nodejs_source == "pkg"
+    - nodejs_pkg_mgr in ["npm", "yarn", "pnpm"]
 
 - name: Task install on app for nodejs
   ansible.builtin.include_role:
@@ -52,4 +29,4 @@
       version: '{{ nodejs_version }}'
       source: '{{ nodejs_source }}'
       devel: '{{ nodejs_devel }}'
-      pkgs: '{{ ["npm"] + nodejs_libs | map("regex_replace", "^", nodejs_name ~ "-") }}'
+      pkgs: '{{ nodejs_install_pkgs | default([]) }}'

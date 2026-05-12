@@ -1,0 +1,47 @@
+# https://yarnpkg.com/getting-started/install
+# https://pnpm.io/ja/installation
+
+- name: Intall corepack npm
+  community.general.npm:
+    name: corepack
+    global: true
+  environment: '{{ proxy_env }}'
+  when: nodejs_pkg_mgr in ["yarn", "pnpm"]
+
+- name: Enable corepack
+  ansible.builtin.command:
+    cmd: 'corepack enable {{ nodejs_pkg_mgr }}'
+  when: nodejs_pkg_mgr in ["yarn", "pnpm"]
+
+- name: Run version
+  ansible.builtin.command:
+    cmd: '{{ nodejs_pkg_mgr }} --version'
+    stdin: "y\n"
+  environment: '{{ proxy_env }}'
+  when: nodejs_pkg_mgr in ["yarn", "pnpm"]
+
+# https://bun.com/docs/installation
+
+- name: Run yarn version on shell once again
+  ansible.builtin.command:
+    cmd: '{{ nodejs_pkg_mgr }} --version'
+    stdin: "y\n"
+  environment: '{{ proxy_env }}'
+  when: nodejs_pkg_mgr in ["yarn", "pnpm"]
+
+- name: Run bun install
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      curl -fsSL https://bun.com/install | bash
+    executable: /bin/bash
+    creates: ~/.bun/bin/bun
+  environment: '{{ proxy_env }}'
+  when: nodejs_pkg_mgr == "bun"
+
+- name: Block mise in bashrc
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs bun'
+    block: '{{ nodejs_bun_shell_block }}'
+  when: nodejs_pkg_mgr == "bun"
