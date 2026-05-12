@@ -1,3 +1,0 @@
-- include_tasks: config_sub.yml
-  loop: '{{ git.config | dict2items }}'
-  when: git.config is defined

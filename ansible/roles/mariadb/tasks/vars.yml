@@ -1,8 +1,0 @@
-- name: set fact mariadb
-  set_fact:
-    mariadb: '{{ {"type": ansible_pkg_mgr} | combine(mariadb, app.mariadb, recursive=True) }}'
-
-- name: set fact mariadb
-  set_fact:
-    mariadb: '{{ mariadb_types[mariadb.type] | combine(mariadb, recursive=True) }}'
-  when: mariadb_types[mariadb.type] is defined

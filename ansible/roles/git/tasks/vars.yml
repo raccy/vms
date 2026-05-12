@@ -1,3 +1,0 @@
-- name: set fact git
-  set_fact:
-    git: '{{ {"type": ansible_pkg_mgr} | combine(git, app.git, recursive=True) }}'

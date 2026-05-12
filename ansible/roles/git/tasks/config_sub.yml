@@ -1,8 +1,0 @@
-- name: git config {{ item.key }}
-  git_config:
-    scope: global
-    name: '{{ item.key }}.{{ sub_item.key }}'
-    value: '{{ sub_item.value }}'
-  loop: '{{ item.value | dict2items }}'
-  loop_control:
-    loop_var: sub_item
