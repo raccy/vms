@@ -4,6 +4,33 @@
     name: '{{ ds_service_name }}'
     state: started
 
+# TODO: ここまで
+- name: Run dsconf plugin memberof
+  become: true
+  ansible.builtin.command:
+    argv:
+      - dsconf
+      - -D
+      - '{{ ldap_root_dn }}'
+      - -w
+      - '{{ ldap_root_pw }}'
+      - '{{ ldap_uri }}'
+      - plugin
+      - memberof
+      - enable
+  changed_when: true
+  when: ldap_member
+
+- name: Run dsctl restart
+  become: true
+  command:
+    argv:
+      - dsctl
+      - 'slapd-{{ ds_instance_name }}'
+      - restart
+  changed_when: true
+  when: ldap_member
+
 - name: Task entries on ldap
   ansible.builtin.import_role:
     name: ldap

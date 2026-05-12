@@ -1,15 +1,10 @@
-# for libmyal-devel
-- name: def config-manager set enabled crb
-  become: yes
-  ansible.builtin.command:
-    cmd: dnf config-manager --set-enabled crb
-  changed_when: true
-
-# 新しいpsychをコンパイルすためにlibyamlが必要
-- name: Install libyaml-devel
+# 
+- name: Install devel packages for ikamail
   become: yes
   ansible.builtin.dnf:
-    name: libyaml-devel
+    name:
+      - libyaml-devel
+      - libffi-devel
 
 - name: Clone git repository ikamail
   ansible.builtin.git:

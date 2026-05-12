@@ -2,7 +2,6 @@
 ## Tools
 git: true
 ## LDAP
-ldap_samba: true
 ds: true
 ds_service: true
 ds_setup: true
@@ -26,7 +25,6 @@ nodejs_npms:
 nodejs_pkg_mgr: "yarn"
 ruby: true
 ruby_version: "3.3" # 2027-03
-ruby_devel: true
 ruby_libs:
   - bundled-gems
 ruby_build: true
