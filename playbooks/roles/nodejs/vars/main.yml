@@ -20,3 +20,8 @@ nodejs_build_pkgs_os:
 nodejs_bun_shell_block: |
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
+nodejs_name_src:
+  pkg: nodejs
+  mise: nodejs
+  snap: node
+  anyenv: nodenv

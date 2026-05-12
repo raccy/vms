@@ -1,5 +1,6 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
+debug: true
 ## Essential
 
 # cert: false
@@ -53,14 +54,16 @@ snap: true
 
 ## Language
 
-# nodejs: true
+nodejs: true
+nodejs_source: snap
 # nodejs_npms:
 #   - "npm-check-updates"
 
-# python: true
+python: true
 # python_devel: true
 
-# ruby: true
+ruby: true
+ruby_source: snap
 # ruby_devel: true
 # ruby_libs:
 #   - bundler

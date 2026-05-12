@@ -1,4 +1,4 @@
-nodejs_name: nodejs
+nodejs_name: '{{ nodejs_name_src[nodejs_source] }}'
 nodejs_version: ""
 nodejs_source: pkg
 nodejs_devel: false
