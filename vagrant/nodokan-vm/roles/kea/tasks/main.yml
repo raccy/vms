@@ -7,37 +7,22 @@
 
 # cloudsmith
 
-- name: Check dnf repolist
-  ansible.builtin.command:
-    cmd: dnf repolist
-  changed_when: false
-  register: kea_dnf_repolist
-
 - name: Install isc-kea repository
   ansible.builtin.shell:
     cmd: |
       curl -1sLf \
         'https://dl.cloudsmith.io/public/isc/kea-2-6/setup.rpm.sh' \
        | sudo -E bash
-  changed_when: true
-  when: kea_dnf_repolist.stdout_lines | select("match", "isc-kea") | length == 0
+    creates: /etc/yum.repos.d/isc-kea-2-6.repo
 
-- name: install kea
+- name: Install kea
   become: yes
-  dnf:
+  ansible.builtin.dnf:
     pkg:
       - isc-kea
       - isc-kea-hooks
 
-- name: check mysql db
-  become: yes
-  community.mysql.mysql_info:
-    login_unix_socket: /var/lib/mysql/mysql.sock
-    login_user: root
-    filter: databases
-  register: mysql_info_result
-
-- name: create kea db
+- name: Create kea db
   become: yes
   community.mysql.mysql_db:
     login_unix_socket: /var/lib/mysql/mysql.sock
@@ -49,7 +34,7 @@
     - kea_development
     - kea_test
 
-- name: create kea user
+- name: Create kea user
   become: yes
   mysql_user:
     login_unix_socket: /var/lib/mysql/mysql.sock
@@ -65,3 +50,27 @@
     - kea
     - kea_development
     - kea_test
+
+- name: Run kea-admin init
+  become: yes
+  ansible.builtin.command:
+    argv: 
+      - kea-admin
+      - db-init
+      - mysql
+      - -u
+      - kea
+      - -p
+      - keapass
+      - -n
+      - '{{ item }}'
+  loop:
+    - kea
+    - kea_development
+    - kea_test
+
+# - name: 'kea-admin upgrade {{ item }}'
+#   become: yes
+#   command:
+#     cmd: 'kea-admin db-upgrade mysql -u kea -p keapass -n {{ item }}'
+#   when: 'item in mysql_info_result.databases'

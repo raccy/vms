@@ -1,19 +1,18 @@
 # freeradius-mysql は CRB
-- name: def config-manager set enabled crb
+- name: Enable crb repo
   become: yes
-  command:
-    cmd: dnf config-manager --set-enabled crb
-  changed_when: true
+  community.general.dnf_config_manager:
+    name: crb
 
-- name: install freeradius
+- name: Install freeradius
   become: yes
-  dnf:
+  ansible.builtin.dnf:
     pkg:
       - freeradius
       - freeradius-mysql
       - freeradius-ldap
 
-- name: create radius db
+- name: Create radius db
   become: yes
   community.mysql.mysql_db:
     login_unix_socket: /var/lib/mysql/mysql.sock
@@ -25,7 +24,7 @@
     - radius_development
     - radius_test
 
-- name: create radius user
+- name: Create radius user
   become: yes
   mysql_user:
     login_unix_socket: /var/lib/mysql/mysql.sock
@@ -36,15 +35,9 @@
     password: radpass
     priv: 'radius.*:ALL/radius_development.*:ALL/radius_test.*:ALL'
 
-# - name: mysql setup.sql
-#   become: yes
-#   shell:
-#     cmd: 'mysql -u root < /etc/raddb/mods-config/sql/main/mysql/setup.sql'
-#   when: '"radius" not in mysql_info_result.databases'
-
-- name: mysql scheme.sql
+- name: Run mysql scheme.sql
   become: yes
-  shell:
+  ansible.builtin.shell:
     cmd: 'mysql -u root {{ item }} < /etc/raddb/mods-config/sql/main/mysql/schema.sql'
   loop:
     - radius

@@ -1,24 +1,17 @@
-# 新しいpsychのために必要
-# crbは有効化済み
-- name: Install libyaml-devel
-  become: yes
-  dnf:
-    name: libyaml-devel
-
-- name: git clone nodokan
-  git:
+- name: Clone git repostiry nodokan
+  ansible.builtin.git:
     repo: https://github.com/kue-ipc/nodokan.git
     dest: ~/nodokan
     version: main
 
-# テストに対しては未反映になる。
-- name: copy settings.local.yml
-  copy:
-    src: settings.local.yml
-    dest: '~/nodokan/config/{{ item }}'
-    mode: '0644'
-  loop:
-    - settings.local.yml
+# # テストに対しては未反映になる。
+# - name: copy settings.local.yml
+#   copy:
+#     src: settings.local.yml
+#     dest: '~/nodokan/config/{{ item }}'
+#     mode: '0644'
+#   loop:
+#     - settings.local.yml
 
 # - name: bundle config
 #   command:
@@ -32,63 +25,50 @@
 #   loop:
 #     - {name: path, value: vendor/bundle}
 
-- name: bundle install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bundle install
+- name: Run bundle install
+  ansible.builtin.shell:
+    cmd: bundle install
+    executable: /bin/bash
     chdir: ~/nodokan
+  changed_when: true
 
-- name: rails yarn:install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails yarn:install
+- name: Run rails yarn:install
+  ansible.builtin.shell:
+    cmd: bin/rails yarn:install
+    executable: /bin/bash
     chdir: ~/nodokan
+  changed_when: true
 
-- name: check rails db version
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails db:version
-    chdir: ~/nodokan
-  ignore_errors: yes
-  register: rails_db_version_result
-
-- name: rails db:setup
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails db:setup
-    chdir: ~/nodokan
-  when: rails_db_version_result.rc != 0
-
-- name: rails radius:setup
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails radius:setup
-    chdir: ~/nodokan
-
-- name: rails radius:setup
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bin/rails radius:setup
-    chdir: ~/nodokan
-  environment:
-    RAILS_ENV: test
-
-# - name: rails kea:setup
+# - name: check rails db version
 #   command:
 #     argv:
 #       - bash
 #       - '-lic'
-#       - bin/rails kea:setup
+#       - bin/rails db:version
 #     chdir: ~/nodokan
+#   ignore_errors: yes
+#   register: rails_db_version_result
+
+- name: Run rails db:setup
+  ansible.builtin.shell:
+    cmd: bin/rails db:setup
+    executable: /bin/bash
+    chdir: ~/nodokan
+  changed_when: true
+
+- name: Run rails db:setup
+  ansible.builtin.shell:
+    cmd: bin/rails radius:setup
+    executable: /bin/bash
+    chdir: ~/nodokan
+  changed_when: true
+
+
+- name: Run rails db:setup
+  ansible.builtin.shell:
+    cmd: bin/rails radius:setup
+    executable: /bin/bash
+    chdir: ~/nodokan
+  changed_when: true
+  environment:
+    RAILS_ENV: test
