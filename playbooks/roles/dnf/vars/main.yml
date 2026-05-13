@@ -1,0 +1,2 @@
+dnf_repo_pkg:
+  libyaml-devel: crb

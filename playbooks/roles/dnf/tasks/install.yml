@@ -12,6 +12,20 @@
     install_weak_deps: '{{ app_install_recommends }}'
   when: app_install_version != ""
 
+- name: Set dnf_install_require_repos
+  ansible.builtin.set_fact:
+    dnf_install_require_repos: >-
+      {{
+        [app_install_name] | union(app_install_pkgs)
+        | map("extract", dnf_repo_pkg) | select("defined") | unique | list
+      }}
+
+- name: Enable repo
+  become: true
+  community.general.dnf_config_manager:
+    name: '{{ item }}'
+  loop: '{{ dnf_install_require_repos }}'
+
 - name: Install package by dnf
   become: true
   ansible.builtin.dnf:
