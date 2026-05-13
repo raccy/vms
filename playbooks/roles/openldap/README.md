@@ -1,8 +1,30 @@
 # OpenLDAP
 
+設定ファイルなど
+
+```
+openldap_pkg:
+  dnf:
+    run_dir: /run/openldap
+    config_dir: /etc/openldap
+    module_dir: /usr/lib64/openldap
+    database_dir: /var/lib/ldap
+    user: ldap
+    group: ldap
+  apt:
+    run_dir: /var/run/slapd
+    config_dir: /etc/ldap
+    module_dir: /usr/lib/ldap
+    database_dir: /var/lib/ldap
+    user: openldap
+    group: openldap
+```
+
 back_monitorの有無
 
 組み込み済みのモジュールを指定しても単純に無視される。
+
+
 
 ## rocky8
 

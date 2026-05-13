@@ -7,9 +7,9 @@ ldap_domain: 'example.jp'
 ldap_base: '{{ ldap_domain | split(".") | map("regex_replace", "^", "dc=") | join(",") }}'
 ldap_organization: 'Example Inc.'
 ldap_posix: true
-ldap_shadow: true
+ldap_shadow: false
 ldap_samba: false
-ldap_member: true
+ldap_member: false
 ldap_user_ou: 'ou=people,{{ ldap_base }}'
 ldap_group_ou: 'ou=groups,{{ ldap_base }}'
 ldap_attribute_ja: true

@@ -1,7 +1,0 @@
-- name: set fact ldap
-  set_fact:
-    ldap: '{{ {"type": ansible_pkg_mgr} | combine(ldap, app.openldap, recursive=True) }}'
-
-- name: set fact ds
-  set_fact:
-    openldap: '{{ openldap_pkg[ldap.type] | combine(ldap, recursive=True) }}'

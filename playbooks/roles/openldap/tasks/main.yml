@@ -14,3 +14,11 @@
   ansible.builtin.import_tasks:
     file: setup.yml
   when: openldap_setup
+
+# TODO: 未実装なところやエラーになるところ
+#   - sambaのスキーマ読み取り
+#   - memberofのオーバーレイ設定
+#   - config設定
+#   - rhel系での動作
+#   - posixとmemberofの両方を有効にしたときの動作
+#   - ニ回目実行時にdebconfでえらー

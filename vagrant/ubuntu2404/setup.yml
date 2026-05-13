@@ -31,9 +31,9 @@ snap: true
 ### LDAP
 
 # ldap_posix: false
-# ldap_shadow: false
+ldap_shadow: true
 # ldap_samba: true
-# ldap_member: false
+# ldap_member: true
 
 # ds: true
 # ds_service: true
