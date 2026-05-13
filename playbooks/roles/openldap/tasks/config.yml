@@ -1,5 +1,3 @@
-# セットアップ
-
 - name: stop slapd service
   become: true
   systemd:

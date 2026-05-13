@@ -1,11 +1,11 @@
-- name: Task install on app for nodejs dependent packagesl
+- name: Task install on app for nodejs dependent packages
   ansible.builtin.include_role:
     name: app
     tasks_from: install
   vars:
     app_install:
-      pkgs: '{{ nodejs_dep_pkgs | union(nodejs_build | ternary(nodejs_build_pkgs, [])) }}'
-  when: nodejs_dep_pkgs != [] or nodejs_build
+      pkgs: '{{ nodejs_dep_pkgs }}'
+  when: nodejs_dep_pkgs != []
 
 - name: Set nodejs_install_pkgs
   ansible.builtin.set_fact:

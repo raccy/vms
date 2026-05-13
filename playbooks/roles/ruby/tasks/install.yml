@@ -1,39 +1,4 @@
-- name: Task list on os for ruby_dep_pkgs
-  ansible.builtin.include_role:
-    name: os
-    tasks_from: list
-  vars:
-    os_list_os: '{{ ruby_dep_pkgs_os }}'
-  when: ruby_dep_pkgs is not defined
-
-- name: Set ruby_dep_pkgs from os_list
-  ansible.builtin.set_fact:
-    ruby_dep_pkgs: '{{ os_list }}'
-  when: ruby_dep_pkgs is not defined
-
-- name: Task list on os for ruby_dep_pkgs
-  ansible.builtin.include_role:
-    name: os
-    tasks_from: list
-  vars:
-    os_list_os: '{{ ruby_build_pkgs_os }}'
-  when: ruby_build_pkgs is not defined
-
-- name: Set ruby_build_pkgs from os_list
-  ansible.builtin.set_fact:
-    ruby_build_pkgs: '{{ os_list }}'
-  when: ruby_build_pkgs is not defined
-
-- name: Add ruby_build_pkgs to ruby_dep_pkgs
-  ansible.builtin.set_fact:
-    ruby_dep_pkgs: >-
-      {{
-        ruby_dep_pkgs
-        | union(ruby_build_pkgs)
-      }}
-  when: ruby_build
-
-- name: Task install on app for ruby dependent packagesl
+- name: Task install on app for ruby dependent packages
   ansible.builtin.include_role:
     name: app
     tasks_from: install

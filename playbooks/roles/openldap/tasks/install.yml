@@ -39,12 +39,14 @@
   become: true
   ansible.builtin.debconf:
     name: slapd
-    question: '{{ item }}'
-    value: 'password'
-    vtype: password
+    question: '{{ item.question }}'
+    value: '{{ item.value }}'
+    vtype: '{{ item.vtype }}'
   loop:
-    - slapd/password1
-    - slapd/password2
+    - {question: slapd/password1, value: '{{ ldap_root_pw }}', vtype: password}
+    - {question: slapd/password2, value: '{{ ldap_root_pw }}', vtype: password}
+    - {question: slapd/domain, value: '{{ ldap_domain }}', vtype: string}
+    - {question: shared/organization, value: '{{ ldap_organization }}', vtype: string}
   when:
     - openldap_source == "pkg"
     - ansible_facts.pkg_mgr == "apt"
@@ -60,5 +62,3 @@
       source: '{{ openldap_source }}'
       pkgs: '{{ openldap_install_pkgs | default([]) }}'
       devel: '{{ (ansible_facts.pkg_mgr == "dnf") | ternary(openldap_devel, omit) }}'
-
-

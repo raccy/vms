@@ -1,9 +1,16 @@
-# ansible_facts.distribution ~ ansible_facts.distribution_major_version
-# ansible_facts.distribution
-# ansible_facts.os_family
-ruby_dep_pkgs_os: {}
+ruby_name_src:
+  pkg: ruby
+  snap: ruby
+  mise: ruby
+  anyenv: rbenv
+ruby_dep_pkgs_src:
+  pkg: []
+  snap: []
+  mise: []
+  anyenv: '{{ ruby_dep_pkgs_build }}'
+ruby_dep_pkgs_build: '{{ ruby_dep_pkgs_build_os_family[ansible_facts.os_family] | default([]) }}'
 # https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
-ruby_build_pkgs_os:
+ruby_dep_pkgs_build_os_family:
   Debian:
     - build-essential
     - autoconf

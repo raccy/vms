@@ -1,6 +1,6 @@
 # connection settings
 ldap_uri: ldap://localhost
-ldap_root_dn: 'cn=admin'
+ldap_root_dn: 'cn=admin,{{ ldap_base }}'
 ldap_root_pw: 'password'
 # entry settings
 ldap_domain: 'example.jp'

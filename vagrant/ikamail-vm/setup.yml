@@ -24,4 +24,3 @@ ruby: true
 ruby_version: "3.3" # 2027-03
 ruby_libs:
   - bundled-gems
-ruby_build: true

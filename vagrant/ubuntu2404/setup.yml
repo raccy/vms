@@ -58,16 +58,16 @@ openldap_setup: true
 
 ## Language
 
-nodejs: true
-nodejs_source: snap
+# nodejs: true
+# nodejs_source: snap
 # nodejs_npms:
 #   - "npm-check-updates"
 
-python: true
+# python: true
 # python_devel: true
 
-ruby: true
-ruby_source: snap
+# ruby: true
+# ruby_source: snap
 # ruby_devel: true
 # ruby_libs:
 #   - bundler

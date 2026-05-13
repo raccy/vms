@@ -1,7 +1,3 @@
-- name: Task vars
-  ansible.builtin.import_tasks:
-    file: vars.yml
-
 - name: Task install
   ansible.builtin.import_tasks:
     file: install.yml

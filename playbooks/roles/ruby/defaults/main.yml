@@ -3,6 +3,5 @@ ruby_version: ""
 ruby_source: pkg
 ruby_devel: false
 ruby_libs: []
+ruby_dep_pkgs: '{{ ruby_dep_pkgs_src[ruby_source] | default([]) }}'
 ruby_gems: []
-ruby_build: false
-# ruby_dep_pkgs: []

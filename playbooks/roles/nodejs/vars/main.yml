@@ -1,27 +1,15 @@
-# ansible_facts.distribution ~ ansible_facts.distribution_major_version
-# ansible_facts.distribution
-# ansible_facts.os_family
-nodejs_dep_pkgs_os:
-  Debian:
+nodejs_name_src:
+  pkg: nodejs
+  snap: node
+  mise: nodejs
+  anyenv: nodenv
+nodejs_dep_pkgs_src:
+  pkg: []
+  snap: []
+  mise:
     - libatomic1
-# https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
-nodejs_build_pkgs_os:
-  Debian:
-    - python3
-    - g++
-    - gcc
-    - make
-    - python3-pip
-  RedHat:
-    - python3
-    - gcc-c++
-    - make
-    - python3-pip
+  anyenv:
+    - libatomic1
 nodejs_bun_shell_block: |
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
-nodejs_name_src:
-  pkg: nodejs
-  mise: nodejs
-  snap: node
-  anyenv: nodenv
