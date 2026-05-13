@@ -14,9 +14,10 @@
     app_install_recommends: '{{ app_install.recommends | default(true) }}'
     app_install_devel: '{{ app_install.devel | default(false) }}'
 
-- name: 'Task package manager {{ ansible_facts.pkg_mgr }}'
-  ansible.builtin.include_tasks:
-    file: 'install_{{ ansible_facts.pkg_mgr }}.yml'
+- name: 'Task install in package manager {{ ansible_facts.pkg_mgr }}'
+  ansible.builtin.include_role:
+    name: '{{ ansible_facts.pkg_mgr }}'
+    tasks_from: install
   when: app_install_source == "pkg"
 
 # TODO: 他のソース

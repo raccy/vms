@@ -1,3 +1,4 @@
 # This file contains ignores rule violations for ansible-lint
 playbooks/roles/anyenv/tasks/install.yml latest[git]
 playbooks/roles/update/tasks/main.yml package-latest
+playbooks/roles/apt/tasks/repo.yml no-handler
