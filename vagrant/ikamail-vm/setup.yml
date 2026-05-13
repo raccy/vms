@@ -1,4 +1,9 @@
 ---
+## Essentials
+app_pkgs:
+  - libyaml-devel
+  - libffi-devel
+  - openssl-devel
 ## Tools
 git: true
 ## LDAP
@@ -24,3 +29,4 @@ ruby: true
 ruby_version: "3.3" # 2027-03
 ruby_libs:
   - bundled-gems
+ruby_devel: true
