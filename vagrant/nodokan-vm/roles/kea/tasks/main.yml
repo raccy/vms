@@ -45,12 +45,6 @@
     password: keapass
     priv: 'kea.*:ALL/kea_development.*:ALL/kea_test.*:ALL'
 
-- include_tasks: kea_admin.yml
-  loop:
-    - kea
-    - kea_development
-    - kea_test
-
 - name: Run kea-admin init
   become: yes
   ansible.builtin.command:
