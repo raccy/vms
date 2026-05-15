@@ -36,7 +36,7 @@
 
 - name: Create kea user
   become: yes
-  mysql_user:
+  community.mysql.mysql_user:
     login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: root
     state: present
@@ -45,26 +45,12 @@
     password: keapass
     priv: 'kea.*:ALL/kea_development.*:ALL/kea_test.*:ALL'
 
-- name: Run kea-admin init
-  become: yes
-  ansible.builtin.command:
-    argv: 
-      - kea-admin
-      - db-init
-      - mysql
-      - -u
-      - kea
-      - -p
-      - keapass
-      - -n
-      - '{{ item }}'
+- name: Task kea_admin
+  ansible.builtin.include_tasks:
+    file: kea_admin.yml
   loop:
     - kea
     - kea_development
     - kea_test
-
-# - name: 'kea-admin upgrade {{ item }}'
-#   become: yes
-#   command:
-#     cmd: 'kea-admin db-upgrade mysql -u kea -p keapass -n {{ item }}'
-#   when: 'item in mysql_info_result.databases'
+  loop_control:
+    loop_var: kea_db_name

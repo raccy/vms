@@ -1,0 +1,27 @@
+- name: Check schema_version table exists
+  become: yes
+  community.mysql.mysql_query:
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_user: root
+    query: >-
+      SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_schema = '{{ kea_db_name }}'
+          AND table_name = 'schema_version';
+  register: kea_schema_version_table_result
+
+- name: Run kea-admin init
+  become: yes
+  ansible.builtin.command:
+    argv: 
+      - kea-admin
+      - >-
+        {{ (kea_schema_version_table_result.query_result[0][0]["COUNT(*)"] == 0)
+          | ternary("db-init", "db-upgrade") }}
+      - mysql
+      - -u
+      - kea
+      - -p
+      - keapass
+      - -n
+      - '{{ kea_db_name }}'

@@ -13,6 +13,7 @@ ds_setup: true
 ## Database
 mariadb: true
 mariadb_service: true
+mariadb_devel: true
 redis: true
 redis_service: true
 ## Language
