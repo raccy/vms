@@ -1,72 +1,43 @@
-# for libmyal-devel
-- name: def config-manager set enabled crb
-  become: yes
-  command:
-    cmd: dnf config-manager --set-enabled crb
-  changed_when: true
-
-# 新しいpsychをコンパイルすためにlibyamlが必要
-- name: Install libyaml-devel
-  become: yes
-  dnf:
-    name: libyaml-devel
-
-- name: git clone yuzakan
-  git:
+- name: Clone git repository yuzakan
+  ansible.builtin.git:
     repo: https://github.com/kue-ipc/yuzakan.git
     dest: ~/yuzakan
     version: main
 
-# - name: bundle config
-#   command:
-#     argv:
-#       - bundle
-#       - config
-#       - set
-#       - '{{ item.name }}'
-#       - '{{ item.value }}'
-#     chdir: ~/yuzakan
-#   loop:
-#     - {name: path, value: vendor/bundle}
-
-- name: bundle install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - bundle install
+- name: Run bundle install
+  ansible.builtin.shell:
+    cmd: bundle install
+    executable: /bin/bash
     chdir: ~/yuzakan
+  changed_when: true
 
-- name: npm install
-  command:
-    argv:
-      - bash
-      - '-lic'
-      - npm install
+- name: Run npm install
+  ansible.builtin.shell:
+    cmd: npm install
+    executable: /bin/bash
     chdir: ~/yuzakan
+  changed_when: true
 
-# - name: bundle exec rake build
-#   command:
-#     argv:
-#       - bash
-#       - '-lic'
-#       - bundle exec rake build
-#     chdir: ~/yuzakan
+- name: Run bundle exec rake build
+  ansible.builtin.shell:
+    cmd: bundle exec rake build
+    executable: /bin/bash
+    chdir: ~/yuzakan
+  changed_when: true
 
-# - name: bundle exec hanami db prepare
-#   command:
-#     argv:
-#       - bash
-#       - '-lic'
-#       - bundle exec hanami db prepare
-#     chdir: ~/yuzakan
+- name: Run bundle exec hanami db prepare
+  ansible.builtin.shell:
+    cmd: bundle exec hanami db prepare
+    executable: /bin/bash
+    chdir: ~/yuzakan
+  changed_when: true
 
-# - name: bundle exec hanami db prepare for test
-#   command:
-#     argv:
-#       - bash
-#       - '-lic'
-#       - bundle exec hanami db prepare
-#     chdir: ~/yuzakan
-#   environment:
-#     HANAMI_ENV: test
+
+- name: Run bundle exec hanami db prepare for test
+  ansible.builtin.shell:
+    cmd: bundle exec hanami db prepare
+    executable: /bin/bash
+    chdir: ~/yuzakan
+  changed_when: true
+  environment:
+    HANAMI_ENV: test

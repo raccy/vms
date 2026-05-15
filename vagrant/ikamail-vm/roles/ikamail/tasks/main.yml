@@ -18,20 +18,13 @@
     chdir: ~/ikamail
   changed_when: true
 
-# - name: check rails db version
-#   ansible.builtin.shell:
-#     cmd: bin/rails yarn:install
-#     executable: /bin/bash
-#     chdir: ~/ikamail
-
-#   command:
-#     argv:
-#       - bash
-#       - '-lic'
-#       - bin/rails db:version
-#     chdir: ~/ikamail
-#   ignore_errors: yes
-#   register: rails_db_version_result
+- name: Check rails db:setup
+  ansible.builtin.shell:
+    cmd: bin/rails db:version
+    executable: /bin/bash
+    chdir: ~/ikamail
+  ignore_errors: yes
+  register: ikamail_rails_db_version_result
 
 - name: Run rails db:setup
   ansible.builtin.shell:
@@ -39,10 +32,13 @@
     executable: /bin/bash
     chdir: ~/ikamail
   changed_when: true
-  # command:
-  #   argv:
-  #     - bash
-  #     - '-lic'
-  #     -
-  #   chdir: ~/ikamail
-  # when: rails_db_version_result.rc != 0
+  when: ikamail_rails_db_version_result is failed
+
+- name: Run rails db:migrate
+  ansible.builtin.shell:
+    cmd: bin/rails db:migrate
+    executable: /bin/bash
+    chdir: ~/ikamail
+  changed_when: true
+  when: ikamail_rails_db_version_result is not failed
+

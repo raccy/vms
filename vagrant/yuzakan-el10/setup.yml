@@ -1,0 +1,31 @@
+---
+## Essentials
+app_pkgs:
+  - libyaml-devel
+  - libffi-devel
+  - openssl-devel
+## Tools
+git: true
+### LDAP
+ds: true
+ds_service: true
+ds_setup: true
+## Databases
+postgresql: true
+# postgresql_version: "" # 16 full
+postgresql_service: true
+valkey: true
+# valkey_version: "" # 8 full
+valkey_service: true
+### Languages
+nodejs: true
+# nodejs_version: "" # 22 2027-04
+nodejs_npms:
+  - "npm-check-updates"
+ruby: true
+# ruby_version: "" # 3.3 full
+ruby_libs:
+  - bundled-gems
+ruby_devel: true
+## Environments
+vscode: true
