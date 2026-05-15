@@ -35,11 +35,12 @@
     password: radpass
     priv: 'radius.*:ALL/radius_development.*:ALL/radius_test.*:ALL'
 
-- name: Run mysql scheme.sql
-  become: yes
-  ansible.builtin.shell:
-    cmd: 'mysql -u root {{ item }} < /etc/raddb/mods-config/sql/main/mysql/schema.sql'
+- name: Task schema
+  ansible.builtin.include_tasks:
+    file: schema.yml
   loop:
     - radius
     - radius_development
     - radius_test
+  loop_control:
+    loop_var: freeradius_db_name

@@ -6,17 +6,18 @@ app_pkgs:
   - openssl-devel
 ## Tools
 git: true
-## LDAP
+## Services
+### LDAP
 ds: true
 ds_service: true
 ds_setup: true
-## Database
+## Databases
 mariadb: true
 mariadb_service: true
 mariadb_devel: true
 redis: true
 redis_service: true
-## Language
+## Languages
 nodejs: true
 nodejs_version: "20" # 2026-04
 nodejs_npms:
@@ -27,3 +28,5 @@ ruby_version: "3.3" # 2027-03
 ruby_libs:
   - bundled-gems
 ruby_devel: true
+## Environments
+vscode: true

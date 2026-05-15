@@ -1,0 +1,17 @@
+- name: Check schema_version table exists
+  become: yes
+  community.mysql.mysql_query:
+    login_unix_socket: /var/lib/mysql/mysql.sock
+    login_user: root
+    query: >-
+      SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_schema = '{{ freeradius_db_name }}'
+          AND table_name = 'radcheck';
+  register: freeradius_radcheck_table_result
+
+- name: Run mysql scheme.sql
+  become: yes
+  ansible.builtin.shell:
+    cmd: 'mysql -u root {{ freeradius_db_name }} < /etc/raddb/mods-config/sql/main/mysql/schema.sql'
+  when: 'freeradius_radcheck_table_result.query_result[0][0]["COUNT(*)"] == 0'
