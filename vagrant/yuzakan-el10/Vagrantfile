@@ -1,7 +1,8 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "almalinux/10" # 20GB
+  config.vm.box = "almalinux/10-x86_64_v2" # 20GB
+  # config.vm.box = "almalinux/10" # 20GB
   # config.vm.box = "bento/almalinux-10"
   # config.vm.box = "bento/rockylinux-10"
 
