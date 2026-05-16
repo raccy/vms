@@ -18,26 +18,9 @@
     chdir: ~/yuzakan
   changed_when: true
 
-- name: Run bundle exec rake build
-  ansible.builtin.shell:
-    cmd: bundle exec rake build
-    executable: /bin/bash
-    chdir: ~/yuzakan
-  changed_when: true
-
-- name: Run bundle exec hanami db prepare
-  ansible.builtin.shell:
-    cmd: bundle exec hanami db prepare
-    executable: /bin/bash
-    chdir: ~/yuzakan
-  changed_when: true
-
-
-- name: Run bundle exec hanami db prepare for test
-  ansible.builtin.shell:
-    cmd: bundle exec hanami db prepare
-    executable: /bin/bash
-    chdir: ~/yuzakan
-  changed_when: true
-  environment:
-    HANAMI_ENV: test
+# - name: Run bundle exec hanami db prepare
+#   ansible.builtin.shell:
+#     cmd: bundle exec hanami db prepare
+#     executable: /bin/bash
+#     chdir: ~/yuzakan
+#   changed_when: true
