@@ -18,6 +18,7 @@
     chdir: ~/ikamail
   changed_when: true
 
+# FIXME: DBのセットアップがtestにされない。
 - name: Check rails db:setup
   ansible.builtin.shell:
     cmd: bin/rails db:version
