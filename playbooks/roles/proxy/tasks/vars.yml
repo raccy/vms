@@ -1,26 +1,36 @@
 - name: Setting proxy_env var from proxy_*
   ansible.builtin.set_fact:
-    proxy_env:
-      http_proxy: '{{ proxy_http | default(omit) }}'
-      https_proxy: '{{ proxy_https | default(omit) }}'
-      ftp_proxy: '{{ proxy_ftp | default(omit) }}'
-      no_proxy: >-
-        {{ proxy_no | default(
-          (proxy_bypass_loopback | ternary(proxy_loopback, []) + proxy_bypass_hosts) | unique | join(",")) }}
-  when:
-    - proxy_env is not defined
-    - proxy_http is defined or proxy_https is defined or proxy_ftp is defined
+    proxy_env: >-
+      {{ proxy_env | default({}) | combine({
+        "all_proxy": proxy_all | default(""),
+        "http_proxy": proxy_http | default(""),
+        "https_proxy": proxy_https | default(""),
+        "ftp_proxy": proxy_ftp | default(""),
+        "no_proxy": proxy_bypass_list | default([])
+          | union(proxy_bypass_loopback | ternary(proxy_loopback, []))
+          | union(proxy_bypass_linklocal | ternary(proxy_linklocal, []))
+          | union(proxy_bypass_private | ternary(proxy_private, []))
+          | unique | join(","),
+      } | dict2items | rejectattr("value", "equalto", "") | items2dict) }}
+  when: proxy_all is defined or proxy_http is defined or proxy_https is defined or proxy_ftp is defined
 
 - name: Setting proxy_env var from env
   ansible.builtin.set_fact:
-    proxy_env:
-      http_proxy: '{{ lookup("env", "http_proxy", default=omit) }}'
-      https_proxy: '{{ lookup("env", "https_proxy", default=omit) }}'
-      ftp_proxy: '{{ lookup("env", "ftp_proxy", default=omit) }}'
-      no_proxy: '{{ lookup("env", "no_proxy", default=omit) }}'
-  when:
-    - proxy_env is not defined
-    - lookup("env", "http_proxy") != "" or lookup("env", "https_proxy") != "" or lookup("env", "http_proxy") != ""
+    proxy_env: >-
+      {{ proxy_env | default({}) | combine({
+        "all_proxy": lookup("env", "ALL_PROXY", default=""),
+        "http_proxy": lookup("env", "HTTP_RPOXY", default=""),
+        "https_proxy": lookup("env", "HTTPS_PROXY", default=""),
+        "ftp_proxy": lookup("env", "FTP_PROXY", default=""),
+        "no_proxy": lookup("env", "NO_PROXY", default=""),
+      } | dict2items | rejectattr("value", "equalto", "") | items2dict, {
+        "all_proxy": lookup("env", "all_proxy", default=""),
+        "http_proxy": lookup("env", "http_proxy", default=""),
+        "https_proxy": lookup("env", "https_proxy", default=""),
+        "ftp_proxy": lookup("env", "ftp_proxy", default=""),
+        "no_proxy": lookup("env", "no_proxy", default=""),
+      } | dict2items | rejectattr("value", "equalto", "") | items2dict) }}
+  when: proxy_env_from_env
 
 - name: Setting proxy_env var to empty
   ansible.builtin.set_fact:
