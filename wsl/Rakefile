@@ -157,7 +157,6 @@ task ansible_playbook: %i[ansible_install] do
     else
       " -e ansible_become_password=\"#{setup.password}\""
     end
-  opt << " -e '#{{git_config: setup.git_config}.to_json}'"
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
   wsl.run("ansible-playbook wsl.yml #{opt}", env:, cd: setup.playbooks)

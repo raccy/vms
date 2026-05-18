@@ -192,12 +192,4 @@ class Setup
   def skip_ansible?
     options[:skip_ansible]
   end
-
-  # TODO: 複数の値に未対応
-  def git_config
-    @git_config ||= `git config --list --global`.lines
-      .to_h { |line| line.chomp.split("=", 2) }
-      .reject { |key, _| key.start_with?("filter.lfs.") }
-      .except("safe.directory")
-  end
 end
