@@ -1,0 +1,20 @@
+require_relative "../common"
+
+Vagrant.configure("2") do |config|
+  # config.vm.box = "rockylinux/10" # 10GB
+  config.vm.box = "bento/rockylinux-10" # with chef
+  # config.vm.box = "boxomatic/rocky-10" # ???
+
+  # don't use
+  # config.vm.box = "cloud-image/rocky-10" with cloud-init
+
+  # not availabl
+  # config.vm.box = "eurolinux-vagrant/rocky-10"
+  # config.vm.box = "generic/rocky10"
+  # config.vm.box = "openlogic/rockylinux-10"
+
+  # if you want to extend disk size, you can use (defaut size 32GB):
+  # expand_disk(config)
+
+  common_config(config)
+end

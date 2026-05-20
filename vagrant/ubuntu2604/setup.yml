@@ -1,6 +1,6 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-# debug: true
+debug: true
 ## Essentials
 # cert: false
 # env: false
@@ -16,23 +16,24 @@ app_pkgs:
 ## Tools
 # anyenv: true
 # docker: true
-# git: true
+git: true
 # mise: true
-# snap: true
+snap: true
+
 ## Services
 # nginx: true
 # nginx_service: true
 ### LDAP
 # ldap_posix: false
-# ldap_shadow: true
+ldap_shadow: true
 # ldap_samba: true
 # ldap_member: true
 # ds: true
 # ds_service: true
 # ds_setup: true
-# openldap: true
-# openldap_service: true
-# openldap_setup: true
+openldap: true
+openldap_service: true
+openldap_setup: true
 ### Databases
 # mariadb: true
 # mariadb_devel: true
@@ -62,4 +63,4 @@ app_pkgs:
 #   - sqlite3
 #   - redis
 ## Environments
-# vscode: true
+vscode: true

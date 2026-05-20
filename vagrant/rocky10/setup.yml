@@ -1,8 +1,7 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-# debug: true
-## Essentials
-# cert: false
+## Essential
+
 # env: false
 # pkg: false
 # update: false
@@ -13,47 +12,81 @@
 app_pkgs:
   - "vim"
 #   - "rsync"
+#   - "@development"
+
 ## Tools
-# anyenv: true
-# docker: true
+
 # git: true
-# mise: true
-# snap: true
-## Services
+
+## Service
+
 # nginx: true
+# nginx_version: "1.26" # 2028-03
 # nginx_service: true
-### LDAP
+
+## LDAP
+
 # ldap_posix: false
 # ldap_shadow: true
 # ldap_samba: true
 # ldap_member: true
+
 # ds: true
 # ds_service: true
 # ds_setup: true
+
 # openldap: true
 # openldap_service: true
 # openldap_setup: true
-### Databases
+
+## Database
+
 # mariadb: true
+# mariadb_version: "" # 10.5 full
+# mariadb_version: "10.11" # 2028-03
 # mariadb_devel: true
 # mariadb_service: true
+
 # postgresql: true
+# postgresql_version: "" # 13 full
+# postgresql_version: "15" # 2028-05
+# postgresql_version: "16" # 2029-03
 # postgresql_devel: true
 # postgresql_service: true
+
 # redis: true
+# redise_version: "" # 6 full
+# redise_version: "7" # 2026-11
+# redis_devel: true
 # redis_service: true
-## Languages
+
+# valkey: true
+## valkey_version: # default "8" 2029-05
+# valkey_devel: true
+# valkey_service: true
+
+## Language
+
 # nodejs: true
-# nodejs_source: snap
+# nodejs_version: "" # 16 2024-04
+# nodejs_version: "22" # 2027-04
+# nodejs_version: "24" # 2028-04
 # nodejs_npms:
 #   - "npm-check-updates"
+
 # python: true
+# python_name: "python" # 3.9 full
+# python_name: "python3.11" # 2026-05
+# python_name: "python3.12" # 2027-04
 # python_devel: true
+
 # ruby: true
-# ruby_source: snap
+# ruby_version: "" # 3.0 full
+# ruby_version: "3.1" # 2025-03
+# ruby_version: "3.3" # 2027-03
 # ruby_devel: true
 # ruby_libs:
-#   - bundler
+#   - bundled-gems
 # ruby_gems:
 #   - rubocop
 #   - mysql2
@@ -61,5 +94,3 @@ app_pkgs:
 #   - pg
 #   - sqlite3
 #   - redis
-## Environments
-# vscode: true

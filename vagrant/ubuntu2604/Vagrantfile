@@ -1,7 +1,11 @@
 require_relative "../common"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "almalinux/10-x86_64_v2" # 20GB
+  # config.vm.box = "ubuntu/noble64" # not avialable
+  # config.vm.box = "bento/ubuntu-26.04" # with chef
+
+  # don't use
+  # config.vm.box = "cloud-image/rocky-10" with cloud-init
 
   # if you want to extend disk size, you can use (defaut size 32GB):
   # expand_disk(config)

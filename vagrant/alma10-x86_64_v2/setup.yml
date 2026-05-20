@@ -1,8 +1,8 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
+# TODO: バージョン関係はまだちゃんとしていない
 ---
 # debug: true
-## Essentials
-# cert: false
+## Essential
 # env: false
 # pkg: false
 # update: false
@@ -13,16 +13,13 @@
 app_pkgs:
   - "vim"
 #   - "rsync"
+#   - "@development"
 ## Tools
-# anyenv: true
-# docker: true
 # git: true
-# mise: true
-# snap: true
-## Services
+## Service
 # nginx: true
 # nginx_service: true
-### LDAP
+## LDAP
 # ldap_posix: false
 # ldap_shadow: true
 # ldap_samba: true
@@ -33,7 +30,7 @@ app_pkgs:
 # openldap: true
 # openldap_service: true
 # openldap_setup: true
-### Databases
+## Database
 # mariadb: true
 # mariadb_devel: true
 # mariadb_service: true
@@ -41,19 +38,24 @@ app_pkgs:
 # postgresql_devel: true
 # postgresql_service: true
 # redis: true
+# redis_devel: true
 # redis_service: true
-## Languages
+# valkey: true
+# valkey_devel: true
+# valkey_service: true
+## Language
 # nodejs: true
-# nodejs_source: snap
 # nodejs_npms:
 #   - "npm-check-updates"
 # python: true
+# python_name: "python" # 3.9 full
+# python_name: "python3.11" # 2026-05
+# python_name: "python3.12" # 2027-04
 # python_devel: true
 # ruby: true
-# ruby_source: snap
 # ruby_devel: true
 # ruby_libs:
-#   - bundler
+#   - bundled-gems
 # ruby_gems:
 #   - rubocop
 #   - mysql2
