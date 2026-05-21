@@ -1,7 +1,7 @@
 nodejs_name_src:
   pkg: nodejs
   snap: node
-  mise: nodejs
+  mise: node
   anyenv: nodenv
 nodejs_dep_pkgs_src:
   pkg: []

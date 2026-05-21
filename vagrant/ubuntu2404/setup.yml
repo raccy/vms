@@ -14,12 +14,12 @@ app_pkgs:
   - "vim"
 #   - "rsync"
 ## Tools
-anyenv: true
-anyenv_envs:
-  - nodenv
+# anyenv: true
+# anyenv_envs:
+#   - nodenv
 # docker: true
 # git: true
-# mise: true
+mise: true
 # snap: true
 ## Services
 # nginx: true
@@ -47,9 +47,9 @@ anyenv_envs:
 ## Languages
 nodejs: true
 # nodejs_source: snap
-# nodejs_source: mise
-nodejs_source: anyenv
-nodejs_version: 24.15.0
+nodejs_source: mise
+# nodejs_source: anyenv
+# nodejs_version: 24.15.0
 # nodejs_npms:
 #   - "npm-check-updates"
 # python: true

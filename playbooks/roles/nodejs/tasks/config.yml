@@ -13,12 +13,12 @@
     - nodejs_source == "pkg"
     - nodejs_config_npm_prefix.stdout | trim == "/usr/local"
 
-- name: Block nodejs in bashrc
-  ansible.builtin.blockinfile:
-    path: ~/.bashrc
-    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
-    block: |
-      export NODE_USE_SYSTEM_CA=1
-  when:
-    - nodejs_source != "pkg"
-    - cert_trusted_cas != {}
+# - name: Block nodejs in bashrc
+#   ansible.builtin.blockinfile:
+#     path: ~/.bashrc
+#     marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
+#     block: |
+#       export NODE_USE_SYSTEM_CA=1
+#   when:
+#     - nodejs_source != "pkg"
+#     - cert_trusted_cas != {}

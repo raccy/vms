@@ -31,4 +31,5 @@
       {{ mise_shell_block }}
       mise use -g {{ app_install_name }}@{{ app_install_version }}
     executable: /bin/bash
+  environment: '{{ proxy_env }}'
   changed_when: true
