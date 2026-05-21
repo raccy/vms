@@ -1,6 +1,6 @@
 # https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle
 ---
-# debug: true
+debug: true
 ## Essentials
 # cert: false
 # env: false
@@ -14,7 +14,9 @@ app_pkgs:
   - "vim"
 #   - "rsync"
 ## Tools
-# anyenv: true
+anyenv: true
+anyenv_envs:
+  - nodenv
 # docker: true
 # git: true
 # mise: true
@@ -43,8 +45,11 @@ app_pkgs:
 # redis: true
 # redis_service: true
 ## Languages
-# nodejs: true
+nodejs: true
 # nodejs_source: snap
+# nodejs_source: mise
+nodejs_source: anyenv
+nodejs_version: 24.15.0
 # nodejs_npms:
 #   - "npm-check-updates"
 # python: true
