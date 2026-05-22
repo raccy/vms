@@ -45,7 +45,7 @@ app_pkgs:
 # redis: true
 # redis_service: true
 ## Languages
-nodejs: true
+# nodejs: true
 # nodejs_source: snap
 # nodejs_source: mise
 # nodejs_source: anyenv
