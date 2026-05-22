@@ -14,3 +14,6 @@
       - system_reload_daemon
       - snap_restart_snapd
   when: proxy_env != {}
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

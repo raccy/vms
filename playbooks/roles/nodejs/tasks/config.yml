@@ -3,22 +3,22 @@
     cmd: npm config get prefix
   register: nodejs_config_npm_prefix
   changed_when: false
-  when: nodejs_source == "pkg"
+  when: nodejs_pkg_mgr != "bun"
 
 - name: Set npm config prefix
   ansible.builtin.command:
     cmd: npm config set prefix=~/.local
   changed_when: true
   when:
-    - nodejs_source == "pkg"
+    - nodejs_pkg_mgr != "bun"
     - nodejs_config_npm_prefix.stdout | trim == "/usr/local"
 
-# - name: Block nodejs in bashrc
-#   ansible.builtin.blockinfile:
-#     path: ~/.bashrc
-#     marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
-#     block: |
-#       export NODE_USE_SYSTEM_CA=1
-#   when:
-#     - nodejs_source != "pkg"
-#     - cert_trusted_cas != {}
+- name: Block nodejs in bashrc
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
+    block: |
+      export NODE_USE_SYSTEM_CA=1
+  when:
+    - nodejs_source != "pkg"
+    - cert_trusted_cas != {}
