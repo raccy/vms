@@ -1,12 +1,10 @@
 ---
 ## Essentials
 app_pkgs:
-  - "@development"
   - libyaml-devel
   - libffi-devel
   - openssl-devel
 ## Tools
-mise: true
 git: true
 ### LDAP
 ds: true
@@ -21,10 +19,13 @@ valkey: true
 valkey_service: true
 ### Languages
 nodejs: true
-nodejs_source: mise
-# nodejs_version: "" # latest
+# nodejs_version: "" # 22 2027-04
+nodejs_npms:
+  - "npm-check-updates"
 ruby: true
-ruby_source: mise
-# ruby_version: "" # latest
+# ruby_version: "" # 3.3 full
+ruby_libs:
+  - bundled-gems
+ruby_devel: true
 ## Environments
 vscode: true

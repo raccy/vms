@@ -6,10 +6,15 @@ nodejs_name_src:
 nodejs_dep_pkgs_src:
   pkg: []
   snap: []
-  mise:
-    - libatomic1
-  anyenv:
-    - libatomic1
+  mise: '{{ nodejs_dep_pkgs_add }}'
+  anyenv: '{{ nodejs_dep_pkgs_add }}'
 nodejs_bun_shell_block: |
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
+nodejs_dep_pkgs_add: '{{ nodejs_dep_pkgs_add_os_family[ansible_facts.os_family] | default([]) }}'
+nodejs_dep_pkgs_add_os_family:
+  Debian:
+    - libatomic1
+  # TODO: EL9以下では違う可能性がある。
+  RedHat:
+    - libatomic

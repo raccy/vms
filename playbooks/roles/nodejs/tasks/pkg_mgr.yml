@@ -11,6 +11,7 @@
 - name: Enable corepack
   ansible.builtin.command:
     cmd: 'corepack enable {{ nodejs_pkg_mgr }}'
+  changed_when: true
   when: nodejs_pkg_mgr in ["yarn", "pnpm"]
 
 - name: Run version
@@ -18,16 +19,18 @@
     cmd: '{{ nodejs_pkg_mgr }} --version'
     stdin: "y\n"
   environment: '{{ proxy_env }}'
+  changed_when: true
   when: nodejs_pkg_mgr in ["yarn", "pnpm"]
-
-# https://bun.com/docs/installation
 
 - name: Run yarn version on shell once again
   ansible.builtin.command:
     cmd: '{{ nodejs_pkg_mgr }} --version'
     stdin: "y\n"
   environment: '{{ proxy_env }}'
+  changed_when: true
   when: nodejs_pkg_mgr in ["yarn", "pnpm"]
+
+# https://bun.com/docs/installation
 
 - name: Run bun install
   ansible.builtin.shell:
