@@ -6,3 +6,4 @@ nodejs_libs: []
 nodejs_dep_pkgs: '{{ nodejs_dep_pkgs_src[nodejs_source] | default([]) }}'
 nodejs_pkg_mgr: "npm" # yarn, pnpm, bun
 nodejs_npms: []
+nodejs_env: {}

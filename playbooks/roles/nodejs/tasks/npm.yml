@@ -3,7 +3,7 @@
     name: '{{ item.split("@") | first }}'
     version: '{{ ("@" in item) | ternary(item.split("@") | last, omit) }}'
     global: true
-  environment: '{{ proxy_env }}'
+  environment: '{{ proxy_env | combine(nodejs_env) }}'
   loop: '{{ nodejs_npms }}'
   when: nodejs_pkg_mgr != "bun"
 
@@ -12,5 +12,7 @@
     cmd: |
       {{ nodejs_bun_shell_block }}
       bun install -g {{ item }}
-  environment: '{{ proxy_env }}'
+  environment: '{{ proxy_env | combine(nodejs_env) }}'
+  changed_when: true
+  loop: '{{ nodejs_npms }}'
   when: nodejs_pkg_mgr == "bun"

@@ -18,7 +18,7 @@
     path: ~/.bashrc
     marker: '# {mark} ANSIBLE MANAGED BLOCK nodejs'
     block: |
-      export NODE_USE_SYSTEM_CA=1
-  when:
-    - nodejs_source != "pkg"
-    - cert_trusted_cas != {}
+      {% for key, value in nodejs_env.items() %}
+      export {{ key }}={{ value }}
+      {% endfor %}
+  when: nodejs_env != {}
