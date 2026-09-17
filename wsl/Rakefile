@@ -157,6 +157,11 @@ task ansible_playbook: %i[ansible_install] do
     else
       " -e ansible_become_password=\"#{setup.password}\""
     end
+  # FIXME: Ubuntu 26.04 LTSではsudoがsudo-rsになったため、動かなくった。
+  #   レガシーなsudo.wsがあれば、そちらを使うようにする。
+  if wsl.run("which sudo.ws", capture: true, exception: false)&.chomp&.length&.positive?
+    opt << " -e ansible_sudo_exe=\"sudo.ws\""
+  end
   env = {ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"}.merge(setup.proxy_env)
 
   wsl.run("ansible-playbook wsl.yml #{opt}", env:, cd: setup.playbooks)
